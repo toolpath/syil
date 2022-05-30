@@ -20,8 +20,8 @@ G91                              (back to relative mode)
 G31 P2 X1 F100                   (FEED UNTIL SKIP FAST)
 G00 X-0.1
 G31 P2 X0.2 F0.5                 (FEED UNTIL SKIP SLOW)
+#103=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
 
-#103=R_MACH_COOR[0,X]            (GET MACHINE X COORDINATE)
 ;PROBE diameter compensation not needed since we're dividing by 2;
 ;    The width of the probe effectively gets canceled
 
@@ -33,10 +33,11 @@ G91
 G31 P2 X-1 F100                   (FEED UNTIL SKIP FAST)
 G00 X0.1
 G31 P2 X-0.2 F0.5                 (FEED UNTIL SKIP SLOW)
+#104=R_MACH_COOR[0,1]             (GET MACHINE X COORDINATE)
 
 #105=[(#103+#104)/2]
 
 W_G53G59_COOR[0,#1,1,#105]
 
-G28 G91 Z0
+G90 G00 Z0.5 (move 0.5 above the probed zero)
 M99
