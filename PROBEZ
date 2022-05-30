@@ -13,7 +13,7 @@ G31 P2 Z-1.5 F50                  (FEED UNTIL INPUT SIGNAL AKA SKIP)
 ;M9                              (AIR OFF)
 G00 Z0.1                         (MOVE UP)
 G04 P1000
-G31 P2 Z-10 F.1                  (FEED UNTIL SKIP SLOWER)
+G31 P2 Z-10 F1                   (FEED UNTIL SKIP SLOWER)
 
 #100=R_SYS_INFO[0,2]             (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
 

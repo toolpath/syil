@@ -10,32 +10,37 @@ G20                              (inch)
 
 G91 ; Relative motion
 
-G00 X[#2/2] Y[#2/2]              (move to roughly center of stock)
+F25
+G01 X[#2/2] Y[#2/2]              (move to roughly center of stock)
 M98 "PROBEZ" A#1                 (sets the Z offset)
 
-G00 X[-#2/2-0.5]                 (back to approx edge +0.5 inch extra)
-G90 G00 Z-0.1                    (move to 0.1 below the probed zero)
+; USE TOOL LENGTH COMPENSATION NOW THAT WE KNOW Z
+G43 T#100
+
+
+G01 X[-#2/2-0.5]                 (back to approx edge +0.5 inch extra)
+G90 G01 Z-0.1                    (move to 0.1 below the probed zero)
 
 G91                              (back to relative mode)
 G31 P2 X1 F100                   (FEED UNTIL SKIP FAST)
-G00 X-0.1
-G31 P2 X0.2 F0.5                 (FEED UNTIL SKIP SLOW)
+G01 X-0.05
+G31 P2 X0.2 F1                   (FEED UNTIL SKIP SLOW)
 #103=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
 
 ;PROBE diameter compensation not needed since we're dividing by 2;
 ;    The width of the probe effectively gets canceled
 
-G90 G00 Z0.5                     (move 0.5 above the probed zero)
-G91 G00 X[#2+0.5]                (back to relative mode)
-G90 G00 Z-0.1                    (move to 0.1 below the probed zero)
+G90 G01 Z0.5                     (move 0.5 above the probed zero)
+G91 G01 X[#2+0.5]                (back to relative mode)
+G90 G01 Z-0.1                    (move to 0.1 below the probed zero)
 
 G91
 G31 P2 X-1 F100                   (FEED UNTIL SKIP FAST)
-G00 X0.1
+G01 X0.05
 G31 P2 X-0.2 F0.5                 (FEED UNTIL SKIP SLOW)
 #104=R_MACH_COOR[0,1]             (GET MACHINE X COORDINATE)
 
-#105=[(#103+#104)/2]
+#105=[[#103+#104]/2]
 
 W_G53G59_COOR[0,#1,1,#105]
 
