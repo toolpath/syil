@@ -1,0 +1,27 @@
+(AUTO TOOL SET)
+G90 G94 G17 G49 G40 G80
+G20                              (inch)
+;G28 G91 Z0.
+
+G91
+G31 P2 Z-10 F50                (FEED UNTIL INPUT SIGNAL AKA SKIP)
+;M7                               (TURN ON AIR BLAST)
+;G04 P250
+;M9                               (AIR OFF)
+G00 Z0.05                         (MOVE UP)
+G04 P1000
+G31 P2 Z-10 F.05                  (FEED UNTIL SKIP SLOWER)
+
+#100=R_SYS_INFO[0,2]             (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
+#101=#1                          (SAVE CURRENT COORDINATE NUMBER)
+MSG_OK["sanity check", "Tool number:#100 -- Coordinate:#1",""]
+
+#103=R_MACH_COOR[0,3]            (GET MACHINE Z COORDINATE)
+#104=R_TOOL_DATA[0,#100,203]     (GET PROBE LENGTH OFFSET)
+#105=[#103-#104]
+MSG_OK["sanity check", "#1 Z offset: #105 #103 #104",""]
+
+W_G53G59_COOR[0,#1,3,#105]
+
+G28 G91 Z0
+M99
