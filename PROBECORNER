@@ -1,0 +1,68 @@
+(AUTO TOOL SET)
+MSG_OK["Probing Square Stock", "Move the probe to near the bottom left corner, about 1 inch of stock top face",""]
+
+; #1 is the WCS number; #2 is the size of the square in inches; #3 is which corner
+
+#100=R_SYS_INFO[0,2]             (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
+
+#110 = 100 (FEED SPEED)
+#111 = 50 (FAST PROBE SPEED)
+#112 = 25 (SLOW PROBE SPEED)
+
+G90 G94 G17 G49 G40 G80
+G20                              (inch)
+
+F#110
+
+; G31 G91 P2 X[#2/2] Y[#2/2]       (move to roughly center of stock)
+G65 "PROBEZ" A#1                 (sets the Z offset)
+
+; USE TOOL LENGTH COMPENSATION NOW THAT WE KNOW Z
+G43 H#100
+
+SELECT(#3)
+    CASE 1: (bottom left)
+        #113 = 1;
+        #114 = 1;
+    CASE 2: (bottom right)
+        #113 = -1;
+        #114 = 1;
+    CASE 3: (top right)
+        #113 = -1;
+        #114 = -1;
+    CASE 4: (top left)
+        #113 = 1;
+        #114 = -1;
+END_SELECT
+
+
+(PROBE X)
+
+G31 G91 P2 X[0.5*#113] Y[-0.5*#114]         (back to approx edge +0.5 inch extra)
+G31 G90 P2 Z-0.2                 (move below the probed zero)
+
+(ACTUAL PROBING)
+G31 G91 P2 X[-1*#113] F#111              (FEED UNTIL SKIP FAST)
+G91 G01 X[0.05*#113]
+G31 G91 P2 X[-0.2*#113] F#112            (FEED UNTIL SKIP SLOW)
+#103=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
+G91 G01 X[0.05*#113]                  (MOVE OFF THE EDGE A LITTLE)
+
+(PROBE Y starting from off the left side of the bottom left corner)
+
+G31 G90 P2 Z0.4                 (move above the probed zero)
+G31 G91 P2 X[-0.55*#113] Y[1*#114] (back to approx edge +0.5 inch extra)
+G31 G90 P2 Z-0.4                     (move below the probed zero)
+
+(ACTUAL PROBING)
+G31 G91 P2 Y[-1*#114] F#111              (FEED UNTIL SKIP FAST)
+G91 G01 Y[0.05*#114]
+G31 G91 P2 Y[-0.2*#114] F#112            (FEED UNTIL SKIP SLOW)
+#103=R_MACH_COOR[0,2]             (GET MACHINE Y COORDINATE)
+G91 G01 Y[0.05*#114]                     (move a little away from the wall)
+
+G91 G01 Y[0.05*#114]                  (MOVE AWAY FROM PART)
+G31 G90 P2 Z0.5                   (MOVE 0.5 ABOVE THE PROBED ZERO)
+G31 G90 P2 X0 Y0                  (MOVE TO PROBED XY 0)
+
+M99
