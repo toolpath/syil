@@ -1,3 +1,4 @@
+
 (AUTO TOOL SET)
 MSG_OK["Probing Square Stock", "Move the probe to near the bottom left corner, about 1 inch of stock top face",""]
 
@@ -5,82 +6,87 @@ MSG_OK["Probing Square Stock", "Move the probe to near the bottom left corner, a
 
 #100=R_SYS_INFO[0,2]             (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
 
+
+#110 = 100 (FEED SPEED)
+#111 = 50 (FAST PROBE SPEED)
+#112 = 25 (SLOW PROBE SPEED)
+
 G90 G94 G17 G49 G40 G80
 G20                              (inch)
 
-G91 ; Relative motion
-
-F25
-G01 X[#2/2] Y[#2/2]              (move to roughly center of stock)
-M98 "PROBEZ" A#1                 (sets the Z offset)
+F#110
+G31 G91 P2 X[#2/2] Y[#2/2]       (move to roughly center of stock)
+G65 "PROBEZ" A#1                 (sets the Z offset)
 
 ; USE TOOL LENGTH COMPENSATION NOW THAT WE KNOW Z
-G43 T#100
+G43 H#100
 
 
 (PROBE X)
 
-G01 X[-#2/2-0.5]                 (back to approx edge +0.5 inch extra)
-G90 G01 Z-0.2                    (move below the probed zero)
+G31 G91 P2 X[-#2/2-0.5]          (back to approx edge +0.5 inch extra)
+G31 G90 P2 Z-0.2                 (move below the probed zero)
 
-G91                              (back to relative mode)
-G31 P2 X1 F50                    (FEED UNTIL SKIP FAST)
-G01 X-0.05
-G31 P2 X0.2 F1                   (FEED UNTIL SKIP SLOW)
+(ACTUAL PROBING)
+G31 G91 P2 X1 F#111              (FEED UNTIL SKIP FAST)
+G91 G01 X-0.05
+G31 G91 P2 X0.2 F#112            (FEED UNTIL SKIP SLOW)
 #103=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
+G91 G01 X-0.05                   (MOVE OFF THE EDGE A LITTLE)
+
 
 ;PROBE diameter compensation not needed since we're dividing by 2;
 ;    The width of the probe effectively gets canceled
 
-G90 G01 Z0.5                     (move 0.5 above the probed zero)
-G91 G01 X[#2+0.5]                (back to relative mode)
-G90 G01 Z-0.2                    (move below the probed zero)
+G31 G90 P2 Z0.5                  (0.5 ABOVE PROBED ZERO)
+G31 G91 P2 X[#2+0.55]            (GO TO OTHER SIDE OF STOCK)
+G31 G90 P2 Z-0.2                 (BELOW PROBED ZERO)
 
-G91
-G31 P2 X-1 F50                   (FEED UNTIL SKIP FAST)
-G01 X0.05
-G31 P2 X-0.2 F0.5                 (FEED UNTIL SKIP SLOW)
-#104=R_MACH_COOR[0,1]             (GET MACHINE X COORDINATE)
-G01 X0.05                         (MOVE OFF THE EDGE A LITTLE)
+G31 G91 P2 X-1 F#111             (FEED UNTIL SKIP FAST)
+G91 G01 X0.05
+G31 G91 P2 X-0.2 F#112           (FEED UNTIL SKIP SLOW)
+#104=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
+G91 G01 X0.05                    (MOVE OFF THE EDGE A LITTLE)
 
+(COMPUTE AND STORE X OFFSET)
 #105=[[#103+#104]/2]
-
 W_G53G59_COOR[0,#1,1,#105]
 
-G90 G00 Z0.5 (move 0.5 above the probed zero)
+G31 G90 P2  Z0.5                 (0.5 ABOVE PROBED ZERO)
 
 
 (PROBE Y starting from roughly the the mid Y and right edge)
 
-G91
-G01 X[-#2/2-0.05] Y[#2/2+0.5]    (back to approx edge +0.5 inch extra)
-G90 G01 Z-0.2                    (move below the probed zero)
 
-G91                              (back to relative mode)
-G31 P2 Y-1 F50                   (FEED UNTIL SKIP FAST)
-G01 Y0.05
-G31 P2 Y-0.2 F1                  (FEED UNTIL SKIP SLOW)
-#103=R_MACH_COOR[0,2]            (GET MACHINE Y COORDINATE)
+G31 G91 P2 X[-#2/2-0.05] Y[#2/2+0.5] (back to approx edge +0.5 inch extra)
+G31 G90 P2 Z-0.2                     (move below the probed zero)
+
+(ACTUAL PROBING)
+G31 G91 P2 Y-1 F#111              (FEED UNTIL SKIP FAST)
+G91 G01 Y0.05
+G31 G91 P2 Y-0.2 F#112            (FEED UNTIL SKIP SLOW)
+#103=R_MACH_COOR[0,2]             (GET MACHINE Y COORDINATE)
+G91 G01 Y0.05                     (move a little away from the wall)
 
 ;PROBE diameter compensation not needed since we're dividing by 2;
 ;    The width of the probe effectively gets canceled
 
-G91 G01 Y0.05                    (move a little away from the wall)
-G90 G01 Z0.5                     (move 0.5 above the probed zero)
-G91 G01 Y[-#2-0.5]               (back to relative mode, other side of part)
-G90 G01 Z-0.2                    (move below the probed zero)
+G31 G90 G01 P2 Z0.5               (0.5 ABOVE PROBED ZERO)
+G31 G91 G01 P2 Y[-#2-0.5]         (MOVE TO OTHER SIDE OF PART)
+G31 G90 G01 P2 Z-0.2              (MOVE BELOW PROBED ZERO)
 
-G91
-G31 P2 Y1 F50                    (FEED UNTIL SKIP FAST)
-G01 Y-0.05
-G31 P2 Y0.2 F0.5                 (FEED UNTIL SKIP SLOW)
-#104=R_MACH_COOR[0,2]            (GET MACHINE Y COORDINATE)
+(ACTUAL PROBING)
+G31 G91 P2 Y1 F#111               (FEED UNTIL SKIP FAST)
+G91 G01 Y-0.05
+G31 G91 P2 Y0.2 F#112             (FEED UNTIL SKIP SLOW)
+#104=R_MACH_COOR[0,2]             (GET MACHINE Y COORDINATE)
 
-#105=[[#103+#104]/2]             (COMPUTE THE ZERO Y OFFSET)
-W_G53G59_COOR[0,#1,2,#105]       (STORE THE OFFSET)
+(COMPUTE AND STORE Y OFFSET)
+#105=[[#103+#104]/2]
+W_G53G59_COOR[0,#1,2,#105]
 
-G01 Y-0.05                       (MOVE AWAY FROM PART)
-G90 G01 Z0.5                     (MOVE 0.5 ABOVE THE PROBED ZERO)
-G90 G01 X0 Y0                    (MOVE TO PROBED XY 0)
+G91 G01 Y-0.05                    (MOVE AWAY FROM PART)
+G31 G90 P2 Z0.5                   (MOVE 0.5 ABOVE THE PROBED ZERO)
+G31 G90 P2 X0 Y0                  (MOVE TO PROBED XY 0)
 
 M99
