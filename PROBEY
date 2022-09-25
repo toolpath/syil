@@ -1,0 +1,38 @@
+(PROBE Y FROM FRONT OR BACK)
+
+
+(#1 is the work coordinate system to store offsets in)
+(#2 is +1 for front, and -1 right back)
+
+IF [#2 > 0]                      (LEFT SIDE)
+    MSG_OK["Probing Y", "Move the probe to the front side probe location, roughly 0.5 inches away",""]
+ELSE                             (RIGHT SIDE)
+    MSG_OK["Probing Y", "Move the probe to the back side probe location, roughly 0.5 inches away",""]
+END_IF
+
+
+G90 G94 G17 G49 G40 G80
+G20                              (inch)
+
+#110 = 100 (FEED SPEED)
+#111 = 50 (FAST PROBE SPEED)
+#112 = 25 (SLOW PROBE SPEED)
+
+(Assume you are starting on the left X side, 0.5 inch away, of the part at the probe z height)
+(ACTUAL PROBING)
+G31 G91 P2 Y[#2*1.0] F#111           (FEED UNTIL SKIP FAST)
+G91 G01 Y-[#2*0.05]
+G31 G91 P2 Y[#2*0.2] F#112           (FEED UNTIL SKIP SLOW)
+#104=R_MACH_COOR[0,2]                (GET MACHINE Y COORDINATE)
+G91 G01 Y-[#2*0.05]                   (MOVE OFF THE EDGE A LITTLE)
+
+(COMPUTE AND STORE PROBE Y DIAM AS THE PROBE TOOL OFFSET)
+
+#100=R_SYS_INFO[0,2]                      (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
+
+#105 = [R_TOOL_DATA[0,#100,3]/2]          (READ THE PROBE TOOL DIAMETER AND CONVERT TO RADIUS)
+#106=[#104+[#2*#105]]                      (current position + probe off)
+
+W_G53G59_COOR[0,#1,2,#106]                (COMPUTE AND STORE Y OFFSET)
+
+M99
