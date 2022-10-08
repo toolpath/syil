@@ -1,0 +1,103 @@
+
+(AUTO TOOL SET)
+MSG_OK["AUTO PROBING RECTANGULAR STOCK", "Move about a half inch to the left of the stock, make sure its below the z level of the stock", ""]
+
+; #1 is the WCS number
+
+#100=R_SYS_INFO[0,2]             (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
+
+; #144 is the probe signal boolean
+; #103, #104 are the left/right machine coordinates
+; #105, #106 are the back/front machine coordinates
+
+;PROBE diameter compensation not needed since we're dividing by 2;
+;    The width of the probe effectively gets canceled
+
+#110 = 100 (FEED SPEED)
+#111 = 50 (FAST PROBE SPEED)
+#112 = 25 (SLOW PROBE SPEED)
+#113 = 0.25 (STEPOVER INCREMENT)
+
+G90 G94 G17 G49 G40 G80
+G20                              (inch)
+
+F#110
+
+
+(ACTUAL PROBING ON LEFT OF X)
+G31 G91 P2 X1 F#111              (FEED UNTIL SKIP FAST)
+G91 G01 X-0.05
+G31 G91 P2 X0.2 F#112            (FEED UNTIL SKIP SLOW)
+#103=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
+#114 = R_SKIP[0,1]               (CHECK SKIP SIGNAL)
+G91 G1 X-0.1 F#111               (MOVE OFF THE EDGE A LITTLE)
+
+(Move in BACK Y and re-probe till we fall off the edge of the stock)
+
+WHILE[#114]
+    G91 G1 Y#113
+    G31 G91 P2 X0.15 F#111       (FEED UNTIL SKIP FAST --- accuracy doesn't matter. Just looking for skip)
+    #114 = R_SKIP[0,1]
+    G91 G1 X-0.1 F#111           (MOVE OFF THE EDGE A LITTLE)
+END_WHILE
+
+G91 G1 X#113                     (MOVE OVER IN X A LITTLE TO GET ON THE EDGE FOR SURE)
+
+(ACTUAL PROBING ON BACK OF Y)
+G31 G91 P2 Y-0.25 F#111          (FEED UNTIL SKIP FAST)
+G91 G01 Y0.05
+G31 G91 P2 Y-0.1 F#112           (FEED UNTIL SKIP SLOW)
+#105=R_MACH_COOR[0,2]            (GET MACHINE Y COORDINATE)
+#114 = R_SKIP[0,1]               (CHECK SKIP SIGNAL)
+G91 G1 Y0.1 F#111                (MOVE OFF THE EDGE A LITTLE)
+
+(Move RIGHT in X and re-probe till we fall off the edge of the stock)
+
+WHILE[#114]
+    G91 G1 X#113
+    G31 G91 P2 Y-0.15 F#111      (FEED UNTIL SKIP FAST --- accuracy doesn't matter. Just looking for skip)
+    #114 = R_SKIP[0,1]
+    G91 G1 Y0.1 F#111            (MOVE OFF THE EDGE A LITTLE)
+END_WHILE
+
+G91 G1 Y-#113                     (MOVE FORWARD IN Y A LITTLE TO GET ON THE EDGE FOR SURE)
+
+(ACTUAL PROBING ON RIGHT OF X)
+G31 G91 P2 X-1 F#111             (FEED UNTIL SKIP FAST)
+G91 G01 X0.05
+G31 G91 P2 X-0.2 F#112           (FEED UNTIL SKIP SLOW)
+#104=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
+#114 = R_SKIP[0,1]               (CHECK SKIP SIGNAL)
+G91 G1 X0.1 F#111                (MOVE OFF THE EDGE A LITTLE)
+
+(Move FORWARD in Y and re-probe till we fall off the edge of the stock)
+
+WHILE[#114]
+    G91 G1 Y-#113
+    G31 G91 P2 X-0.15 F#111      (FEED UNTIL SKIP FAST --- accuracy doesn't matter. Just looking for skip)
+    #114 = R_SKIP[0,1]
+    G91 G1 X0.1 F#111            (MOVE OFF THE EDGE A LITTLE)
+END_WHILE
+
+G91 G1 X-#113                    (MOVE OVER IN X A LITTLE TO GET ON THE EDGE FOR SURE)
+
+(ACTUAL PROBING ON FRONT OF Y)
+G31 G91 P2 Y0.25 F#111           (FEED UNTIL SKIP FAST)
+G91 G01 Y-0.05
+G31 G91 P2 Y0.1 F#112            (FEED UNTIL SKIP SLOW)
+#106=R_MACH_COOR[0,2]            (GET MACHINE Y COORDINATE)
+G91 G1 Y-0.1 F#111               (MOVE OFF THE EDGE A LITTLE)
+
+(COMPUTE AND STORE THE X OFFSET)
+
+#107=[[#103+#104]/2]
+W_G53G59_COOR[0,#1,1,#107]
+
+
+(COMPUTE AND STORE THE Y OFFSET)
+
+#107=[[#105+#106]/2]
+W_G53G59_COOR[0,#1,2,#107]
+
+
+M99
