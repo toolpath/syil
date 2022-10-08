@@ -1,5 +1,4 @@
 
-(AUTO TOOL SET)
 MSG_OK["AUTO PROBING RECTANGULAR STOCK", "Move about a half inch to the left of the stock, make sure its below the z level of the stock", ""]
 
 ; #1 is the WCS number

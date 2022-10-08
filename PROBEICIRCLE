@@ -1,0 +1,106 @@
+MSG_OK["AUTO PROBING THE INSIDE OF A CIRCLE", "Move roughly into the center of the bore", ""]
+
+; #1 is the WCS number
+
+#100=R_SYS_INFO[0,2]             (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
+
+
+; #144 is the probe signal boolean
+; #103, #104 are the left/right machine coordinates
+; #105, #106 are the back/front machine coordinates
+
+;PROBE diameter compensation not needed since we're dividing by 2;
+;    The width of the probe effectively gets canceled
+
+
+#110 = 100 (FEED SPEED)
+#111 = 50 (FAST PROBE SPEED)
+#112 = 25 (SLOW PROBE SPEED)
+#113 = 0.25 (STEPOVER INCREMENT)
+
+G90 G94 G17 G49 G40 G80
+G20                              (inch)
+
+F#110
+
+(PROBE X FIRST --- compute approximate center for Y)
+
+(PROBE X MOVING LEFT)
+G31 G91 P2 X10 F#111             (FEED UNTIL SKIP FAST)
+G91 G0  X-0.05                   (MOVE OFF SURFACE A LITTLE)
+G31 G91 P2 X0.2 F#112            (FEED UNTIL SKIP SLOW)
+#103=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
+
+(PROBE X MOVING RIGHT)
+G31 G91 P2 X-10 F#111            (FEED UNTIL SKIP FAST)
+G91 G0  X0.05                    (MOVE OFF SURFACE A LITTLE)
+G31 G91 P2 X-0.2 F#112           (FEED UNTIL SKIP SLOW)
+#104=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
+
+(approximate X center and store it so we can use it for next command)
+#107=[[#103+#104]/2]
+W_G53G59_COOR[0,#1,1,#107]
+
+(MOVE TO APPROX X CENTER BEFORE Y PROBE)
+G90 G0 X0
+
+(PROBE Y MOVING FORWARD)
+G31 G91 P2 Y-10 F#111            (FEED UNTIL SKIP FAST)
+G91 G0  Y0.05
+G31 G91 P2 Y-0.1 F#112           (FEED UNTIL SKIP SLOW)
+#105=R_MACH_COOR[0,2]            (GET MACHINE Y COORDINATE)
+
+(PROBE Y MOVING BACKWARD)
+G31 G91 P2 Y10 F#111             (FEED UNTIL SKIP FAST)
+G91 G0  Y-0.05
+G31 G91 P2 Y0.1 F#112           (FEED UNTIL SKIP SLOW)
+#106=R_MACH_COOR[0,2]            (GET MACHINE Y COORDINATE)
+
+(approximate Y center and store it so we can use it for next command)
+#107=[[#105+#106]/2]
+W_G53G59_COOR[0,#1,2,#107]
+
+(MOVE TO APPROX Y CENTER BEFORE REDOING THE XPROBE)
+G90 G0 Y0
+
+(PROBE X AGAIN --- MORE ACCURATE SINCE WE CENTERED IN THE BORE)
+(PROBE X MOVING LEFT)
+G31 G91 P2 X10 F#111             (FEED UNTIL SKIP FAST)
+G91 G0  X-0.05                   (MOVE OFF SURFACE A LITTLE)
+G31 G91 P2 X0.2 F#112            (FEED UNTIL SKIP SLOW)
+#103=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
+
+(PROBE X MOVING RIGHT)
+G31 G91 P2 X-10 F#111            (FEED UNTIL SKIP FAST)
+G91 G0  X0.05                    (MOVE OFF SURFACE A LITTLE)
+G31 G91 P2 X-0.2 F#112           (FEED UNTIL SKIP SLOW)
+#104=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
+
+(COMPUTE REAL X AND STORE IT)
+#107=[[#103+#104]/2]
+W_G53G59_COOR[0,#1,1,#107]
+
+(MOVE TO REAL X CENTER BEFORE Y PROBE)
+G90 G0 X0
+
+(PROBE Y AGAIN --- MORE ACCURATE SINCE WE CENTERED IN THE BORE)
+(PROBE Y MOVING FORWARD)
+G31 G91 P2 Y-10 F#111            (FEED UNTIL SKIP FAST)
+G91 G0  Y0.05
+G31 G91 P2 Y-0.1 F#112           (FEED UNTIL SKIP SLOW)
+#105=R_MACH_COOR[0,2]            (GET MACHINE Y COORDINATE)
+
+(PROBE Y MOVING BACKWARD)
+G31 G91 P2 Y10 F#111             (FEED UNTIL SKIP FAST)
+G91 G0  Y-0.05
+G31 G91 P2 Y0.1 F#112           (FEED UNTIL SKIP SLOW)
+#106=R_MACH_COOR[0,2]            (GET MACHINE Y COORDINATE)
+
+(COMPUTE REAL Y AND STORE IT)
+#107=[[#105+#106]/2]
+W_G53G59_COOR[0,#1,2,#107]
+
+(MOVE TO BORE CENTER)
+G90 G0 X0 Y0
+
+M99
