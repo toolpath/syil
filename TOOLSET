@@ -6,6 +6,7 @@ G90 G94 G17 G49 G40 G80
 G20                             (INCH)
 G28 G91 Z0.
 G54P100                         (LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100)
+G90 X0 Y0                       (MOVE TO TOOLSETTER)
 M19                             (ORIENT SPINDLE)
 M20
 G31 Z-350 F150                  (FEED UNTIL INPUT SIGNAL AKA SKIP)
