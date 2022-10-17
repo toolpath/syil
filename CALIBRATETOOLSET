@@ -1,0 +1,21 @@
+G91 G94 G17 G49 G40 G80
+G20                             (INCH)
+G28 G91 Z0.
+G54P100                         (LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100)
+G90 X0 Y0                       (MOVE TO TOOLSETTER)
+M19                             (ORIENT SPINDLE)
+M20
+G91
+G31 Z-350 F150                  (FEED UNTIL INPUT SIGNAL AKA SKIP)
+M7                              (TURN ON AIR BLAST)
+G04 P250
+M9                              (TURN ON AIR BLAST)
+G91 G0 Z0.05                    (MOVE UP)
+G31 Z-.2 F2.5                   (FEED UNTIL SKIP SLOWER)
+
+#104=[R_MACH_COOR[0,3]]         (MACHINE Z COORDINATE WITH - T199)
+W_TOOL_DATA[0,199,203,#104]
+
+G28 G91 Z0.
+
+M99
