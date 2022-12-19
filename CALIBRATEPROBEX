@@ -1,7 +1,6 @@
 (CALIBRATE PROBE TIP DIAMETER)
 
 (#1 is the expected X length of the part)
-(#2 is the probe tool number)
 
 
 G90 G94 G17 G49 G40 G80
@@ -15,9 +14,8 @@ G20                              (inch)
 (probe x starting from a negative offset and probing in the positive direction)
 
 
-
 MSG_OK["Calibrating Probe Tip", "Move the probe to the left side of the part, roughly 0.5 inches away",""]
-W_TOOL_DATA[0,#2,3,0]           (zero the tool diameter just because)
+W_TOOL_DATA[0,99,3,0]           (zero the tool diameter just because)
 
 (Assume you are starting on the left X side, 0.5 inch away, of the part at the probe z height)
 (ACTUAL PROBING)
@@ -29,7 +27,7 @@ G91 G01 X-0.05                    (MOVE OFF THE EDGE A LITTLE)
 
 (traverse over to the other side)
 G31 G91 P2 Z1.0 F#110             (move above the part --- 2 inches to be safe)
-G31 G91 P2 X[#2+0.05+0.5] F#110   (move to other side of the part, 0.5 inches away)
+G31 G91 P2 X[#1+0.05+0.5] F#110   (move to other side of the part, 0.5 inches away)
 G31 G91 P2 Z-1.0 F#110            (move back down to probe height)
 G31 G91 P2 X-1.0 F#111            (FEED UNTIL SKIP FAST)
 G91 G01 X0.05
@@ -42,7 +40,9 @@ G91 G01 Z1.0                     (MOVE UP CLEAR OF THE PART)
 
 (COMPUTE AND STORE PROBE X DIAM AS THE PROBE TOOL OFFSET)
 #106=[[-#104+#105-#1]]      (ACTUAL WIDTH minus expected width)
-MSG_OK["Computed Probe Diam", "Probe Tip Radius [#106/2]",""] (NOTE---This value is a diameter, but the UI shows a radius in tool offset menu)
-W_TOOL_DATA[0,#2,3,#106]
+
+(NOTE---This value is a diameter, but the UI shows a radius in tool offset menu)
+MSG_OK["Computed Probe Diam", "Probe Tip Radius [#106/2]",""]
+W_TOOL_DATA[0,99,3,#106]
 
 M99
