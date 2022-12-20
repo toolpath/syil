@@ -16,12 +16,14 @@ G54P100                         (LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100)
 
 G90 G0 X0 Y0                    (MOVE TO TOOLSETTER)
 
-IF [#1 < 0]
+IF [#1 == 0]
     M19                         (ORIENT SPINDLE)
 ELSE
     S#1 M04                     (SPIN COUNTERCLOCKWISE)
     G91 G0 X#2                  (MOVE RAD IN +X DIRECTION)
     #102=20                     (NEED A REALLY SLOW FEED SO WE DON'T MOVE THE PAD)
+    #103=1.0                     (SLOW FEED)
+
 END
 
 
