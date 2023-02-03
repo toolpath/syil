@@ -28,9 +28,8 @@ G91 G01 X-[#2*0.05]                   (MOVE OFF THE EDGE A LITTLE)
 
 (COMPUTE AND STORE PROBE X DIAM AS THE PROBE TOOL OFFSET)
 
-#100=R_SYS_INFO[0,2]                      (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
 
-#105 = [R_TOOL_DATA[0,#100,3]/2]          (READ THE PROBE TOOL DIAMETER AND CONVERT TO RADIUS)
+#105 = [R_TOOL_DATA[0,99,3]/2]          (READ THE PROBE TOOL DIAMETER AND CONVERT TO RADIUS)
 #106=[#104+[#2*#105]]                      (current position + probe off)
 
 W_G53G59_COOR[0,#1,1,#106]                (COMPUTE AND STORE X OFFSET)

@@ -4,8 +4,6 @@ MSG_OK["Probing Square Stock", "Move the probe to near the bottom left corner, a
 
 ; #1 is the WCS number; #2 is the size of the square in inches
 
-#100=R_SYS_INFO[0,2]             (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
-
 
 #110 = 100 (FEED SPEED)
 #111 = 50 (FAST PROBE SPEED)
@@ -19,7 +17,7 @@ G31 G91 P2 X[#2/2] Y[#2/2]       (move to roughly center of stock)
 G65 "PROBEZ" A#1                 (sets the Z offset)
 
 ; USE TOOL LENGTH COMPENSATION NOW THAT WE KNOW Z
-G43 H#100
+G43 H99
 
 
 (PROBE X)

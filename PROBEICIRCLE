@@ -5,8 +5,6 @@ MSG_OK["AUTO PROBING THE INSIDE OF A CIRCLE", "Move roughly into the center of t
 (SET THE WCS BECAUSE WE WILL USE IT)
 G#1
 
-#100=R_SYS_INFO[0,2]             (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
-
 
 ; #144 is the probe signal boolean
 ; #103, #104 are the left/right machine coordinates
@@ -18,7 +16,7 @@ G#1
 
 #110 = 100 (FEED SPEED)
 #111 = 50 (FAST PROBE SPEED)
-#112 = 25 (SLOW PROBE SPEED)
+#112 = 2.5 (SLOW PROBE SPEED)
 #113 = 0.25 (STEPOVER INCREMENT)
 
 G90 G94 G17 G49 G40 G80

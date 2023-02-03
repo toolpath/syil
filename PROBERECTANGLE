@@ -3,7 +3,6 @@ MSG_OK["AUTO PROBING RECTANGULAR STOCK", "Move about a half inch to the left of 
 
 ; #1 is the WCS number
 
-#100=R_SYS_INFO[0,2]             (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
 
 ; #144 is the probe signal boolean
 ; #103, #104 are the left/right machine coordinates
