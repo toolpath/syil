@@ -1,5 +1,5 @@
 (PROBE Y FROM FRONT OR BACK)
-(T99 is Probe)
+
 
 (#1 is the work coordinate system to store offsets in)
 (#2 is +1 for front, and -1 right back)
@@ -27,7 +27,6 @@ G31 G91 P2 Y[#2*0.2] F#112           (FEED UNTIL SKIP SLOW)
 G91 G01 Y-[#2*0.05]                   (MOVE OFF THE EDGE A LITTLE)
 
 (COMPUTE AND STORE PROBE Y DIAM AS THE PROBE TOOL OFFSET)
-
 
 #105 = [R_TOOL_DATA[0,99,3]/2]          (READ THE PROBE TOOL DIAMETER AND CONVERT TO RADIUS)
 #106=[#104+[#2*#105]]                      (current position + probe off)
