@@ -1,0 +1,178 @@
+MSG_OK["AUTO PROBING THE OUTSIDE OF A CIRCLE", "Move roughly to the front circle point", ""]
+
+; #1 is the WCS number
+; #2 is the max allowable pin diameter
+
+
+
+; default pin size is 0.5 diameter
+IF [#2 == 0]
+    #2 = 0.5
+END_IF
+
+#105 = [R_TOOL_DATA[0,99,3]]          (READ THE PROBE TOOL DIAMETER)
+
+#110 = 100 (FEED SPEED)
+#111 = 50 (FAST PROBE SPEED)
+#112 = 2.5 (SLOW PROBE SPEED)
+#113 = 0.05 (CLEARANCE MOVE AMOUNT)
+
+; #120, #121 are the -Y x,y coordinates
+; #122, #123 are the +Y x,y coordinates
+; #124, #125 are the -X x,y coordinates
+
+; #126 is the X center location in machine coordinates
+; #127 is the Y center location in machine coordinates
+
+; #128 is the computed diameter
+
+
+(SET THE WCS)
+G#1
+
+G90 G94 G17 G49 G40 G80
+G20                              (inch)
+
+F#110  (SET THE GENERAL FEEDRATE)
+
+
+(PROBE IN +Y DIRECTION TO FIND THE -Y CIRCLE POINT)
+G31 G91 P2 Y[#2] F#111            (FEED UNTIL SKIP FAST)
+G91 G01 Y[-#113]                  (MOVE CLEAR OF PART)
+G31 G91 P2 Y[2*#113] F#112        (FEED UNTIL SKIP SLOW)
+
+#120 = R_MACH_COOR[0,1]           (GET MACHINE X1 COORDINATE)
+#121 = R_MACH_COOR[0,2]+#105/2    (GET MACHINE Y2 COORDINATE)
+
+G91 G01 Y[-#113]                  (MOVE CLEAR OF PART)
+
+(PROBE +Y CIRCLE POINT)
+(TODO: REPLACE WITH G2 MOVE)
+G91 G01 X[-#2/2 - #113 - #105/2]  (MOVE LEFT OF THE PIN)
+G91 G01 Y[#2 + 2*#113 + #105]     (MOVE TO THE BACK OF THE PIN)
+G91 G01 X[#2/2 + #113 + #105/2]
+
+G31 G91 P2 Y[-#2] F#111           (FEED UNTIL SKIP FAST)
+G91 G01 Y[#113]                   (MOVE CLEAR OF PART)
+G31 G91 P2 Y[-2*#113] F#112       (FEED UNTIL SKIP SLOW)
+
+#122 = R_MACH_COOR[0,1]           (GET MACHINE X2 COORDINATE)
+#123 = R_MACH_COOR[0,2]-#105/2    (GET MACHINE Y2 COORDINATE)
+
+G91 G01 Y[#113]                   (MOVE CLEAR OF PART)
+
+(COMPUTE THE ROUGH CENTER Y LOCATION AND DIAMETER)
+#126 = [#120 + #122]/2           (X CENTER IN MACHINE COORDS)
+#127 = [#123 + #121]/2           (Y CENTER IN MACHINE COORDS)
+#128 = [#123 - #121]             (DIAMETER)
+
+MSG_OK["SANITY CHECK", "Computed Diameter is #128", ""]
+
+(PROBE -X CIRCLE POINT)
+(TODO: REPLACE WITH G2 MOVE)
+G91 G01 X[-#128/2 - #113 - #105/2] (MOVE LEFT OF THE PIN)
+G91 G01 Y[-#128/2 - #113]          (MOVE TO Y CENTER OF THE PIN)
+
+G31 G91 P2 X[2*#113] F#111        (FEED UNTIL SKIP FAST)
+G91 G01 X[-#113]                  (MOVE CLEAR OF PART)
+G31 G91 P2 X[2*#113] F#112        (FEED UNTIL SKIP SLOW)
+
+#124 = R_MACH_COOR[0,1]+#105/2     (GET MACHINE X COORDINATE)
+#125 = R_MACH_COOR[0,2]           (GET MACHINE Y COORDINATE)
+
+G91 G01 X[-#113]                  (MOVE CLEAR OF PART)
+
+(RECOMPUTE FIND THE CIRCLE CENTER AND DIAMETER FROM THE THREE POINTS)
+
+; #120, #121 are the -Y x,y coordinates
+; #122, #123 are the +Y x,y coordinates
+; #124, #125 are the -X x,y coordinates
+
+; #129, #130, #131, #132, #133, #134 are tmp variables used to compute circle center and diameter
+
+#129 = [[#120*#120] - [#122*#122] + [#121*#121] - [#123*#123]]/[[2*#121]-[2*#123]] (C1)
+#130 = [#122 - #120]/[#121 - #123]                                     (C2)
+#131 = [[#120*#120] - [#124*#124] + [#121*#121] - [#125*#125]]/[[2*#121]-[2*#125]] (C3)
+#132 = [#124 - #120]/[#121 - #125]                                     (C4)
+
+#126 = [#129-#131]/[#132-#130]    (X CENTER IN MACHINE COORDS)
+#127 = #129 + #130*#126           (Y CENTER IN MACHINE COORDS)
+
+#133 = #120-#126
+#134 = #121-#127
+#128 = 2*SQRT[[#133*#133] + [#134*#134]] (DIAMETER)
+
+;MSG_OK["SANITY CHECK", "Computed 2nd Diameter is #128; a=#126, b=#127; C1=#129, C2=#130, C3=#131, C4=#132; x1,y1=#120,#121; x2,y2=#122,#123; x3,y3=#124,#125", ""]
+MSG_OK["SANITY CHECK", "Computed 2nd Diameter is #128; a=#126, b=#127", ""]
+
+
+
+(MOVE BACK TO CLEAR THE PART NEAR THE -Y POINT AND REDO THE PROBING TO REDUCE ERROR)
+(TODO: REPLACE WITH G2 MOVE)
+G91 G01 Y[-#128/2-2*#113 - #105/2]
+G91 G01 X[#126 - R_MACH_COOR[0,1]] (MOVE TO THE COMPUTED CENTER X)
+
+(PROBE IN +Y DIRECTION TO FIND THE -Y CIRCLE POINT)
+G31 G91 P2 Y[#2] F#111            (FEED UNTIL SKIP FAST)
+G91 G01 Y[-#113]                  (MOVE CLEAR OF PART)
+G31 G91 P2 Y[2*#113] F#112        (FEED UNTIL SKIP SLOW)
+
+#120 = R_MACH_COOR[0,1]           (GET MACHINE X COORDINATE)
+#121 = R_MACH_COOR[0,2]+#105/2    (GET MACHINE Y COORDINATE)
+
+G91 G01 Y[-#113]                   (MOVE CLEAR OF PART)
+G91 G01 X[-#128/2 - #113 - #105/2] (MOVE TO THE -X POINT)
+G91 G01 Y[#128/2 + #113 + #105/2]
+
+(PROBE THE -X POINT)
+G31 G91 P2 X[2*#113] F#111        (FEED UNTIL SKIP FAST)
+G91 G01 X[-#113]                  (MOVE CLEAR OF PART)
+G31 G91 P2 X[2*#113] F#112        (FEED UNTIL SKIP SLOW)
+
+#124 = R_MACH_COOR[0,1]+#105/2    (GET MACHINE X COORDINATE)
+#125 = R_MACH_COOR[0,2]           (GET MACHINE Y COORDINATE)
+
+G91 G01 X[-#113]                  (MOVE CLEAR OF PART)
+G91 G01 Y[#128/2 + #113 + #105/2] (MOVE TO THE +Y POINT)
+G91 G01 X[#128/2 + #113 + #105/2]
+
+(PROBE +Y CIRCLE POINT)
+G31 G91 P2 Y[-#2] F#111           (FEED UNTIL SKIP FAST)
+G91 G01 Y[#113]                   (MOVE CLEAR OF PART)
+G31 G91 P2 Y[-2*#113] F#112       (FEED UNTIL SKIP SLOW)
+
+#122 = R_MACH_COOR[0,1]           (GET MACHINE X COORDINATE)
+#123 = R_MACH_COOR[0,2]-#105/2    (GET MACHINE Y COORDINATE)
+
+G91 G01 Y[#113]                  (MOVE CLEAR OF PART)
+
+
+(RECOMPUTE FIND THE CIRCLE CENTER AND DIAMETER FROM THE THREE POINTS -- MOST ACCURATE)
+
+; #120, #121 are the -Y x,y coordinates
+; #122, #123 are the +Y x,y coordinates
+; #124, #125 are the -X x,y coordinates
+
+; #129, #130, #131, #132, #133, #134 are tmp variables used to compute circle center and diameter
+
+#129 = [#120*#120 - #122*#122 + #121*#121 - #123*#123]/[2*#121-2*#123] (C1)
+#130 = [#122 - #120]/[#121 - #123]                                     (C2)
+#131 = [#120*#120 - #124*#124 + #121*#121 - #125*#125]/[2*#121-2*#125] (C3)
+#132 = [#124 - #120]/[#121 - #125]                                     (C4)
+
+#126 = [#129-#131]/[#132-#130]    (X CENTER IN MACHINE COORDS)
+#127 = #129 + #130*#126           (Y CENTER IN MACHINE COORDS)
+
+#133 = #120-#126
+#134 = #121-#127
+#128 = 2*SQRT[#133*#133 + #134*#134] (DIAMETER)
+
+MSG_OK["SANITY CHECK", "Computed 3nd Diameter is #128; a=#126, b=#127", ""]
+
+(MOVE UP TO CLEAR THE PIN)
+G91 Z0.5
+(MOVE TO THE CENTER OF THE PIN)
+(USING G31 IN CASE WE DONT CLEAR THE PIN)
+G31 G91 P2 X[#126 - R_MACH_COOR[0,1]] Y[#127 - R_MACH_COOR[0,2]] F#111           (FEED UNTIL SKIP FAST)
+
+M99
