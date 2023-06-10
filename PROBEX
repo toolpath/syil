@@ -16,7 +16,7 @@ G20                              (inch)
 
 #110 = 100 (FEED SPEED)
 #111 = 50 (FAST PROBE SPEED)
-#112 = 25 (SLOW PROBE SPEED)
+#112 = 2.5 (SLOW PROBE SPEED)
 
 (Assume you are starting on the left X side, 0.5 inch away, of the part at the probe z height)
 (ACTUAL PROBING)
@@ -28,8 +28,10 @@ G91 G01 X-[#2*0.05]                   (MOVE OFF THE EDGE A LITTLE)
 
 (COMPUTE AND STORE PROBE X DIAM AS THE PROBE TOOL OFFSET)
 
+;#100=R_SYS_INFO[0,2]                      (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
+
 #105 = [R_TOOL_DATA[0,99,3]/2]          (READ THE PROBE TOOL DIAMETER AND CONVERT TO RADIUS)
-#106=[#104+[#2*#105]]                      (current position + probe offset)
+#106=[#104+[#2*#105]]                      (current position + probe off)
 
 W_G53G59_COOR[0,#1,1,#106]                (COMPUTE AND STORE X OFFSET)
 

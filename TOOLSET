@@ -26,26 +26,15 @@ G91 G0 Z0.2                     (MOVE UP)
 M7                              (TURN ON AIR BLAST)
 G04 P250                        (WAIT 1/4 SECOND)
 M9                              (TURN OFF AIR BLAST)
-
+G31 Z-.21 F#103             (FEED UNTIL SKIP SLOWER)
 
 #104=R_MACH_COOR[0,3]       (GET MACHINE Z COORDINATE)
 
-#109 = 360/[#3+1]           (ANGLE DELTA)
-FOR #110 = 1 TO [#3+1]
-    #111 = #2+[#110-1]*#109     (NEW ANGLE)
-    #112 = MOD[#111,360]        (CLIP TO 360 DEGREES)
-    M19 R#112                   (ORIENT SPINDLE TO THE GIVEN ANGLE)
-    G31 Z-.21 F#103             (FEED UNTIL SKIP SLOWER)
-    IF [R_MACH_COOR[0,3] < #104]
-      #104=R_MACH_COOR[0,3]     (SAVE LOWER VALUE)
-    END_IF
-    G91 G0 Z0.2                 (MOVE UP SO ITS SAFE TO SPIN)
-END_FOR
 
 #105=R_TOOL_DATA[0,199,203]     (GET CALIBRATION TOOL - T199 - LENGTH OFFSET)
-#106=[#104-#105+3]              (COMPUTE THE TOOL OFFSET; +3 is for length of calibration tool)
-
-
+(#106=[#104-#105+3-0.1266])              
+(COMPUTE THE TOOL OFFSET; +3 is for length of calibration tool)
+#106=[#104-#105+3]  
 
 
 W_TOOL_DATA[0,#100,203,#106]    (WRITE TOOL Z LENGTH)

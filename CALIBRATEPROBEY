@@ -9,7 +9,7 @@ G20                              (inch)
 
 #110 = 100 (FEED SPEED)
 #111 = 50 (FAST PROBE SPEED)
-#112 = 25 (SLOW PROBE SPEED)
+#112 = 2.5 (SLOW PROBE SPEED)
 
 (probe Y starting from a negative offset and probing in the positive direction)
 

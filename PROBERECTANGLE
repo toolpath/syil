@@ -4,6 +4,8 @@ MSG_OK["AUTO PROBING RECTANGULAR STOCK", "Move about a half inch to the left of 
 
 ; #1 is the WCS number
 
+#100=R_SYS_INFO[0,2]             (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
+
 ; #144 is the probe signal boolean
 ; #103, #104 are the left/right machine coordinates
 ; #105, #106 are the back/front machine coordinates
@@ -13,7 +15,7 @@ MSG_OK["AUTO PROBING RECTANGULAR STOCK", "Move about a half inch to the left of 
 
 #110 = 100 (FEED SPEED)
 #111 = 50 (FAST PROBE SPEED)
-#112 = 25 (SLOW PROBE SPEED)
+#112 = 2.5 (SLOW PROBE SPEED)
 #113 = 0.25 (STEPOVER INCREMENT)
 
 G90 G94 G17 G49 G40 G80
