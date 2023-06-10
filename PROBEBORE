@@ -1,3 +1,7 @@
+(SET THE SAFTEY CHECK VARIABLE TO BLOCK SPINDLE ROTATION)
+W_TOOL_DATA[0,99,101,1] (use 101 to store probe loaded bool)
+
+
 MSG_OK["AUTO PROBING THE INSIDE OF A CIRCLE", "Move roughly into the center of the bore", ""]
 
 ; #1 is the WCS number

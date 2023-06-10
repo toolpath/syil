@@ -2,6 +2,9 @@
 
 (#1 is the expected X length of the part)
 
+(SET THE SAFTEY CHECK VARIABLE TO BLOCK SPINDLE ROTATION)
+W_TOOL_DATA[0,99,101,1] (use 101 to store probe check boolean)
+
 
 G90 G94 G17 G49 G40 G80
 G20                              (inch)
