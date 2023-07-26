@@ -1,0 +1,52 @@
+(PROBE A ROUND BAR FOR Y CENTER AND TOP Z)
+
+(#1 is the work coordinate system to store offsets in)
+(#2 is the expected diameter of the part)
+
+(SET THE SAFTEY CHECK VARIABLE TO BLOCK SPINDLE ROTATION)
+W_TOOL_DATA[0,99,101,1] (use 101 to store probe loaded bool)
+
+G90 G94 G17 G49 G40 G80
+G20                              (inch)
+
+
+#110 = 100 (FEED SPEED)
+#111 = 50 (FAST PROBE SPEED)
+#112 = 2.5 (SLOW PROBE SPEED)
+
+(probe Y starting from a negative offset and probing in the positive direction)
+
+
+
+MSG_OK["Probing Side Cylinder", "Move the probe to the front side of the part, roughly 0.5 inches away",""]
+(Assume you are starting on the back Y side, 0.5 inch away, of the part at the probe z height)
+(ACTUAL PROBING)
+G31 G91 P2 Y1.0 F#111             (FEED UNTIL SKIP FAST)
+G91 G01 Y-0.05
+G31 G91 P2 Y0.2 F#112             (FEED UNTIL SKIP SLOW)
+#104=R_MACH_COOR[0,2]             (GET FIRST MACHINE Y COORDINATE)
+G91 G01 Y-0.05                    (MOVE OFF THE EDGE A LITTLE)
+
+(traverse over to the other side)
+G31 G91 P2 Z[#2+0.25] F#110       (move above the part)
+G31 G91 P2 Y[#2+0.05+0.5] F#110   (move to other side of the part, 0.5 inches away)
+G31 G91 P2 Z-[#2+0.25] F#110      (move back down to probe height)
+G31 G91 P2 Y-1.0 F#111            (FEED UNTIL SKIP FAST)
+G91 G01 Y0.05
+G31 G91 P2 Y-0.2 F#112            (FEED UNTIL SKIP SLOW)
+#105=R_MACH_COOR[0,2]             (GET SECOND MACHINE Y COORDINATE)
+F#110
+G91 G01 Y0.05                    (MOVE OFF THE EDGE A LITTLE)
+G91 G01 Z[#2+0.25]               (MOVE UP CLEAR OF THE PART)
+
+
+(COMPUTE RELATIVE DISTANCE TO CENTER OF THE PART)
+#106=[[#105-#104]/2]  
+G91 G01 Y[-0.05 - #106]          (MOVE TO CENTER OF THE PART)
+#104=R_MACH_COOR[0,2]            (GET MACHINE Y COORDINATE)
+W_G53G59_COOR[0,#1,2,#104]       (STORE Y OFFSET)
+
+(PROBE IN Z)
+G65 "PROBEZ" A#1
+
+M99
