@@ -43,6 +43,6 @@ I would have already written the load/unload tool macros, but I couldn't find an
 
 The spindle rotation command requires some kind of update from Mr. Chen. I installed it, but haven't had time to play with that yet. 
 
-PRs are more than welcome. I've been using these for several months and haven't had any problems, but use at your own risk. Run all the macros in MPG Dry Run mode untill you're sure they work. Don't blame me if you crash your machine or break a probe-tip :) 
+PRs are more than welcome. I've been using these for several months and haven't had any problems, but use at your own risk. Run all the macros in MPG Dry Run mode until you're sure they work. Don't blame me if you crash your machine or break a probe-tip :) 
 
 
