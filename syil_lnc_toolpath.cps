@@ -10,12 +10,12 @@
   FORKID {CB457AE9-77B4-4F88-B95A-4DC6980DBE3D}
 */
 
-description = "SYIL_LNC - Inverse Time, A-axis and Probing";
+description = "SYIL_LNC - Inverse Time, A-axis and Probing v11";
 vendor = "LNC";
 vendorUrl = "http://www.fanuc.com";
 legal = "Copyright (C) 2012-2020 by Autodesk, Inc.";
 certificationLevel = 2;
-minimumRevision = 40783;
+minimumRevision = 11;
 
 longDescription = "Generic Fanuc post illustrating inverse time feed with an A-axis.";
 
@@ -23,7 +23,7 @@ extension = "nc";
 programNameIsInteger = false;
 setCodePage("ascii");
 
-capabilities = CAPABILITY_MILLING;
+capabilities = CAPABILITY_MILLING | CAPABILITY_MACHINE_SIMULATION;
 tolerance = spatial(0.002, MM);
 
 minimumChordLength = spatial(0.25, MM);
@@ -124,7 +124,7 @@ var coolants = [
   {id: COOLANT_FLOOD, on: 8},
   {id: COOLANT_MIST},
   {id: COOLANT_THROUGH_TOOL, on: 88, off: 89},
-  {id: COOLANT_AIR},
+  {id: COOLANT_AIR, on: 7},
   {id: COOLANT_AIR_THROUGH_TOOL},
   {id: COOLANT_SUCTION},
   {id: COOLANT_FLOOD_MIST},
@@ -333,39 +333,12 @@ function onOpen() {
   writeln("%");
 
   if (programName) {
-    var programId;
-    try {
-      programId = getAsInt(programName);
-    } catch (e) {
-      //error(localize("Program name must be a number."));
-      //return;
-      programId = 1001;
+    writeComment(programName);
     }
-    if (properties.o8) {
-      if (!((programId >= 1) && (programId <= 99999999))) {
-        error(localize("Program number is out of range."));
-        return;
-      }
-    } else {
-      if (!((programId >= 1) && (programId <= 9999))) {
-        error(localize("Program number is out of range."));
-        return;
-      }
-    }
-    if ((programId >= 8000) && (programId <= 9999)) {
-      warning(localize("Program number is reserved by tool builder."));
-    }
-    oFormat = createFormat({width:(properties.o8 ? 8 : 4), zeropad:true, decimals:0});
     if (programComment) {
-      writeln("O" + oFormat.format(programId) + " (" + filterText(String(programComment).toUpperCase(), permittedCommentChars) + ")");
-    } else {
-      writeln("O" + oFormat.format(programId));
+    writeComment(programComment);
     }
-    lastSubprogram = programId;
-  } else {
-    error(localize("Program name has not been specified."));
-    return;
-  }
+   
 
   // dump machine configuration
   var vendor = machineConfiguration.getVendor();
@@ -1218,7 +1191,7 @@ function onSection() {
 
   if (insertToolCall || !lengthCompensationActive || retracted || (!isFirstSection() && getPreviousSection().isMultiAxis())) {
     var lengthOffset = tool.lengthOffset;
-    if (lengthOffset > 199) {
+    if (lengthOffset > 99) {
       error(localize("Length offset out of range."));
       return;
     }
@@ -1749,36 +1722,48 @@ function onCyclePoint(x, y, z) {
         );
       break;
       case "probing-x-wall":
-      GV_X_APPROACH = xyzFormat.format(cycle.width1),
-      X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-      
-      writeBlock(
-        X_data
-      );
-      writeBlock(
-        getProbingArguments(cycle, probeWorkOffsetCode)
-      );
-      writeBlock(
-        "M" + 10811,
-        "X@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-      );
-    break;
+        GV_X_APPROACH = xyzFormat.format(cycle.width1),
+        GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
+        GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
+        X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
+        Z_data = formatSetVar(GV_DEPTH, GV_Z_DEPTH),
+        Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
+        writeBlock(
+            X_data
+        );
+        writeBlock(
+            Z_data
+          );
+        writeBlock(
+            getProbingArguments(cycle, probeWorkOffsetCode)
+        );
+        writeBlock(
+            "M" + 10812,
+            "X@880 Z@882 S@860 " + feedOutput.format(cycle.feedrate) + ";"
+        );
+        break;
     case "probing-y-wall":
       GV_Y_APPROACH = xyzFormat.format(cycle.width1),
+      GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
+      GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
       Y_data = formatSetVar(GV_APPROACH1, GV_Y_APPROACH),
-      
+      Z_data = formatSetVar(GV_DEPTH, GV_Z_DEPTH),
+      Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
       writeBlock(
-        Y_data
+          Y_data
+        );
+      writeBlock(
+          Z_data
+        );
+      writeBlock(
+          getProbingArguments(cycle, probeWorkOffsetCode)
       );
       writeBlock(
-        getProbingArguments(cycle, probeWorkOffsetCode)
+          "M" + 10812,
+          "Y@881 Z@882 S@860 " + feedOutput.format(cycle.feedrate) + ";"
       );
-      writeBlock(
-        "M" + 10811,
-        "Y@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-      );
-    break;
-    case "probing-x-channel":
+      break;
+  case "probing-x-channel":
       GV_X_APPROACH = xyzFormat.format(cycle.width1),
       X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
       
@@ -1868,13 +1853,21 @@ function onCyclePoint(x, y, z) {
     case "probing-xy-circular-hole":
       GV_D_WIDTH = xyzFormat.format(cycle.width1),
       GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
+      GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
       D_data = formatSetVar(GV_APPROACH1, GV_D_WIDTH),
       Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
+      Z_data = formatSetVar(GV_DEPTH, GV_Z_DEPTH),
       writeBlock(
           D_data
       );
       writeBlock(
+        Z_data
+      );
+      writeBlock(
           getProbingArguments(cycle, probeWorkOffsetCode)
+      );
+      writeBlock(
+        "Z@882 F150." 
       );
       writeBlock(
           "M" + 10814,
@@ -1974,8 +1967,8 @@ function onCyclePoint(x, y, z) {
       break;
 
     case "probing-xy-inner-corner":
-      GV_X_APPROACH = 0,
-      GV_Y_APPROACH = 0,
+      GV_X_APPROACH = xyzFormat.format(cycle.approach1),
+      GV_Y_APPROACH = xyzFormat.format(cycle.approach2),
       GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
       GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
       X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
@@ -1997,8 +1990,8 @@ function onCyclePoint(x, y, z) {
       );
       break;
   case "probing-xy-outer-corner":
-    GV_X_APPROACH = 0,
-    GV_Y_APPROACH = 0,
+    GV_X_APPROACH = x + approach(cycle.approach1);
+    GV_Y_APPROACH = y + approach(cycle.approach2);
     GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
     GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
     X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
@@ -2296,20 +2289,11 @@ function onLinear5D(_x, _y, _z, _a, _b, _c, feed) {
 }
 
 // Start of multi-axis feedrate logic
-/***** Be sure to add 'useInverseTime' to post properties if necessary. *****/
-/***** 'inverseTimeOutput' must be defined. *****/
-/***** 'headOffset' should be defined when a head rotary axis is defined. *****/
-/***** The feedrate mode must be included in motion block output (linear, circular, etc. *****/
-var dpmBPW = 0.1; // ratio of rotary accuracy to linear accuracy for DPM calculations
-var inverseTimeUnits = 1.0; // 1.0 = minutes, 60.0 = seconds
-var maxInverseTime = 9999; // maximum value to output for Inverse Time feeds
-
-// Start of multi-axis feedrate logic
 /***** You can add 'properties.useInverseTime' if desired. *****/
 /***** 'previousABC' can be added throughout to maintain previous rotary positions. Required for Mill/Turn machines. *****/
 /***** 'headOffset' should be defined when a head rotary axis is defined. *****/
 /***** The feedrate mode must be included in motion block output (linear, circular, etc.) for Inverse Time feedrate support. *****/
-var dpmBPW = 0.1; // ratio of rotary accuracy to linear accuracy for DPM calculations
+var dpmBPW = 1.0; // ratio of rotary accuracy to linear accuracy for DPM calculations
 var inverseTimeUnits = 1.0; // 1.0 = minutes, 60.0 = seconds
 var maxInverseTime = 9999; // maximum value to output for Inverse Time feeds
 var maxDPM = 9999.99; // maximum value to output for DPM feeds
@@ -2738,12 +2722,12 @@ function onCommand(command) {
     return;
   case COMMAND_LOCK_MULTI_AXIS:
     if (properties.multiaxislocking){
-      writeBlock(mFormat.format(11));
+      writeBlock(mFormat.format(10));
     }
     return;
   case COMMAND_UNLOCK_MULTI_AXIS:
     if (properties.multiaxislocking){
-      writeBlock(mFormat.format(10));
+      writeBlock(mFormat.format(11));
     }
     return;
   case COMMAND_START_CHIP_TRANSPORT:
