@@ -10,7 +10,7 @@
   FORKID {CB457AE9-77B4-4F88-B95A-4DC6980DBE3D}
 */
 
-description = "SYIL_LNC - Inverse Time, A-axis and Probing v11";
+description = "SYIL_LNC - Toolpath Post";
 vendor = "LNC";
 vendorUrl = "http://www.fanuc.com";
 legal = "Copyright (C) 2012-2020 by Autodesk, Inc.";
@@ -265,6 +265,16 @@ function writeBlock() {
 }
 
 /**
+  PASS THRU CREATED 9/1/2023 BJE
+*/
+function onPassThrough(text) {
+  var commands = String(text).split(",");
+  for (text in commands) {
+    writeBlock(commands[text]);
+  }
+}
+
+/**
   Writes the specified optional block.
 */
 function writeOptionalBlock() {
@@ -334,12 +344,12 @@ function onOpen() {
 
   if (programName) {
     writeComment(programName);
+    writeComment((now.getMonth()+1) + "/" + now.getDate() + "/" + now.getFullYear() + " " + now.getHours() + ":" + ('0'+now.getMinutes()).slice(-2)); //BJE
     }
-    if (programComment) {
+  if (programComment) {
     writeComment(programComment);
     }
-   
-
+    
   // dump machine configuration
   var vendor = machineConfiguration.getVendor();
   var model = machineConfiguration.getModel();
@@ -1143,7 +1153,7 @@ function onSection() {
         return;
       } else {
         if (workOffset != currentWorkOffset) {
-          writeBlock(gFormat.format(54.1), "P" + p); // G54.1P
+          writeBlock(gFormat.format(54),"P"+p); // G54 P1 Extended work offset change BJE
           currentWorkOffset = workOffset;
         }
       }
@@ -1191,7 +1201,7 @@ function onSection() {
 
   if (insertToolCall || !lengthCompensationActive || retracted || (!isFirstSection() && getPreviousSection().isMultiAxis())) {
     var lengthOffset = tool.lengthOffset;
-    if (lengthOffset > 99) {
+    if (lengthOffset > 199) {
       error(localize("Length offset out of range."));
       return;
     }
@@ -1722,48 +1732,36 @@ function onCyclePoint(x, y, z) {
         );
       break;
       case "probing-x-wall":
-        GV_X_APPROACH = xyzFormat.format(cycle.width1),
-        GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
-        GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
-        X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-        Z_data = formatSetVar(GV_DEPTH, GV_Z_DEPTH),
-        Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
-        writeBlock(
-            X_data
-        );
-        writeBlock(
-            Z_data
-          );
-        writeBlock(
-            getProbingArguments(cycle, probeWorkOffsetCode)
-        );
-        writeBlock(
-            "M" + 10812,
-            "X@880 Z@882 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-        );
-        break;
+      GV_X_APPROACH = xyzFormat.format(cycle.width1),
+      X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
+      
+      writeBlock(
+        X_data
+      );
+      writeBlock(
+        getProbingArguments(cycle, probeWorkOffsetCode)
+      );
+      writeBlock(
+        "M" + 10811,
+        "X@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
+      );
+    break;
     case "probing-y-wall":
       GV_Y_APPROACH = xyzFormat.format(cycle.width1),
-      GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
-      GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
       Y_data = formatSetVar(GV_APPROACH1, GV_Y_APPROACH),
-      Z_data = formatSetVar(GV_DEPTH, GV_Z_DEPTH),
-      Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
+      
       writeBlock(
-          Y_data
-        );
-      writeBlock(
-          Z_data
-        );
-      writeBlock(
-          getProbingArguments(cycle, probeWorkOffsetCode)
+        Y_data
       );
       writeBlock(
-          "M" + 10812,
-          "Y@881 Z@882 S@860 " + feedOutput.format(cycle.feedrate) + ";"
+        getProbingArguments(cycle, probeWorkOffsetCode)
       );
-      break;
-  case "probing-x-channel":
+      writeBlock(
+        "M" + 10811,
+        "Y@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
+      );
+    break;
+    case "probing-x-channel":
       GV_X_APPROACH = xyzFormat.format(cycle.width1),
       X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
       
@@ -1853,21 +1851,13 @@ function onCyclePoint(x, y, z) {
     case "probing-xy-circular-hole":
       GV_D_WIDTH = xyzFormat.format(cycle.width1),
       GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
-      GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
       D_data = formatSetVar(GV_APPROACH1, GV_D_WIDTH),
       Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
-      Z_data = formatSetVar(GV_DEPTH, GV_Z_DEPTH),
       writeBlock(
           D_data
       );
       writeBlock(
-        Z_data
-      );
-      writeBlock(
           getProbingArguments(cycle, probeWorkOffsetCode)
-      );
-      writeBlock(
-        "Z@882 F150." 
       );
       writeBlock(
           "M" + 10814,
@@ -1967,8 +1957,8 @@ function onCyclePoint(x, y, z) {
       break;
 
     case "probing-xy-inner-corner":
-      GV_X_APPROACH = xyzFormat.format(cycle.approach1),
-      GV_Y_APPROACH = xyzFormat.format(cycle.approach2),
+      GV_X_APPROACH = 0,
+      GV_Y_APPROACH = 0,
       GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
       GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
       X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
@@ -1990,8 +1980,8 @@ function onCyclePoint(x, y, z) {
       );
       break;
   case "probing-xy-outer-corner":
-    GV_X_APPROACH = x + approach(cycle.approach1);
-    GV_Y_APPROACH = y + approach(cycle.approach2);
+    GV_X_APPROACH = 0,
+    GV_Y_APPROACH = 0,
     GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
     GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
     X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
@@ -2289,11 +2279,20 @@ function onLinear5D(_x, _y, _z, _a, _b, _c, feed) {
 }
 
 // Start of multi-axis feedrate logic
+/***** Be sure to add 'useInverseTime' to post properties if necessary. *****/
+/***** 'inverseTimeOutput' must be defined. *****/
+/***** 'headOffset' should be defined when a head rotary axis is defined. *****/
+/***** The feedrate mode must be included in motion block output (linear, circular, etc. *****/
+var dpmBPW = 0.1; // ratio of rotary accuracy to linear accuracy for DPM calculations
+var inverseTimeUnits = 1.0; // 1.0 = minutes, 60.0 = seconds
+var maxInverseTime = 9999; // maximum value to output for Inverse Time feeds
+
+// Start of multi-axis feedrate logic
 /***** You can add 'properties.useInverseTime' if desired. *****/
 /***** 'previousABC' can be added throughout to maintain previous rotary positions. Required for Mill/Turn machines. *****/
 /***** 'headOffset' should be defined when a head rotary axis is defined. *****/
 /***** The feedrate mode must be included in motion block output (linear, circular, etc.) for Inverse Time feedrate support. *****/
-var dpmBPW = 1.0; // ratio of rotary accuracy to linear accuracy for DPM calculations
+var dpmBPW = 0.1; // ratio of rotary accuracy to linear accuracy for DPM calculations
 var inverseTimeUnits = 1.0; // 1.0 = minutes, 60.0 = seconds
 var maxInverseTime = 9999; // maximum value to output for Inverse Time feeds
 var maxDPM = 9999.99; // maximum value to output for DPM feeds
@@ -2722,12 +2721,12 @@ function onCommand(command) {
     return;
   case COMMAND_LOCK_MULTI_AXIS:
     if (properties.multiaxislocking){
-      writeBlock(mFormat.format(10));
+      writeBlock(mFormat.format(11));
     }
     return;
   case COMMAND_UNLOCK_MULTI_AXIS:
     if (properties.multiaxislocking){
-      writeBlock(mFormat.format(11));
+      writeBlock(mFormat.format(10));
     }
     return;
   case COMMAND_START_CHIP_TRANSPORT:
