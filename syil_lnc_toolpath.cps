@@ -10,12 +10,12 @@
   FORKID {CB457AE9-77B4-4F88-B95A-4DC6980DBE3D}
 */
 
-description = "SYIL_LNC - Inverse Time, A-axis and Probing";
+description = "SYIL_LNC - Toolpath Post";
 vendor = "LNC";
 vendorUrl = "http://www.fanuc.com";
 legal = "Copyright (C) 2012-2020 by Autodesk, Inc.";
 certificationLevel = 2;
-minimumRevision = 40783;
+minimumRevision = 11;
 
 longDescription = "Generic Fanuc post illustrating inverse time feed with an A-axis.";
 
@@ -23,7 +23,7 @@ extension = "nc";
 programNameIsInteger = false;
 setCodePage("ascii");
 
-capabilities = CAPABILITY_MILLING;
+capabilities = CAPABILITY_MILLING | CAPABILITY_MACHINE_SIMULATION;
 tolerance = spatial(0.002, MM);
 
 minimumChordLength = spatial(0.25, MM);
@@ -124,7 +124,7 @@ var coolants = [
   {id: COOLANT_FLOOD, on: 8},
   {id: COOLANT_MIST},
   {id: COOLANT_THROUGH_TOOL, on: 88, off: 89},
-  {id: COOLANT_AIR},
+  {id: COOLANT_AIR, on: 7},
   {id: COOLANT_AIR_THROUGH_TOOL},
   {id: COOLANT_SUCTION},
   {id: COOLANT_FLOOD_MIST},
@@ -151,6 +151,7 @@ var secFormat = createFormat({decimals:3, forceDecimal:true}); // seconds - rang
 var milliFormat = createFormat({decimals:0}); // milliseconds // range 1-9999
 var taperFormat = createFormat({decimals:1, scale:DEG});
 var oFormat = createFormat({width:4, zeropad:true, decimals:0});
+var now = new Date (); // BJE
 
 var xOutput = createVariable({prefix:"X"}, xyzFormat);
 var yOutput = createVariable({prefix:"Y"}, xyzFormat);
@@ -265,6 +266,16 @@ function writeBlock() {
 }
 
 /**
+  PASS THRU CREATED 9/1/2023 BJE
+*/
+function onPassThrough(text) {
+  var commands = String(text).split(",");
+  for (text in commands) {
+    writeBlock(commands[text]);
+  }
+}
+
+/**
   Writes the specified optional block.
 */
 function writeOptionalBlock() {
@@ -333,40 +344,13 @@ function onOpen() {
   writeln("%");
 
   if (programName) {
-    var programId;
-    try {
-      programId = getAsInt(programName);
-    } catch (e) {
-      //error(localize("Program name must be a number."));
-      //return;
-      programId = 1001;
+    writeComment(programName);
+    writeComment((now.getMonth()+1) + "/" + now.getDate() + "/" + now.getFullYear() + " " + now.getHours() + ":" + ('0'+now.getMinutes()).slice(-2)); //BJE
     }
-    if (properties.o8) {
-      if (!((programId >= 1) && (programId <= 99999999))) {
-        error(localize("Program number is out of range."));
-        return;
-      }
-    } else {
-      if (!((programId >= 1) && (programId <= 9999))) {
-        error(localize("Program number is out of range."));
-        return;
-      }
+  if (programComment) {
+    writeComment(programComment);
     }
-    if ((programId >= 8000) && (programId <= 9999)) {
-      warning(localize("Program number is reserved by tool builder."));
-    }
-    oFormat = createFormat({width:(properties.o8 ? 8 : 4), zeropad:true, decimals:0});
-    if (programComment) {
-      writeln("O" + oFormat.format(programId) + " (" + filterText(String(programComment).toUpperCase(), permittedCommentChars) + ")");
-    } else {
-      writeln("O" + oFormat.format(programId));
-    }
-    lastSubprogram = programId;
-  } else {
-    error(localize("Program name has not been specified."));
-    return;
-  }
-
+    
   // dump machine configuration
   var vendor = machineConfiguration.getVendor();
   var model = machineConfiguration.getModel();
@@ -1170,7 +1154,7 @@ function onSection() {
         return;
       } else {
         if (workOffset != currentWorkOffset) {
-          writeBlock(gFormat.format(54.1), "P" + p); // G54.1P
+          writeBlock(gFormat.format(54),"P"+p); // G54 P1 Extended work offset change BJE
           currentWorkOffset = workOffset;
         }
       }
