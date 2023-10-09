@@ -151,6 +151,7 @@ var secFormat = createFormat({decimals:3, forceDecimal:true}); // seconds - rang
 var milliFormat = createFormat({decimals:0}); // milliseconds // range 1-9999
 var taperFormat = createFormat({decimals:1, scale:DEG});
 var oFormat = createFormat({width:4, zeropad:true, decimals:0});
+var now = new Date (); \\ BJE
 
 var xOutput = createVariable({prefix:"X"}, xyzFormat);
 var yOutput = createVariable({prefix:"Y"}, xyzFormat);
