@@ -9,30 +9,15 @@ T#100 M6;
 
 MSG_OK["Check for tool", "Confirm there is a tool in the spindle?",""]
 
-#101 = 10 (number of minutes at each speed)
+#102 = 10 
 
+#102 = 10
 S2000 M3
-
-#100 = 1
-(loop to get around max values for G04, so we can have a 10 minute dwell)
-WHILE [#100 <= [60*#101]] 
-    G04 P1000 (1 second)
-    #100 = #100 + 1
-END_WHILE
-
-S3000 M3
-#100 = 1
-WHILE [#100 <= [60*#101]] 
-    G04 P1000 (1 second)
-    #100 = #100 + 1
-END_WHILE
-
+G04 X[60*#102]
+S4000 M3
+G04 X[60*#102]
 S6000 M3
-#100 = 1
-WHILE [#100 <= [60*#101]] 
-    G04 P1000 (1 second)
-    #100 = #100 + 1
-END_WHILE
+G04 X[60*#102]
 
 T99 M6;
 
