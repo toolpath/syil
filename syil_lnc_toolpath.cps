@@ -12,8 +12,8 @@
 
 description = "SYIL_LNC - Toolpath Post";
 vendor = "LNC";
-vendorUrl = "http://www.fanuc.com";
-legal = "Copyright (C) 2012-2020 by Autodesk, Inc.";
+vendorUrl = "http://www.toolpath.com";
+legal = "Copyright (C) 2021-2023 Toolpath Labs Inc.";
 certificationLevel = 2;
 minimumRevision = 11;
 
@@ -114,6 +114,15 @@ propertyDefinitions = {
   ForceTCPosition: {title:"Change Position Before Toolchange", description:"Change the machine position before executing a toolchange.", group:4, type:"boolean"},
   TCposX: {title:"Toolchange Position X Axis - Machine Coordinate", description:"Machine Coordinate for toolchange on X Axis.", group:4, type:"number"},
   TCposY: {title:"Toolchange Position Y Axis - Machine Coordinate", description:"Machine Coordinate for toolchange on Y Axis.", group:4, type:"number"},
+};
+
+// wcs definiton
+wcsDefinitions = {
+  useZeroOffset: false,
+  wcs          : [
+    {name:"Standard", format:"G", range:[54, 59]},
+    {name:"Extended", format:"G54P#", range:[1, 99]}
+  ]
 };
 
 var singleLineCoolant = false; // specifies to output multiple coolant codes in one line rather than in separate lines
@@ -1146,6 +1155,7 @@ function onSection() {
     }
     forceWorkPlane();
   }
+  /* 
   if (workOffset > 0) {
     if (workOffset > 6) {
       var p = workOffset - 6; // 1->...
@@ -1164,6 +1174,11 @@ function onSection() {
         currentWorkOffset = workOffset;
       }
     }
+  }
+  */
+  if (workOffset != currentWorkOffset) {
+    writeBlock(currentSection.wcs);
+    currentWorkOffset = workOffset;
   }
 
   forceXYZ();
@@ -1670,69 +1685,53 @@ function onCyclePoint(x, y, z) {
       }
       break;
 
-      case "probing-x":
+    case "probing-x":
+      forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z - cycle.depth), "F50");  // protected positioning move 
 
-        GV_X_APPROACH = 0
-        X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-        GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
-        Z_data = formatSetVar(GV_CLEARANCE, GV_Z_DEPTH),
-        writeBlock(
-          X_data
-        );
-        writeBlock(
-          Z_data
-        );
-        writeBlock(
-          "G01 Z@" + GV_CLEARANCE + " " + feedOutput.format(cycle.feedrate)
-        );
-        writeBlock(
-          getProbingArguments(cycle, probeWorkOffsetCode)
-        );
-        writeBlock(
-          "M" + 10811,
-          "X@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-        );
+      WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
+
+      DIRECITON = " B1";
+      if (cycle.approach1 == "NEGATIVE"){
+        DIRECTION = " B-1";
+      }
+
+      writeBlock(gFormat.format(65), '"PROBEX" A', WCS_CODE, DIRECTION);
       break;
-      case "probing-y":
-        GV_Y_APPROACH = 0
-        
-        Y_data = formatSetVar(GV_APPROACH1, GV_Y_APPROACH),
-        GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
-        Z_data = formatSetVar(GV_CLEARANCE, GV_Z_DEPTH),
-        writeBlock(
-          Y_data
-        );
-        writeBlock(
-          Z_data
-        );
-        writeBlock(
-          "G01 Z@" + GV_CLEARANCE + " " + feedOutput.format(cycle.feedrate)
-        );
-        writeBlock(
-          getProbingArguments(cycle, probeWorkOffsetCode)
-        );
-        writeBlock(
-          "M" + 10811,
-          "Y@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-        );
+    case "probing-y":
+      error(localize("Unsupported Probing Cycle"));
+      GV_Y_APPROACH = 0
+      
+      Y_data = formatSetVar(GV_APPROACH1, GV_Y_APPROACH),
+      GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
+      Z_data = formatSetVar(GV_CLEARANCE, GV_Z_DEPTH),
+      writeBlock(
+        Y_data
+      );
+      writeBlock(
+        Z_data
+      );
+      writeBlock(
+        "G01 Z@" + GV_CLEARANCE + " " + feedOutput.format(cycle.feedrate)
+      );
+      writeBlock(
+        getProbingArguments(cycle, probeWorkOffsetCode)
+      );
+      writeBlock(
+        "M" + 10811,
+        "Y@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
+      );
       break;
-      case "probing-z":
-        GV_Z_DEPTH = 0,
-        GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
-        Z_data = formatSetVar(GV_APPROACH1, GV_Z_DEPTH),
-        Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
-        writeBlock(
-            Z_data
-        );
-        writeBlock(
-            getProbingArguments(cycle, probeWorkOffsetCode)
-        );
-        writeBlock(
-            "M" + 10811,
-            "Z@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-        );
+    case "probing-z":
+      forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z - cycle.depth), "F50");  // protected positioning move 
+
+      WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
+
+      writeBlock(gFormat.format(65), '"PROBEZ"', WCS_CODE);
       break;
-      case "probing-x-wall":
+    case "probing-x-wall":
+      error(localize("Unsupported Probing Cycle"));
       GV_X_APPROACH = xyzFormat.format(cycle.width1),
       X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
       
@@ -1746,8 +1745,9 @@ function onCyclePoint(x, y, z) {
         "M" + 10811,
         "X@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
       );
-    break;
+      break;
     case "probing-y-wall":
+      error(localize("Unsupported Probing Cycle"));
       GV_Y_APPROACH = xyzFormat.format(cycle.width1),
       Y_data = formatSetVar(GV_APPROACH1, GV_Y_APPROACH),
       
@@ -1763,6 +1763,7 @@ function onCyclePoint(x, y, z) {
       );
     break;
     case "probing-x-channel":
+      error(localize("Unsupported Probing Cycle"));
       GV_X_APPROACH = xyzFormat.format(cycle.width1),
       X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
       
@@ -1778,6 +1779,7 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-x-channel-with-island":
+      error(localize("Unsupported Probing Cycle"));
       protectedProbeMove(cycle, x, y, z);
       writeBlock(
         gFormat.format(65), "P" + 9812,
@@ -1789,6 +1791,7 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-y-channel":
+      error(localize("Unsupported Probing Cycle"));
       GV_Y_APPROACH = xyzFormat.format(cycle.width1),
       Y_data = formatSetVar(GV_APPROACH1, GV_Y_APPROACH),
       
@@ -1804,6 +1807,7 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-y-channel-with-island":
+      error(localize("Unsupported Probing Cycle"));
       protectedProbeMove(cycle, x, y, z);
       writeBlock(
         gFormat.format(65), "P" + 9812,
@@ -1815,6 +1819,7 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-circular-boss":
+      error(localize("Unsupported Probing Cycle"));
       GV_D_WIDTH = xyzFormat.format(cycle.width1),
       GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
       GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
@@ -1836,6 +1841,7 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-circular-partial-boss":
+      error(localize("Unsupported Probing Cycle"));
       protectedProbeMove(cycle, x, y, z);
       writeBlock(
         gFormat.format(65), "P" + 9823,
@@ -1850,6 +1856,7 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-circular-hole":
+      error(localize("Unsupported Probing Cycle"));
       GV_D_WIDTH = xyzFormat.format(cycle.width1),
       GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
       D_data = formatSetVar(GV_APPROACH1, GV_D_WIDTH),
@@ -1866,6 +1873,7 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-circular-hole-with-island":
+      error(localize("Unsupported Probing Cycle"));
       protectedProbeMove(cycle, x, y, z);
       writeBlock(
         gFormat.format(65), "P" + 9814,
@@ -1877,6 +1885,7 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-circular-partial-hole-with-island":
+      error(localize("Unsupported Probing Cycle"));
       protectedProbeMove(cycle, x, y, z);
       writeBlock(
         gFormat.format(65), "P" + 9823,
@@ -1891,6 +1900,7 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-rectangular-hole":
+      error(localize("Unsupported Probing Cycle"));
       protectedProbeMove(cycle, x, y, z - cycle.depth);
       writeBlock(
         gFormat.format(65), "M" + 9812,
@@ -1908,6 +1918,7 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-rectangular-boss":
+        error(localize("Unsupported Probing Cycle"));
         GV_X_APPROACH = xyzFormat.format(cycle.width1),
         GV_Y_APPROACH = xyzFormat.format(cycle.width2),
         GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
@@ -1938,6 +1949,7 @@ function onCyclePoint(x, y, z) {
         );
         break;
     case "probing-xy-rectangular-hole-with-island":
+      error(localize("Unsupported Probing Cycle"));
       protectedProbeMove(cycle, x, y, z);
       writeBlock(
         "M" + 9812,
@@ -1958,6 +1970,7 @@ function onCyclePoint(x, y, z) {
       break;
 
     case "probing-xy-inner-corner":
+      error(localize("Unsupported Probing Cycle"));
       GV_X_APPROACH = 0,
       GV_Y_APPROACH = 0,
       GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
@@ -1981,6 +1994,7 @@ function onCyclePoint(x, y, z) {
       );
       break;
   case "probing-xy-outer-corner":
+    error(localize("Unsupported Probing Cycle"));
     GV_X_APPROACH = 0,
     GV_Y_APPROACH = 0,
     GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
@@ -2004,6 +2018,7 @@ function onCyclePoint(x, y, z) {
     );
     break;
   case "probing-x-plane-angle":
+      error(localize("Unsupported Probing Cycle"));
       protectedProbeMove(cycle, x, y, z - cycle.depth);
       GV_X_APPROACH = xyzFormat.format(cycle.approach1),
       X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
@@ -2028,6 +2043,7 @@ function onCyclePoint(x, y, z) {
       g68RotationMode = 1;
       break;
     case "probing-y-plane-angle":
+      /*
       protectedProbeMove(cycle, x, y, z - cycle.depth);
       GV_X_APPROACH = xyzFormat.format(cycle.approach1),
       X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
@@ -2050,41 +2066,14 @@ function onCyclePoint(x, y, z) {
         "Y@880 D@883 A@884" + feedOutput.format(cycle.feedrate) + ";"
       );
       g68RotationMode = 1;
+      */
+      error(localize("Unsupported Probing Cycle"));
       break;
     case "probing-xy-pcd-hole":
-      protectedProbeMove(cycle, x, y, z);
-      writeBlock(
-        gFormat.format(65), "P" + 9819,
-        "A" + xyzFormat.format(cycle.pcdStartingAngle),
-        "B" + xyzFormat.format(cycle.numberOfSubfeatures),
-        "C" + xyzFormat.format(cycle.widthPCD),
-        "D" + xyzFormat.format(cycle.widthFeature),
-        "K" + xyzFormat.format(z - cycle.depth),
-        "Q" + xyzFormat.format(cycle.probeOvertravel),
-        getProbingArguments(cycle, false)
-      );
-      if (cycle.updateToolWear) {
-        error(localize("Update tool action is not supported with this cycle"));
-        return;
-      }
+      error(localize("Unsupported Probing Cycle"));
       break;
     case "probing-xy-pcd-boss":
-      protectedProbeMove(cycle, x, y, z);
-      writeBlock(
-        gFormat.format(65), "P" + 9819,
-        "A" + xyzFormat.format(cycle.pcdStartingAngle),
-        "B" + xyzFormat.format(cycle.numberOfSubfeatures),
-        "C" + xyzFormat.format(cycle.widthPCD),
-        "D" + xyzFormat.format(cycle.widthFeature),
-        "Z" + xyzFormat.format(z - cycle.depth),
-        "Q" + xyzFormat.format(cycle.probeOvertravel),
-        "R" + xyzFormat.format(cycle.probeClearance),
-        getProbingArguments(cycle, false)
-      );
-      if (cycle.updateToolWear) {
-        error(localize("Update tool action is not supported with this cycle"));
-        return;
-      }
+      error(localize("Unsupported Probing Cycle"));
       break;
     default:
       expandCyclePoint(x, y, z);
@@ -2137,6 +2126,16 @@ function onCyclePoint(x, y, z) {
 
 function getProbingArguments(cycle, probeWorkOffsetCode) {
   var probeWCS = hasParameter("operation-strategy") && (getParameter("operation-strategy") == "probe");
+
+  var PROBE_ARGS = "";
+  if (probeOutputWorkOffset < 7) {
+    var WCS_NUM = 53+probeOutputWorkOffset;
+    PROBE_ARGS = "A"+ WCS_NUM;
+  }
+  else{
+    error("Extended work offsets not supported for probing")
+  }
+
   return [
     (cycle.angleAskewAction == "stop-message" ? "B" + xyzFormat.format(cycle.toleranceAngle ? cycle.toleranceAngle : 0) : undefined),
     ((cycle.updateToolWear && cycle.toolWearErrorCorrection < 100) ? "F" + xyzFormat.format(cycle.toolWearErrorCorrection ? cycle.toolWearErrorCorrection / 100 : 100) : undefined),
@@ -2146,7 +2145,7 @@ function getProbingArguments(cycle, probeWorkOffsetCode) {
     ((cycle.updateToolWear && cycleType !== "probing-z") ? "T" + xyzFormat.format(cycle.toolDiameterOffset) : undefined),
     (cycle.updateToolWear ? "V" + xyzFormat.format(cycle.toolWearUpdateThreshold ? cycle.toolWearUpdateThreshold : 0) : undefined),
     (cycle.printResults ? "W" + xyzFormat.format(1 + cycle.incrementComponent) : undefined), // 1 for advance feature, 2 for reset feature count and advance component number. first reported result in a program should use W2.
-    conditional(probeWorkOffsetCode && probeWCS, "@860=" + probeWorkOffsetCode)
+    conditional(probeWorkOffsetCode && probeWCS, PROBE_ARGS)
   ];
 }
 
