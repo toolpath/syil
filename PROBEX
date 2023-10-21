@@ -1,19 +1,11 @@
-(SET THE SAFTEY CHECK VARIA
-(SAVE Z OFFSET)
-IF [#2 == 0]  
-  W_G53G59_COOR[0,#1,3,#105]
-ELSE
-  W_G54EXP_COOR[0,#2,3,#105]
-ENDIF
-BLE TO BLOCK SPINDLE ROTATION)
-W_TOOL_DATA[0,99,101,1] (use 101 to store probe loaded bool)
+(SET THE SAFTEY CHECK VARIABLE TO BLOCK SPINDLE ROTATION)
 
 (PROBE X FROM LEFT OR RIGHT)
 
 
 (#1 is the work coordinate system to store offsets in)
 (#2 is +1 for left, and -1 right right)
-(#3 is the extended work offset)
+(#3 is for extended work offset)
 
 IF [#2 > 0]                      (LEFT SIDE)
     MSG_OK["Probing X", "Move the probe to the left side probe location, roughly 0.5 inches away",""]
@@ -46,7 +38,7 @@ G91 G01 X-[#2*0.05]                   (MOVE OFF THE EDGE A LITTLE)
 
 (COMPUTE AND STORE X OFFSET)
 (SAVE Z OFFSET)
-IF [#2 == 0]  
+IF [#3 > 0]  
   W_G53G59_COOR[0,#1,1,#106]
 ELSE
   W_G54EXP_COOR[0,#3,1,#106]
