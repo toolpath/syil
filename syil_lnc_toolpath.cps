@@ -121,7 +121,7 @@ wcsDefinitions = {
   useZeroOffset: false,
   wcs          : [
     {name:"Standard", format:"G", range:[54, 59]},
-    {name:"Extended", format:"G54P#", range:[1, 99]}
+    {name:"Extended", format:"G54P#", range:[1, 106]}
   ]
 };
 
@@ -1155,27 +1155,7 @@ function onSection() {
     }
     forceWorkPlane();
   }
-  /* 
-  if (workOffset > 0) {
-    if (workOffset > 6) {
-      var p = workOffset - 6; // 1->...
-      if (p > 300) {
-        error(localize("Work offset out of range."));
-        return;
-      } else {
-        if (workOffset != currentWorkOffset) {
-          writeBlock(gFormat.format(54),"P"+p); // G54 P1 Extended work offset change BJE
-          currentWorkOffset = workOffset;
-        }
-      }
-    } else {
-      if (workOffset != currentWorkOffset) {
-        writeBlock(gFormat.format(53 + workOffset)); // G54->G59
-        currentWorkOffset = workOffset;
-      }
-    }
-  }
-  */
+     
   if (workOffset != currentWorkOffset) {
     writeBlock(currentSection.wcs);
     currentWorkOffset = workOffset;
@@ -1263,7 +1243,7 @@ function onSection() {
     }
     angularProbingMode = getAngularProbingMode();
     //writeBlock(mFormat.format(00));// Program pause
-    writeBlock("M" + 10719); // probe on
+    //writeBlock("M" + 10719); // probe on
   }
 
   // define subprogram
@@ -1443,13 +1423,11 @@ function onCyclePoint(x, y, z) {
     }
 
     var workOffset = probeOutputWorkOffset ? probeOutputWorkOffset : currentWorkOffset;
-    if (workOffset > 99) {
-      error(localize("Work offset is out of range."));
+    if (workOffset > 106) {
+      error(localize("Work offset is out of range." + workOffset));
       return;
-    } else if (workOffset > 6) {
-      probeWorkOffsetCode = probe100Format.format(workOffset - 6 + 100);
     } else {
-      probeWorkOffsetCode = workOffset + "."; // G54->G59
+      probeWorkOffsetCode = workOffset;
     }
   }
 
@@ -1691,12 +1669,9 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
-      DIRECITON = " B1";
-      if (cycle.approach1 == "NEGATIVE"){
-        DIRECTION = " B-1";
-      }
+      SIGN = "B"+approach(cycle.approach1)
 
-      writeBlock(gFormat.format(65), '"PROBEX" A', WCS_CODE, DIRECTION);
+      writeBlock(gFormat.format(65), '"PROBEX"', WCS_CODE, SIGN, "D1");
       break;
     case "probing-y":
       error(localize("Unsupported Probing Cycle"));
@@ -1729,6 +1704,11 @@ function onCyclePoint(x, y, z) {
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
       writeBlock(gFormat.format(65), '"PROBEZ"', WCS_CODE);
+      if (incrementalMode) {
+        setIncrementalMode();
+      else {
+        setAbsoluteMode();
+      }
       break;
     case "probing-x-wall":
       error(localize("Unsupported Probing Cycle"));
@@ -2133,7 +2113,8 @@ function getProbingArguments(cycle, probeWorkOffsetCode) {
     PROBE_ARGS = "A"+ WCS_NUM;
   }
   else{
-    error("Extended work offsets not supported for probing")
+    var WCS_NUM = probeOutputWorkOffset-6;
+    PROBE_ARGS = "A54 C"+ WCS_NUM;
   }
 
   return [
@@ -2783,7 +2764,7 @@ function onSectionEnd() {
     }
   }
   if (isProbeOperation()) {
-    writeBlock("M" + 10720); // probe off
+    //writeBlock("M" + 10720); // probe off
     //writeBlock(mFormat.format(00)); // program pause
     if (properties.useG54x4 || angularProbingMode == ANGLE_PROBE_USE_CAXIS) {
       setProbingAngle(); // define rotation of part

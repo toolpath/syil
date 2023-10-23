@@ -1,5 +1,5 @@
 (SET THE SAFTEY CHECK VARIABLE TO BLOCK SPINDLE ROTATION)
-W_TOOL_DATA[0,99,101,1] (use 101 to store probe loaded bool)
+;W_TOOL_DATA[0,99,101,1] (use 101 to store probe loaded bool)
 
 (PROBE Y FROM FRONT OR BACK)
 
@@ -15,9 +15,6 @@ ELSE                             (RIGHT SIDE)
 END_IF
 
 
-G90 G94 G17 G49 G40 G80
-G20                              (inch)
-
 #110 = 100 (FEED SPEED)
 #111 = 50 (FAST PROBE SPEED)
 #112 = 2.5 (SLOW PROBE SPEED)
@@ -25,10 +22,10 @@ G20                              (inch)
 (Assume you are starting on the left X side, 0.5 inch away, of the part at the probe z height)
 (ACTUAL PROBING)
 G31 G91 P2 Y[#2*1.0] F#111           (FEED UNTIL SKIP FAST)
-G91 G01 Y-[#2*0.05]
+G91 G01 Y-[#2*0.25]
 G31 G91 P2 Y[#2*0.2] F#112           (FEED UNTIL SKIP SLOW)
 #104=R_MACH_COOR[0,2]                (GET MACHINE Y COORDINATE)
-G91 G01 Y-[#2*0.05]                  (MOVE OFF THE EDGE A LITTLE)
+G91 G01 Y-[#2*0.25]                  (MOVE OFF THE EDGE A LITTLE)
 
 #105 = [R_TOOL_DATA[0,99,3]/2]       (READ THE PROBE TOOL DIAMETER AND CONVERT TO RADIUS)
 #106=[#104+[#2*#105]]                (current position + probe off)
@@ -41,5 +38,7 @@ IF [#3 < 1]
 ELSE
   W_G54EXP_COOR[0,#3,2,#106]
 END_IF
+
+G90
 
 M99
