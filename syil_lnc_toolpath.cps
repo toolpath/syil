@@ -1674,28 +1674,14 @@ function onCyclePoint(x, y, z) {
       writeBlock(gFormat.format(65), '"PROBEX"', WCS_CODE, SIGN, "D1");
       break;
     case "probing-y":
-      error(localize("Unsupported Probing Cycle"));
-      GV_Y_APPROACH = 0
-      
-      Y_data = formatSetVar(GV_APPROACH1, GV_Y_APPROACH),
-      GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
-      Z_data = formatSetVar(GV_CLEARANCE, GV_Z_DEPTH),
-      writeBlock(
-        Y_data
-      );
-      writeBlock(
-        Z_data
-      );
-      writeBlock(
-        "G01 Z@" + GV_CLEARANCE + " " + feedOutput.format(cycle.feedrate)
-      );
-      writeBlock(
-        getProbingArguments(cycle, probeWorkOffsetCode)
-      );
-      writeBlock(
-        "M" + 10811,
-        "Y@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-      );
+      forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z - cycle.depth), "F50");  // protected positioning move 
+
+      WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
+
+      SIGN = "B"+approach(cycle.approach1)
+
+      writeBlock(gFormat.format(65), '"PROBEY"', WCS_CODE, SIGN, "D1");
       break;
     case "probing-z":
       forceXYZ();
@@ -1704,11 +1690,6 @@ function onCyclePoint(x, y, z) {
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
       writeBlock(gFormat.format(65), '"PROBEZ"', WCS_CODE);
-      if (incrementalMode) {
-        setIncrementalMode();
-      else {
-        setAbsoluteMode();
-      }
       break;
     case "probing-x-wall":
       error(localize("Unsupported Probing Cycle"));

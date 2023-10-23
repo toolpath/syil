@@ -7,13 +7,15 @@
 (#1 is the work coordinate system to store offsets in)
 (#2 is +1 for front, and -1 right back)
 (#3 is for extended work offset)
+(#4 turns the messaging on/off: 0 leaves it on (default); 1 turns it off )
 
+IF [#4 < 1]
 IF [#2 > 0]                      (LEFT SIDE)
     MSG_OK["Probing Y", "Move the probe to the front side probe location, roughly 0.5 inches away",""]
 ELSE                             (RIGHT SIDE)
     MSG_OK["Probing Y", "Move the probe to the back side probe location, roughly 0.5 inches away",""]
 END_IF
-
+END_IF
 
 #110 = 100 (FEED SPEED)
 #111 = 50 (FAST PROBE SPEED)
