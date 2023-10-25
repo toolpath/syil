@@ -1,6 +1,3 @@
-(SET THE SAFTEY CHECK VARIABLE TO BLOCK SPINDLE ROTATION)
-W_TOOL_DATA[0,99,101,1] (use 101 to store probe loaded bool)
-
 (AUTO TOOL SET)
 MSG_OK["AUTO PROBING RECTANGULAR STOCK", "Move about a half inch to the left of the stock, make sure its below the z level of the stock", ""]
 
@@ -20,8 +17,6 @@ MSG_OK["AUTO PROBING RECTANGULAR STOCK", "Move about a half inch to the left of 
 #112 = 2.5 (SLOW PROBE SPEED)
 #113 = 0.25 (STEPOVER INCREMENT)
 
-G90 G94 G17 G49 G40 G80
-G20                              (inch)
 
 F#110
 
