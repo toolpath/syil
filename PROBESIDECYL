@@ -8,6 +8,14 @@
 #111 = 50 (FAST PROBE SPEED)
 #112 = 2.5 (SLOW PROBE SPEED)
 
+(FIND THE DECIMAL PART OF THE WCS)
+(JANKY MATH BECAUSE LNC DOESNT HAVE MODULO)
+#113 = 54 
+WHILE [#1 - #113 > 1]
+  #113 = #113 +1 
+END_WHILE
+#114 = [#1 - #113]*10 (EXTENDED WCS NUMBER)
+
 (probe Y starting from a negative offset and probing in the positive direction)
 
 
@@ -38,7 +46,13 @@ G91 G01 Z[#2+0.25]               (MOVE UP CLEAR OF THE PART)
 #106=[[#105-#104]/2]  
 G91 G01 Y[-0.05 - #106]          (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,2]            (GET MACHINE Y COORDINATE)
-W_G53G59_COOR[0,#1,2,#104]       (STORE Y OFFSET)
+
+(STORE Y OFFSET)
+IF [#114 < 1]  
+  W_G53G59_COOR[0,#1,2,#104]
+ELSE
+  W_G54EXP_COOR[0,#114,2,#104]
+END_IF
 
 (PROBE IN Z)
 G65 "PROBEZ" A#1

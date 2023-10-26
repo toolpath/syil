@@ -1692,37 +1692,25 @@ function onCyclePoint(x, y, z) {
       writeBlock(gFormat.format(65), '"PROBEZ"', WCS_CODE);
       break;
     case "probing-x-wall":
-      error(localize("Unsupported Probing Cycle"));
-      GV_X_APPROACH = xyzFormat.format(cycle.width1),
-      X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-      
-      writeBlock(
-        X_data
-      );
-      writeBlock(
-        getProbingArguments(cycle, probeWorkOffsetCode)
-      );
-      writeBlock(
-        "M" + 10811,
-        "X@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-      );
+      forceXYZ();
+
+      WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
+
+      WEB_WIDTH="B"+xyzFormat.format(cycle.width1)
+      Z_DROP = "C"+xyzFormat.format(cycle.depth),
+
+      writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE, WEB_WIDTH, Z_DROP, "D1");
       break;
     case "probing-y-wall":
-      error(localize("Unsupported Probing Cycle"));
-      GV_Y_APPROACH = xyzFormat.format(cycle.width1),
-      Y_data = formatSetVar(GV_APPROACH1, GV_Y_APPROACH),
-      
-      writeBlock(
-        Y_data
-      );
-      writeBlock(
-        getProbingArguments(cycle, probeWorkOffsetCode)
-      );
-      writeBlock(
-        "M" + 10811,
-        "Y@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-      );
-    break;
+      forceXYZ();
+
+      WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
+
+      WEB_WIDTH="B"+xyzFormat.format(cycle.width1)
+      Z_DROP = "C"+xyzFormat.format(cycle.depth),
+
+      writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE, WEB_WIDTH, Z_DROP, "D1");
+      break;
     case "probing-x-channel":
       error(localize("Unsupported Probing Cycle"));
       GV_X_APPROACH = xyzFormat.format(cycle.width1),
@@ -2095,7 +2083,7 @@ function getProbingArguments(cycle, probeWorkOffsetCode) {
   }
   else{
     var WCS_NUM = probeOutputWorkOffset-6;
-    PROBE_ARGS = "A54 C"+ WCS_NUM;
+    PROBE_ARGS = "A54."+ WCS_NUM;
   }
 
   return [

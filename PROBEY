@@ -6,7 +6,7 @@
 
 (#1 is the work coordinate system to store offsets in)
 (#2 is +1 for front, and -1 right back)
-(#3 is for extended work offset)
+
 (#4 turns the messaging on/off: 0 leaves it on (default); 1 turns it off )
 
 IF [#4 < 1]
@@ -20,6 +20,15 @@ END_IF
 #110 = 100 (FEED SPEED)
 #111 = 50 (FAST PROBE SPEED)
 #112 = 2.5 (SLOW PROBE SPEED)
+
+(FIND THE DECIMAL PART OF THE WCS)
+(JANKY MATH BECAUSE LNC DOESNT HAVE MODULO)
+#113 = 54 
+WHILE [#1 - #113 > 1]
+  #113 = #113 +1 
+END_WHILE
+#114 = [#1 - #113]*10 (EXTENDED WCS NUMBER)
+
 
 (Assume you are starting on the left X side, 0.5 inch away, of the part at the probe z height)
 (ACTUAL PROBING)
@@ -35,10 +44,10 @@ G91 G01 Y-[#2*0.25]                  (MOVE OFF THE EDGE A LITTLE)
 W_G53G59_COOR[0,#1,2,#106]                
 
 (STORE Y OFFSET)
-IF [#3 < 1]  
+IF [#114 < 1]  
   W_G53G59_COOR[0,#1,2,#106]
 ELSE
-  W_G54EXP_COOR[0,#3,2,#106]
+  W_G54EXP_COOR[0,#114,2,#106]
 END_IF
 
 G90
