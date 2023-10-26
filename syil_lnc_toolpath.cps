@@ -1867,36 +1867,18 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-rectangular-boss":
-        error(localize("Unsupported Probing Cycle"));
-        GV_X_APPROACH = xyzFormat.format(cycle.width1),
-        GV_Y_APPROACH = xyzFormat.format(cycle.width2),
-        GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
-        GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
-        X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-        Y_data = formatSetVar(GV_APPROACH2, GV_Y_APPROACH),
-        Z_data = formatSetVar(GV_DEPTH, GV_Z_DEPTH),
-        Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
-        writeBlock(
-            X_data
-        );
-        writeBlock(
-            Y_data
-          );
-        writeBlock(
-            Z_data
-          );
-        writeBlock(
-            getProbingArguments(cycle, probeWorkOffsetCode)
-        );
-        writeBlock(
-            "M" + 10812,
-            "X@880 Z@882 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-        );
-        writeBlock(
-            "M" + 10812,
-            "Y@881 Z@882 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-        );
-        break;
+      forceXYZ();
+
+      WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
+
+      XWEB_WIDTH="B"+xyzFormat.format(cycle.width1)
+      YWEB_WIDTH="B"+xyzFormat.format(cycle.width2)
+      Z_DROP = "C"+xyzFormat.format(cycle.depth),
+
+      writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE, XWEB_WIDTH, Z_DROP, "D1");
+
+      writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE, YWEB_WIDTH, Z_DROP, "D1");
+      break;
     case "probing-xy-rectangular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));
       protectedProbeMove(cycle, x, y, z);
