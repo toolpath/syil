@@ -23,10 +23,11 @@ END_IF
 (FIND THE DECIMAL PART OF THE WCS)
 (JANKY MATH BECAUSE LNC DOESNT HAVE MODULO)
 #113 = 54 
-WHILE [#1 - #113 > 1]
+WHILE [#1 - #113 >= 1]
   #113 = #113 +1 
 END_WHILE
 #114 = [#1 - #113]*10 (EXTENDED WCS NUMBER)
+
 
 (Assume you are starting on the left X side, 0.5 inch away, of the part at the probe z height)
 (ACTUAL PROBING)
