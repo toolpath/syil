@@ -1924,135 +1924,135 @@ function onCyclePoint(x, y, z) {
           "X@880 Y@881 S@860 " + feedOutput.format(cycle.feedrate) + ";"
       );
       break;
-  case "probing-xy-outer-corner":
-    error(localize("Unsupported Probing Cycle"));
-    GV_X_APPROACH = 0,
-    GV_Y_APPROACH = 0,
-    GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
-    GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
-    X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-    Y_data = formatSetVar(GV_APPROACH2, GV_X_APPROACH),
-    Z_data = formatSetVar(GV_DEPTH, GV_Z_DEPTH),
-    Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
-    writeBlock(
-        X_data
-    );
-    writeBlock(
-        Y_data
-      );
-    writeBlock(
-        getProbingArguments(cycle, probeWorkOffsetCode)
-    );
-    writeBlock(
-        "M" + 10816,
-        "X@880 Y@881 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-    );
-    break;
-  case "probing-x-plane-angle":
+    case "probing-xy-outer-corner":
       error(localize("Unsupported Probing Cycle"));
-      protectedProbeMove(cycle, x, y, z - cycle.depth);
-      GV_X_APPROACH = xyzFormat.format(cycle.approach1),
+      GV_X_APPROACH = 0,
+      GV_Y_APPROACH = 0,
+      GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
+      GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
       X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-      GV_PROBE_GAP = xyzFormat.format(cycle.probeSpacing),
-      GV_PROBE_SPACING_DATA = formatSetVar(GV_PROBE_SPACING, GV_PROBE_GAP),
-      X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-      GV_NOMINAL_ANGLE = xyzFormat.format(cycle.nominalAngle != undefined ? cycle.nominalAngle : 90),
-      GV_NOM_ANG_DATA = formatSetVar(GV_NOM_ANGLE, GV_NOMINAL_ANGLE),
+      Y_data = formatSetVar(GV_APPROACH2, GV_X_APPROACH),
+      Z_data = formatSetVar(GV_DEPTH, GV_Z_DEPTH),
+      Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
       writeBlock(
-        X_data
+          X_data
       );
       writeBlock(
-        GV_PROBE_SPACING_DATA
+          Y_data
+        );
+      writeBlock(
+          getProbingArguments(cycle, probeWorkOffsetCode)
       );
       writeBlock(
-        GV_NOM_ANG_DATA
+          "M" + 10816,
+          "X@880 Y@881 S@860 " + feedOutput.format(cycle.feedrate) + ";"
       );
-      writeBlock(
-        "M" + 10843,
-        "X@880 D@883 A@884" + feedOutput.format(cycle.feedrate) + ";"
-      );
-      g68RotationMode = 1;
       break;
+    case "probing-x-plane-angle":
+        error(localize("Unsupported Probing Cycle"));
+        protectedProbeMove(cycle, x, y, z - cycle.depth);
+        GV_X_APPROACH = xyzFormat.format(cycle.approach1),
+        X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
+        GV_PROBE_GAP = xyzFormat.format(cycle.probeSpacing),
+        GV_PROBE_SPACING_DATA = formatSetVar(GV_PROBE_SPACING, GV_PROBE_GAP),
+        X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
+        GV_NOMINAL_ANGLE = xyzFormat.format(cycle.nominalAngle != undefined ? cycle.nominalAngle : 90),
+        GV_NOM_ANG_DATA = formatSetVar(GV_NOM_ANGLE, GV_NOMINAL_ANGLE),
+        writeBlock(
+          X_data
+        );
+        writeBlock(
+          GV_PROBE_SPACING_DATA
+        );
+        writeBlock(
+          GV_NOM_ANG_DATA
+        );
+        writeBlock(
+          "M" + 10843,
+          "X@880 D@883 A@884" + feedOutput.format(cycle.feedrate) + ";"
+        );
+        g68RotationMode = 1;
+        break;
     case "probing-y-plane-angle":
-      /*
-      protectedProbeMove(cycle, x, y, z - cycle.depth);
-      GV_X_APPROACH = xyzFormat.format(cycle.approach1),
-      X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-      GV_PROBE_GAP = xyzFormat.format(cycle.probeSpacing),
-      GV_PROBE_SPACING_DATA = formatSetVar(GV_PROBE_SPACING, GV_PROBE_GAP),
-      X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-      GV_NOMINAL_ANGLE = xyzFormat.format(cycle.nominalAngle != undefined ? cycle.nominalAngle : 90),
-      GV_NOM_ANG_DATA = formatSetVar(GV_NOM_ANGLE, GV_NOMINAL_ANGLE),
-      writeBlock(
-        X_data
-      );
-      writeBlock(
-        GV_PROBE_SPACING_DATA
-      );
-      writeBlock(
-        GV_NOM_ANG_DATA
-      );
-      writeBlock(
-        "M" + 10843,
-        "Y@880 D@883 A@884" + feedOutput.format(cycle.feedrate) + ";"
-      );
-      g68RotationMode = 1;
-      */
-      error(localize("Unsupported Probing Cycle"));
-      break;
-    case "probing-xy-pcd-hole":
-      error(localize("Unsupported Probing Cycle"));
-      break;
-    case "probing-xy-pcd-boss":
-      error(localize("Unsupported Probing Cycle"));
-      break;
-    default:
-      expandCyclePoint(x, y, z);
-    }
-
-    // place cycle operation in subprogram
-    if (cycleSubprogramIsActive) {
-      if (cycleExpanded || isProbeOperation()) {
-        cycleSubprogramIsActive = false;
-      } else {
-        // call subprogram
-        writeBlock(mFormat.format(98), "P" + oFormat.format(currentSubprogram));
-        subprogramStart(new Vector(x, y, z), new Vector(0, 0, 0), false);
+        /*
+        protectedProbeMove(cycle, x, y, z - cycle.depth);
+        GV_X_APPROACH = xyzFormat.format(cycle.approach1),
+        X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
+        GV_PROBE_GAP = xyzFormat.format(cycle.probeSpacing),
+        GV_PROBE_SPACING_DATA = formatSetVar(GV_PROBE_SPACING, GV_PROBE_GAP),
+        X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
+        GV_NOMINAL_ANGLE = xyzFormat.format(cycle.nominalAngle != undefined ? cycle.nominalAngle : 90),
+        GV_NOM_ANG_DATA = formatSetVar(GV_NOM_ANGLE, GV_NOMINAL_ANGLE),
+        writeBlock(
+          X_data
+        );
+        writeBlock(
+          GV_PROBE_SPACING_DATA
+        );
+        writeBlock(
+          GV_NOM_ANG_DATA
+        );
+        writeBlock(
+          "M" + 10843,
+          "Y@880 D@883 A@884" + feedOutput.format(cycle.feedrate) + ";"
+        );
+        g68RotationMode = 1;
+        */
+        error(localize("Unsupported Probing Cycle"));
+        break;
+      case "probing-xy-pcd-hole":
+        error(localize("Unsupported Probing Cycle"));
+        break;
+      case "probing-xy-pcd-boss":
+        error(localize("Unsupported Probing Cycle"));
+        break;
+      default:
+        expandCyclePoint(x, y, z);
       }
-    }
-    if (incrementalMode) { // set current position to clearance height
-      setCyclePosition(cycle.clearance);
-    }
 
-  // 2nd through nth cycle point
-  } else {
-    if (cycleExpanded) {
-      expandCyclePoint(x, y, z);
-    } else {
-      if (!xyzFormat.areDifferent(x, xOutput.getCurrent()) &&
-          !xyzFormat.areDifferent(y, yOutput.getCurrent()) &&
-          !xyzFormat.areDifferent(z, zOutput.getCurrent())) {
-        switch (gPlaneModal.getCurrent()) {
-        case 17: // XY
-          xOutput.reset(); // at least one axis is required
-          break;
-        case 18: // ZX
-          zOutput.reset(); // at least one axis is required
-          break;
-        case 19: // YZ
-          yOutput.reset(); // at least one axis is required
-          break;
+      // place cycle operation in subprogram
+      if (cycleSubprogramIsActive) {
+        if (cycleExpanded || isProbeOperation()) {
+          cycleSubprogramIsActive = false;
+        } else {
+          // call subprogram
+          writeBlock(mFormat.format(98), "P" + oFormat.format(currentSubprogram));
+          subprogramStart(new Vector(x, y, z), new Vector(0, 0, 0), false);
         }
       }
-      if (incrementalMode) { // set current position to retract height
-        setCyclePosition(cycle.retract);
-      }
-      writeBlock(xOutput.format(x), yOutput.format(y));
       if (incrementalMode) { // set current position to clearance height
         setCyclePosition(cycle.clearance);
       }
-    }
-  }
+
+      // 2nd through nth cycle point
+      } else {
+        if (cycleExpanded) {
+          expandCyclePoint(x, y, z);
+        } else {
+          if (!xyzFormat.areDifferent(x, xOutput.getCurrent()) &&
+              !xyzFormat.areDifferent(y, yOutput.getCurrent()) &&
+              !xyzFormat.areDifferent(z, zOutput.getCurrent())) {
+            switch (gPlaneModal.getCurrent()) {
+            case 17: // XY
+              xOutput.reset(); // at least one axis is required
+              break;
+            case 18: // ZX
+              zOutput.reset(); // at least one axis is required
+              break;
+            case 19: // YZ
+              yOutput.reset(); // at least one axis is required
+              break;
+            }
+          }
+          if (incrementalMode) { // set current position to retract height
+            setCyclePosition(cycle.retract);
+          }
+          writeBlock(xOutput.format(x), yOutput.format(y));
+          if (incrementalMode) { // set current position to clearance height
+            setCyclePosition(cycle.clearance);
+          }
+        }
+      }
 }
 
 function getProbingArguments(cycle, probeWorkOffsetCode) {
