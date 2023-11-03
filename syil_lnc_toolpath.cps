@@ -1685,7 +1685,8 @@ function onCyclePoint(x, y, z) {
       break;
     case "probing-z":
       forceXYZ();
-      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z - cycle.depth), "F50");  // protected positioning move 
+      Z_START = Math.min(z - cycle.depth + cycle.probeClearance, cycle.retract)
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(Z_START), "F50");  // protected positioning move 
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
@@ -1693,6 +1694,7 @@ function onCyclePoint(x, y, z) {
       break;
     case "probing-x-wall":
       forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z), "F50");  // protected positioning move 
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
@@ -1703,6 +1705,7 @@ function onCyclePoint(x, y, z) {
       break;
     case "probing-y-wall":
       forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z), "F50");  // protected positioning move 
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
@@ -1868,6 +1871,7 @@ function onCyclePoint(x, y, z) {
       break;
     case "probing-xy-rectangular-boss":
       forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z), "F50");  // protected positioning move 
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
@@ -1925,29 +1929,43 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-outer-corner":
-      error(localize("Unsupported Probing Cycle"));
-      GV_X_APPROACH = 0,
-      GV_Y_APPROACH = 0,
-      GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
-      GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
-      X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-      Y_data = formatSetVar(GV_APPROACH2, GV_X_APPROACH),
-      Z_data = formatSetVar(GV_DEPTH, GV_Z_DEPTH),
-      Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
-      writeBlock(
-          X_data
-      );
-      writeBlock(
-          Y_data
-        );
-      writeBlock(
-          getProbingArguments(cycle, probeWorkOffsetCode)
-      );
-      writeBlock(
-          "M" + 10816,
-          "X@880 Y@881 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-      );
+
+      x_approach = approach(cycle.approach1)
+      y_approach = approach(cycle.approach2)
+
+      /* corner numbering (as if looking down from top)
+      1 2
+      4 3
+      */
+
+      CORNER_NUM = 0
+      if (x_approach > 0 && y_approach < 0) {
+        CORNER_NUM = 1
+      }
+      else if (x_approach < 0 && y_approach < 0) {
+        CORNER_NUM = 2
+      }
+      else if (x_approach < 0 && y_approach > 0) {
+        CORNER_NUM = 3
+      }
+      else if (x_approach > 0 && y_approach > 0) {
+        CORNER_NUM = 4
+      }
+
+      forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z - cycle.depth), "F50");  // protected positioning move 
+
+      WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
+
+      IOCORNER = "B1"
+
+      NUM = "C" + CORNER_NUM
+
+      SPACING = "D"+xyzFormat.format(approach(cycle.approach1))
+
+      writeBlock(gFormat.format(65), '"PROBEXY"', WCS_CODE, IOCORNER, NUM, SPACING, "E1");
       break;
+
     case "probing-x-plane-angle":
         error(localize("Unsupported Probing Cycle"));
         protectedProbeMove(cycle, x, y, z - cycle.depth);

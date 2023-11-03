@@ -40,7 +40,7 @@ G91 G01 X-0.25                    (MOVE OFF THE EDGE A LITTLE)
 
 (traverse over to the other side)
 G31 G91 P2 Z#3 F#110             (move above the part)
-G31 G91 P2 X[#2+0.15+0.25] F#110  (move to other side of the part, 0.25 inches away)
+G31 G91 P2 X[#2+0.25+0.25] F#110  (move to other side of the part, 0.25 inches away)
 G31 G91 P2 Z-#3 F#110             (move back down to probe height)
 G31 G91 P2 X-0.4 F#111            (FEED UNTIL SKIP FAST)
 G91 G01 X0.25
