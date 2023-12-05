@@ -1961,7 +1961,9 @@ function onCyclePoint(x, y, z) {
 
       NUM = "C" + CORNER_NUM
 
-      SPACING = "D"+xyzFormat.format(approach(cycle.approach1))
+      SPACING = "D"+xyzFormat.format((cycle.probeClearance + tool.diameter / 2 + cycle.probeOvertravel))
+
+      //writeBlock("foo  "+ x +" "+ y+ " "+(cycle.probeClearance + tool.diameter / 2))
 
       writeBlock(gFormat.format(65), '"PROBEXY"', WCS_CODE, IOCORNER, NUM, SPACING, "E1");
       break;
