@@ -2,9 +2,6 @@
 
 (#1 is the expected X length of the part)
 
-(SET THE SAFTEY CHECK VARIABLE TO BLOCK SPINDLE ROTATION)
-W_TOOL_DATA[0,99,101,1] (use 101 to store probe check boolean)
-
 
 G90 G94 G17 G49 G40 G80
 G20                              (inch)
@@ -45,7 +42,7 @@ G91 G01 Z1.0                     (MOVE UP CLEAR OF THE PART)
 #106=[[-#104+#105-#1]]      (ACTUAL WIDTH minus expected width)
 
 (NOTE---This value is a diameter, but the UI shows a radius in tool offset menu)
-MSG_OK["Computed Probe Diam", "Probe Tip RAD [#106][#106/2]",""]
+;MSG_OK["Computed Probe Diam", "Probe Tip RAD [#106][#106/2]",""]
 W_TOOL_DATA[0,99,3,#106]
 
 M99
