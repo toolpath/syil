@@ -462,6 +462,10 @@ function onOpen() {
     break;
   }
 
+  // Save the G59 Z axis into a variable #199 for use with G10 calls
+  writeComment("G59 stores the zero point. #199 can be used with G10 commands to pull G59 into a local WCS");
+  writeBlock("#199 = R_G53G59_COOR[0,59,3]");
+
 }
 
 function onComment(message) {
