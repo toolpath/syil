@@ -78,8 +78,8 @@ _Figure 2. Probe X Routine_
 
 _Table 5. Probe X Syntax_
 
-Example MDI Command: G65 "PROBEX" A54 B-1 C.5
-
+Example MDI Command To Probe Right Side: G65 "PROBEX" A54 B-1
+Example MDI Command To Probe Left Side: G65 "PROBEX" A54 B1
 
 **PROBEY**
 
