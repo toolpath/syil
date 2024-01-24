@@ -1,6 +1,9 @@
-MSG_OK["AUTO PROBING THE INSIDE OF A CIRCLE", "Move roughly into the center of the bore", ""]
+(#1 is the WCS number) 
+(#4 turns the messaging on/off: 0 leaves it on (default); 1 turns it off )
 
-; #1 is the WCS number
+IF [#4 < 1]
+MSG_OK["AUTO PROBING THE INSIDE OF A CIRCLE", "Move roughly into the center of the bore", ""]
+END_IF
 
 (SET THE WCS BECAUSE WE WILL USE IT)
 G#1
@@ -8,12 +11,11 @@ G#1
 #100=R_SYS_INFO[0,2]             (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
 
 
-; #144 is the probe signal boolean
-; #103, #104 are the left/right machine coordinates
-; #105, #106 are the back/front machine coordinates
+(#103, #104 are the left/right machine coordinates)
+(#105, #106 are the back/front machine coordinates)
 
-;PROBE diameter compensation not needed since we're dividing by 2;
-;    The width of the probe effectively gets canceled
+(PROBE diameter compensation not needed since we're dividing by 2)
+(The width of the probe effectively gets canceled)
 
 
 #110 = 100 (FEED SPEED)
@@ -50,9 +52,15 @@ G91 G0  X0.15                    (MOVE OFF SURFACE A LITTLE)
 
 (approximate X center and store it so we can use it for next command)
 #107=[[#103+#104]/2]
-W_G53G59_COOR[0,#1,1,#107]
+(JSG TODO: STORE THIS INTO A GLOBAL VARIABLE INSTEAD)
+IF [#121 < 1]  
+  W_G53G59_COOR[0,#1,1,#107]
+ELSE
+  W_G54EXP_COOR[0,#121,1,#107]
+END_IF
 
 (MOVE TO APPROX X CENTER BEFORE Y PROBE)
+(JSG TODO: COMMAND MOVE IN MACHINE ABSOLUTE COORDINATES?? OTHERWISE COMMAND A DELTA FROM CURRENT POSITION INSTEAD)
 G90 G0 X0
 
 (PROBE Y MOVING FORWARD)
@@ -71,9 +79,15 @@ G91 G0  Y-0.15
 
 (approximate Y center and store it so we can use it for next command)
 #107=[[#105+#106]/2]
-W_G53G59_COOR[0,#1,2,#107]
+(JSG TODO: STORE THIS INTO A GLOBAL VARIABLE INSTEAD)
+IF [#121 < 1]  
+  W_G53G59_COOR[0,#1,2,#107]
+ELSE
+  W_G54EXP_COOR[0,#121,2,#107]
+END_IF
 
 (MOVE TO APPROX Y CENTER BEFORE REDOING THE XPROBE)
+(JSG TODO: COMMAND MOVE IN MACHINE ABSOLUTE COORDINATES?? OTHERWISE COMMAND A DELTA FROM CURRENT POSITION INSTEAD)
 G90 G0 Y0
 
 (PROBE X AGAIN --- MORE ACCURATE SINCE WE CENTERED IN THE BORE)
@@ -92,6 +106,7 @@ G31 G91 P2 X-0.2 F#112           (FEED UNTIL SKIP SLOW)
 G91 G0  X0.15                    (MOVE OFF SURFACE A LITTLE)
 
 (COMPUTE REAL X AND STORE IT)
+(JSG TODO: STORE THIS INTO A GLOBAL VARIABLE INSTEAD)
 #107=[[#103+#104]/2]
 IF [#121 < 1]  
   W_G53G59_COOR[0,#1,1,#107]
@@ -118,6 +133,7 @@ G31 G91 P2 Y0.1 F#112            (FEED UNTIL SKIP SLOW)
 G91 G0  Y-0.15                   (MOVE OFF SURFACE A LITTLE)
 
 (COMPUTE REAL Y AND STORE IT)
+(JSG TODO: STORE THIS INTO A GLOBAL VARIABLE INSTEAD)
 #107=[[#105+#106]/2]
 IF [#121 < 1]  
   W_G53G59_COOR[0,#1,2,#107]
@@ -126,6 +142,7 @@ ELSE
 END_IF
 
 (MOVE TO BORE CENTER)
+(TOOD: COMMAND USING MACHINE ABSOLUTE OR RELATIVE COORDINATES)
 G90 G0 X0 Y0
 
 M99

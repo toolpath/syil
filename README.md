@@ -31,15 +31,11 @@ Most of these are pretty self explanatory, but the `PROBEX` and `PROBEY` macros 
 	- Improve the probe tip diameter calibration routine to use a gague ring (at least optionally). Right now it just assumes a 123 block. 
 
 # WISHLIST of stuff I don't yet know how to do
-	- Add tool unload macro that will call up a given tool, and set its offset to something negative and change the tool number in that pocket to some non-valid tool number (indicating an empty pocket)
-	- Add a tool load macro that will search for any open pocket to load the tool. If no empty pockets are found, pop up a dialog and ask which tool to replace (and then use the unload macro to call it up and reset it first)
 	- Add a `CHECKTOOL` macro that can look at the tool table and see if a tool number is present (would like to add this to the top of my postprocessor!)
 	- Add a macro to check min/max values against soft-limits (would also like to add this to my post processor) 
 	- Add a macro to calibrate the tool probe z value
 	- Test out a spindle-position command in the probe diameter calibration. Probe at different spindle angles, and record the values. Then compute a true-center for the probe and store the various offsets as some kind of angle map. Use that to compensate for any probe runout. 
 
-
-I would have already written the load/unload tool macros, but I couldn't find any documentation on how to read the tool table values. Any hints there would be appreciated!
 
 The spindle rotation command requires some kind of update from Mr. Chen. I installed it, but haven't had time to play with that yet. 
 
