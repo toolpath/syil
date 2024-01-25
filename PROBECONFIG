@@ -1,0 +1,16 @@
+(PROBECONFIG)
+(Description: Probe Configuration File)
+(Initial Coding 1/25/2024: Joshua Smith)
+(macro to setup probe specs and units, called by every macro)
+
+(important local variables)
+#100 = R_SYS_INFO[0,2]  (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
+#110 = 100              (FEED SPEED in/m, change to match your unit of choice, for metric users start at 2540mm))
+#111 = 50               (FAST PROBE SPEED in/m, change to match your unit of choice, for metric users start at 1270mm)
+#112 = 2.5              (SLOW PROBE SPEED in/m, change to match your unit of choice, for metric users start at 63mm)
+#120 = .25              (WEB BACKOFF DISTANCE in, change to match your unit of choice, for metric users start at 6mm)
+
+
+G90
+
+M99
