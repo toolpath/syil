@@ -6,7 +6,7 @@
 (Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset(G54.5))
 (Argument B -> #2 is the desired probing distance. Enter a positive value to probe on the left side and a negative value to probe on the right side)
 
-
+(important local variables)
 #100 = R_SYS_INFO[0,2]  (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
 #110 = 100              (FEED SPEED)
 #111 = 50               (FAST PROBE SPEED)

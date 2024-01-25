@@ -1,49 +1,43 @@
-(PROBE Y FROM FRONT OR BACK)
+(PROBEY)
+(Description: Probe in Y from the front or back)
+(Initial Coding: Justin Gray)
+(Modified 1/14/2024: Joshua Smith)
+(Simplified WCS extended number math, added probe error checking, added probe distance argument)
+(Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset(G54.5))
+(Argument B -> #2 is the desired probing distance. Enter a positive value to probe the front and a negative value to probe the back)
+
+(important local variables)
+#100 = R_SYS_INFO[0,2]  (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
+#110 = 100              (FEED SPEED)
+#111 = 50               (FAST PROBE SPEED)
+#112 = 2.5              (SLOW PROBE SPEED)
+
+(CALCULATE EXTENDED WCS NUMBER)
+(FIX is a round down function and MOD is modulo)
+#114 = MOD[#1,FIX[#1]]*10 
 
 
-(#1 is the work coordinate system to store offsets in)
-(#2 is +1 for front, and -1 right back)
+(Probe X the desired distance and at fast feed)
+G31 G91 P2 Y[#2] F#111           (FEED UNTIL SKIP FAST)
 
-(#4 turns the messaging on/off: 0 leaves it on (default); 1 turns it off )
+(Check that the probe has triggered)
+IF[R_SKIP[0,1] == 1]
+ G91 G01 Y-[#2*0.25]                  (back off 1/4 the probing distance)
+ G31 G91 P2 Y[#2] F#112               (FEED UNTIL SKIP SLOW)
+ #104=R_MACH_COOR[0,2]                (GET MACHINE Y COORDINATE)
+ G91 G01 Y-[#2*0.25]                  (back off 1/4 the probing distance)
+ #105 = [R_TOOL_DATA[0,#100,3]/2]     (READ THE PROBE TOOL DIAMETER AND CONVERT TO RADIUS)
+ #106 = [#104+[[#2/abs[#2]]*#105]]    (current position +/- probe diameter)
 
-IF [#4 < 1]
-IF [#2 > 0]                      (LEFT SIDE)
-    MSG_OK["Probing Y", "Move the probe to the front side probe location, roughly 0.5 inches away",""]
-ELSE                             (RIGHT SIDE)
-    MSG_OK["Probing Y", "Move the probe to the back side probe location, roughly 0.5 inches away",""]
-END_IF
-END_IF
-
-#110 = 100 (FEED SPEED)
-#111 = 50 (FAST PROBE SPEED)
-#112 = 2.5 (SLOW PROBE SPEED)
-
-(FIND THE DECIMAL PART OF THE WCS)
-(JANKY MATH BECAUSE LNC DOESNT HAVE MODULO)
-#113 = 54 
-WHILE [#1 - #113 >= 1]
-  #113 = #113 +1 
-END_WHILE
-#114 = [#1 - #113]*10 (EXTENDED WCS NUMBER)
-
-
-(Assume you are starting on the left X side, 0.5 inch away, of the part at the probe z height)
-(ACTUAL PROBING)
-G31 G91 P2 Y[#2*1.0] F#111           (FEED UNTIL SKIP FAST)
-G91 G01 Y-[#2*0.25]
-G31 G91 P2 Y[#2*0.3] F#112           (FEED UNTIL SKIP SLOW)
-#104=R_MACH_COOR[0,2]                (GET MACHINE Y COORDINATE)
-G91 G01 Y-[#2*0.25]                  (MOVE OFF THE EDGE A LITTLE)
-
-#105 = [R_TOOL_DATA[0,99,3]/2]       (READ THE PROBE TOOL DIAMETER AND CONVERT TO RADIUS)
-#106=[#104+[#2*#105]]                (current position + probe off)
-
-
-(STORE Y OFFSET)
+(STORE Y OFFSET For WCS Zero)
 IF [#114 < 1]  
   W_G53G59_COOR[0,#1,2,#106]
 ELSE
   W_G54EXP_COOR[0,#114,2,#106]
+END_IF
+
+ELSE
+ MSG_OK["Probing Y", "ERROR: FAILED TO PROBE OBJECT",""]
 END_IF
 
 G90
