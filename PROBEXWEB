@@ -14,6 +14,8 @@
 #110 = 100              (FEED SPEED)
 #111 = 50               (FAST PROBE SPEED)
 #112 = 2.5              (SLOW PROBE SPEED)
+#121 = R_TOOL_DATA[0,#100,3]     (READ THE PROBE TOOL DIAMETER)
+
 
 (CALCULATE EXTENDED WCS NUMBER)
 (FIX is a round down function and MOD is modulo)
@@ -93,7 +95,7 @@ G91 G01 Z#3                       (MOVE UP CLEAR OF THE PART)
 
 (COMPUTE RELATIVE DISTANCE TO CENTER OF THE PART)
 #106=[[#105-#104]/2]             (center point calculation)
-#107= ABS[[#105-#104]]           (calculate width of part)
+#107= ABS[[#105-#104]]-#121      (calculate width of part: distance - diameter)
 G91 G01 X[-0.25 - #106]          (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,1]            (GET MACHINE Y COORDINATE)
 
