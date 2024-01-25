@@ -2,7 +2,7 @@
 (Description: Probe in Z from the above stock)
 (Initial Coding: Justin Gray)
 (Modified 1/14/2024: Joshua Smith)
-(Simplified WCS extended number math, added probe error checking, added probe distance argument)
+(Simplified WCS extended number math, added probe error checking, added probe distance argument,removed air blast)
 (Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset(G54.5))
 (Argument B -> #2 is the desired probing distance and should be negative)
 
