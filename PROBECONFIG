@@ -4,12 +4,14 @@
 (macro to setup probe specs and units, called by every macro)
 
 (important local variables)
-@100 = R_SYS_INFO[0,2]           (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
-@101 = R_TOOL_DATA[0,@1,3]       (READ THE PROBE TOOL DIAMETER)
-@102 = 100                       (FEED SPEED in/m, change to match your unit of choice, for metric users start at 2540mm))
-@103 = 50                        (FAST PROBE SPEED in/m, change to match your unit of choice, for metric users start at 1270mm)
-@104 = 2.5                       (SLOW PROBE SPEED in/m, change to match your unit of choice, for metric users start at 63mm)
-@105 = .25                       (WEB BACKOFF DISTANCE in, change to match your unit of choice, for metric users start at 6mm)
+@100 = R_SYS_INFO[0,2]           (TOOL NUMBER)
+@101 = R_TOOL_DATA[0,@100,3]     (TOOL DIAMETER)
+@102 = @101/2                    (TOOL RADIUS)
+@103 = 100                       (FEED SPEED in/m, change to match your unit of choice, for metric users start at 2540mm))
+@104 = 50                        (FAST PROBE SPEED in/m, change to match your unit of choice, for metric users start at 1270mm)
+@105 = 2.5                       (SLOW PROBE SPEED in/m, change to match your unit of choice, for metric users start at 63mm)
+@106 = .25                       (WEB PROBE DISTANCE in, change to match your unit of choice, for metric users start at 6mm)
+@107 = [R_TOOL_DATA[0,@100,203]] (TOOL LENGHT OFFSET)
 
 G90
 

@@ -12,12 +12,12 @@
 G65 "PROBECONFIG"
 
 (important local variables)
-#100 = R_SYS_INFO[0,2]  (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
-#110 = 100              (FEED SPEED)
-#111 = 50               (FAST PROBE SPEED)
-#112 = 2.5              (SLOW PROBE SPEED)
-#121 = R_TOOL_DATA[0,#100,3]     (READ THE PROBE TOOL DIAMETER)
-
+#100 = @100             (TOOL NUMBER PROVIDED BY PROBECONFIG MACRO)
+#110 = @103             (FEED SPEED PROVIDED BY PROBECONFIG MACRO)
+#111 = @104             (FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
+#112 = @105             (SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
+#121 = @101             (TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO)
+#122 = @106             (WEB PROBE DISTANCE PROVIDED BY PROBECONFIG MACRO)
 
 (CALCULATE EXTENDED WCS NUMBER)
 (FIX is a round down function and MOD is modulo)
@@ -25,7 +25,7 @@ G65 "PROBECONFIG"
 
 (probe X starting from a negative offset and probing in the positive direction)
 (MOVE TO -X SIDE OF THE PART, BEFORE STARTING TO PROBE)
-G31 G91 P2 X-[#2/2+0.25] F#110
+G31 G91 P2 X-[#2/2+#122] F#110
 
 (Error Checking)
 IF[R_SKIP[0,1] == 1]
@@ -45,7 +45,7 @@ END_IF
 
 
 (Probe X on left side)
-G31 G91 P2 X0.4 F#111             (FEED UNTIL SKIP FAST)
+G31 G91 P2 X[#122+#122*0.25] F#111             (FEED PROBING DINSTANCE + 1/4 UNTIL SKIP FAST)
 
 (Error Checking)
 IF[R_SKIP[0,1] == 0]
@@ -53,16 +53,16 @@ IF[R_SKIP[0,1] == 0]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
-G91 G01 X-0.25                    (Back off 1/4 inch or mm)
-G31 G91 P2 X0.3 F#112             (FEED UNTIL SKIP SLOW)
-#104=R_MACH_COOR[0,1]             (GET FIRST MACHINE X COORDINATE)
-G91 G01 X-0.25                    (Back off 1/4 inch or mm)
+G91 G01 X[-#122*0.25]                     (Back off 1/4 inch or mm)
+G31 G91 P2 X[#122*0.25] F#112             (FEED UNTIL SKIP SLOW)
+#104=R_MACH_COOR[0,1]                     (GET FIRST MACHINE X COORDINATE)
+G91 G01 X-[#122*0.25]                     (Back off 1/4 inch or mm)
 
 (lift Z after probe)
-G31 G91 P2 Z#3 F#110             (move above the part)
+G31 G91 P2 Z#3 F#110                      (move above the part)
 
 (Move to opposite side of part)
-G31 G91 P2 X[#2+0.25+0.25] F#110  (move to other side of the part, 0.25 inches away)
+G31 G91 P2 X[#2+#122+#122] F#110          (move to other side of the part, probe distance  away)
 
 (Error Checking)
 IF[R_SKIP[0,1] == 1]
@@ -80,7 +80,7 @@ IF[R_SKIP[0,1] == 1]
 END_IF
 
 (Probe X on right side)
-G31 G91 P2 X-0.4 F#111            (FEED UNTIL SKIP FAST)
+G31 G91 P2 X[-1*[#122+#122*0.25]] F#111      (FEED PROBING DINSTANCE + 1/4 UNTIL SKIP FAST)
 
 (Error Checking)
 IF[R_SKIP[0,1] == 0]
@@ -88,17 +88,17 @@ IF[R_SKIP[0,1] == 0]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
-G91 G01 X0.25                     (Back off 1/4 inch or mm)
-G31 G91 P2 X-0.3 F#112            (FEED UNTIL SKIP SLOW)
-#105=R_MACH_COOR[0,1]             (GET SECOND MACHINE X COORDINATE)
-G91 G01 X0.25 F#110               (MOVE OFF THE EDGE A LITTLE)
-G91 G01 Z#3                       (MOVE UP CLEAR OF THE PART)
+G91 G01 X[#122*0.25]                      (Back off 1/4 inch or mm)
+G31 G91 P2 X[-#122*0.25] F#112            (FEED UNTIL SKIP SLOW)
+#105=R_MACH_COOR[0,1]                     (GET SECOND MACHINE X COORDINATE)
+G91 G01 X[#122*0.25] F#110                (MOVE OFF THE EDGE A LITTLE)
+G91 G01 Z#3                               (MOVE UP CLEAR OF THE PART)
 
 
 (COMPUTE RELATIVE DISTANCE TO CENTER OF THE PART)
 #106=[[#105-#104]/2]             (center point calculation)
 #107= ABS[[#105-#104]]-#121      (calculate width of part: distance - diameter)
-G91 G01 X[-0.25 - #106]          (MOVE TO CENTER OF THE PART)
+G91 G01 X[-#122*0.25 - #106]     (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,1]            (GET MACHINE Y COORDINATE)
 
 

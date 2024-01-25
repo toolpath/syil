@@ -10,10 +10,11 @@
 G65 "PROBECONFIG"
 
 (important local variables)
-#100 = R_SYS_INFO[0,2]  (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
-#110 = 100              (FEED SPEED)
-#111 = 50               (FAST PROBE SPEED)
-#112 = 2.5              (SLOW PROBE SPEED)
+#100 = @100             (TOOL NUMBER PROVIDED BY PROBECONFIG MACRO)
+#110 = @103             (FEED SPEED PROVIDED BY PROBECONFIG MACRO)
+#111 = @104             (FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
+#112 = @105             (SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
+#105 = @107             (TOOL LENGTH PROVIDED BY PROBECONFIG MACRO)
 
 (CALCULATE EXTENDED WCS NUMBER)
 (FIX is a round down function and MOD is modulo)
@@ -31,7 +32,6 @@ G31 G91 P2 Z[#2] F#111
   G31 G91 P2 Z[#2] F#112               (Probe X the desired distance at slow feed)
   #104=R_MACH_COOR[0,3]                (GET MACHINE X COORDINATE)
   G91 G01 Z-[#2*0.25]                  (back off 1/4 the probing distance)
-  #105 = [R_TOOL_DATA[0,#100,203]]     (READ THE PROBE TOOL length Offset)
   #106 = [#104-#105]                   (current position - probe length)
 
   (STORE X OFFSET FOR WCS ZERO)
