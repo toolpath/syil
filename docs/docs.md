@@ -34,7 +34,12 @@ _Figure 1. Macro Argument to local variable mapping_
 # Probe Calibration
 
 **Basic Probe Setup**
-Before performing any calibration routines your probe must be concentric. To make your probe concentric you must place a dial indicator on the ruby tip and rotate the probe in the spindle by hand. Adjust your probe until the dial indicator doesn't move or is within a few tenths. The height of your probe can be found using a tool setter if the force to trigger the tool setter is less than the probe. The Syil TTC-200 works with this method. If you don't have a tool setter, you can use a tool of known length and a 123 block. we recommend using a Maritool probe calibrator in this case. 
+
+Before performing any calibration routines your probe must be concentric. To make your probe concentric you must place a dial indicator on the ruby tip and rotate the probe in the spindle by hand. Adjust your probe until the dial indicator doesn't move or is within a few tenths. The height of your probe can be found using a tool setter if the force to trigger the tool setter is less than the probe. The Syil TTC-200 works with this method. If you don't have a tool setter, you can use a tool of known length and a 123 block. we recommend using a Maritool probe calibrator in this case.
+
+![probeIndicate](images/probeIndicate.jpg)
+
+_Figure 2. Indicating Probe_
 
 **CALIBRATEPROBEX**
 
@@ -71,7 +76,7 @@ The Probe X macro probes the side of a part in the X direction. The A argument i
 
 ![probeX](images/probeX.png)
 
-_Figure 2. Probe X Routine_
+_Figure 3. Probe X Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument |
 | --- | --- | --- | --- |
@@ -88,7 +93,7 @@ The Probe Y macro probes the side of a part in the Y direction. The A argument i
 
 ![probeY](images/probeY.png)
 
-_Figure 3. Probe Y Routine_
+_Figure 4. Probe Y Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument |
 | --- | --- | --- | --- |
@@ -106,7 +111,7 @@ The Probe Z macro probes the top surface of a part in the negative Z direction. 
 
 ![probeZ](images/probeZ.png)
 
-_Figure 4. Probe Z Routine_
+_Figure 5. Probe Z Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument |
 | --- | --- | --- | --- |
@@ -123,7 +128,7 @@ The Probe X Web macro probes two sides of the stock in the X direction and calcu
 
 ![probeXweb](images/probeXweb.png)
 
-_Figure 5. Probe X Web Routine_
+_Figure 6. Probe X Web Routine_
 
 | GCode | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
@@ -140,7 +145,7 @@ The Probe Y Web macro probes two sides of the stock in the Y direction and calcu
 
 ![probeYweb](images/probeYweb.png)
 
-_Figure 6. Probe Y Web Routine_
+_Figure 7. Probe Y Web Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
@@ -157,7 +162,7 @@ The Probe Circular Boss macro probes 4 points of a circular boss and calculates 
 
 ![probeCircularBoss](images/probeCircularBoss.png)
 
-_Figure 7. Probe Circular Boss Routine_
+_Figure 8. Probe Circular Boss Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
@@ -174,7 +179,7 @@ The Probe Bore macro probes 4 points inside of a bore and calculates the center.
 
 ![probeBore](images/probeBore.png)
 
-_Figure 8. Probe Bore Routine_
+_Figure 9. Probe Bore Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
@@ -191,7 +196,7 @@ The Probe Rectangular Boss macro probes all sides of the stock and calculates th
 
 ![probeRectangularBoss](images/probeRectangularBoss.png)
 
-_Figure 9. Probe Rectangular Boss Routine_
+_Figure 10. Probe Rectangular Boss Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- |
@@ -208,7 +213,7 @@ The Probe Rectangular Pocket macro probes all internal sides of a pocket and cal
 
 ![probeRectangularPocket](images/probeRectangularPocket.png)
 
-_Figure 10. Probe Rectangular Pocket Routine_
+_Figure 11. Probe Rectangular Pocket Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- |
@@ -225,7 +230,7 @@ The Probe Slot X macro probes the internal sides of a pocket in the X direction 
 
 ![probeSlot](images/probeSlot.png)
 
-_Figure 11. Probe Slot Routine_
+_Figure 12. Probe Slot Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
@@ -242,7 +247,7 @@ The Probe Slot Y macro probes the internal sides of a pocket in the Y direction 
 
 ![probeSlot](images/probeSlot.png)
 
-_Figure 11. Probe Slot Routine_
+_Figure 13. Probe Slot Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
@@ -259,7 +264,7 @@ The Probe Outside Corner macro probes the outside edges of the stock and calcula
 
 ![probeExternalCorner](images/probeExternalCorner.png)
 
-_Figure 12. Probe Outside Corner Routine_
+_Figure 14. Probe Outside Corner Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- |
@@ -276,7 +281,7 @@ The Probe inside Corner macro probes the inside edges of a pocket and calculates
 
 ![probeInternalCorner](images/probeInternalCorner.png)
 
-_Figure 13. Probe Inside Corner Routine_
+_Figure 15. Probe Inside Corner Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
