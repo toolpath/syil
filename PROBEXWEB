@@ -8,6 +8,8 @@
 (#3 is the Z drop height)
 (#4 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
 
+(load probe config)
+G65 "PROBECONFIG"
 
 (important local variables)
 #100 = R_SYS_INFO[0,2]  (SAVE CURRENT TOOL NUMBER TO #100 --- assume its the probe)
