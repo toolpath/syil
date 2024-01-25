@@ -34,6 +34,7 @@ _Figure 1. Macro Argument to local variable mapping_
 # Probe Calibration
 
 **Basic Probe Setup**
+Before performing any calibration routines your probe must be concentric. To make your probe concentric you must place a dial indicator on the ruby tip and rotate the probe in the spindle by hand. Adjust your probe until the dial indicator doesn't move or is within a few tenths. The height of your probe can be found using a tool setter if the force to trigger the tool setter is less than the probe. The Syil TTC-200 works with this method. If you don't have a tool setter, you can use a tool of known length and a 123 block. we recommend using a Maritool probe calibrator in this case. 
 
 **CALIBRATEPROBEX**
 
@@ -83,7 +84,7 @@ Example MDI Command To Probe Left Side: G65 "PROBEX" A54 B1
 
 **PROBEY**
 
-The Probe Y macro probes the side of a part in the Y direction. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z before probing in Y. The Z distance should be 0 or a negative value. The C argument is the distance to probe in Y. The Y distance can be a positive or negative value depending on which side of the stock you would like to probe. If Y distance is too small, the macro will report an error at the end of the routine.
+The Probe Y macro probes the side of a part in the Y direction. The A argument is the selected work coordinate(G54-59). The B argument is the distance to probe in Y. The Y distance can be a positive or negative value depending on which side of the stock you would like to probe. If Y distance is too small, the macro will report an error at the end of the routine.
 
 ![probeY](images/probeY.png)
 
@@ -95,12 +96,13 @@ _Figure 3. Probe Y Routine_
 
 _Table 6. Probe Y Syntax_
 
-Example MDI Command: G65 "PROBEY" A54 B-1 C.5
+Example MDI Command To Probe the Front : G65 "PROBEY" A54 B1
+Example MDI Command To Probe the Back  : G65 "PROBEY" A54 B-1
 
 
 **PROBEZ**
 
-The Probe Z macro probes the top surface of a part in the negative Z direction. The A argument is the selected work coordinate(G54-59). The B argument is the distance to probe in Z and should be a negative value. If the Z distance is too small, the macro will report an error at the end of the routine.
+The Probe Z macro probes the top surface of a part in the negative Z direction. The A argument is the selected work coordinate(G54-59). The B argument is the distance to probe in Z and should be a negative value. If the Z distance is too small or a positive value, the macro will report an error at the end of the routine.
 
 ![probeZ](images/probeZ.png)
 
