@@ -10,8 +10,9 @@
 @103 = 100                       (FEED SPEED in/m, change to match your unit of choice, for metric users start at 2540mm))
 @104 = 50                        (FAST PROBE SPEED in/m, change to match your unit of choice, for metric users start at 1270mm)
 @105 = 2.5                       (SLOW PROBE SPEED in/m, change to match your unit of choice, for metric users start at 63mm)
-@106 = .25                       (WEB PROBE DISTANCE in, change to match your unit of choice, for metric users start at 6mm)
+@106 = .5                        (WEB PROBE DISTANCE in, change to match your unit of choice, for metric users start at 6mm)
 @107 = [R_TOOL_DATA[0,@100,203]] (TOOL LENGHT OFFSET)
+@108 = .25                       (PROBE BACKOFF DISTANCE,change to match your unit of choice, for metric users start at 6mm)
 
 G90
 

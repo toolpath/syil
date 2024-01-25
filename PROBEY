@@ -15,6 +15,7 @@ G65 "PROBECONFIG"
 #111 = @104             (FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
 #112 = @105             (SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
 #105 = @102             (TOOL RADIUS PROVIDED BY PROBECONFIG MACRO)
+#108 = @108             (PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO)
 
 (CALCULATE EXTENDED WCS NUMBER)
 (FIX is a round down function and MOD is modulo)
@@ -26,10 +27,10 @@ G31 G91 P2 Y[#2] F#111           (FEED UNTIL SKIP FAST)
 
 (Check that the probe has triggered)
 IF[R_SKIP[0,1] == 1]
- G91 G01 Y-[#2*0.25]                  (back off 1/4 the probing distance)
+ G91 G01 Y-[#108]                     (back off 1/4 the probing distance)
  G31 G91 P2 Y[#2] F#112               (FEED UNTIL SKIP SLOW)
  #104=R_MACH_COOR[0,2]                (GET MACHINE Y COORDINATE)
- G91 G01 Y-[#2*0.25]                  (back off 1/4 the probing distance)
+ G91 G01 Y-[#108]                     (back off 1/4 the probing distance)
  #106 = [#104+[[#2/abs[#2]]*#105]]    (current position +/- probe radius)
 
 (STORE Y OFFSET For WCS Zero)
