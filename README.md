@@ -233,13 +233,13 @@ Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54 B3
 
 
   
-**PROBERECTANGULARPOCKET**
+**PROBEPOCKET**
 
-The Probe Rectangular Pocket macro probes all internal sides of a pocket and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the length of the pocket in X and the C argument is the width of the pocket in Y. The D argument enables inspection reporting which pops up a calculated length and width after the routine finishes. The Probe should be roughly centered and inside of the pocket before beginning.
+The Probe Pocket macro probes all internal sides of a pocket and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the length of the pocket in X and the C argument is the width of the pocket in Y. The D argument enables inspection reporting which pops up a calculated length and width after the routine finishes. The Probe should be roughly centered and inside of the pocket before beginning.
 
 ![probeRectangularPocket](images/probeRectangularPocket.png)
 
-_Figure 12. Probe Rectangular Pocket Routine_
+_Figure 12. Probe Pocket Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- |
