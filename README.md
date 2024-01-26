@@ -4,7 +4,7 @@ Justin Gray
 
 Joshua Smith
 
-![syil_x7](docs/images/syil_x7.png)
+![syil_x7](images/syil_x7.png)
 
 **Introduction**
 
@@ -32,7 +32,7 @@ Example MDI Command: G65 "PROBESQUARE" A54 B2
 
 Example MDI Command: G65 "PROBESQUARE" A54.5 B2
 
-![macro_argument_to_local_variables](docs/images/macro_argument_to_local_variables.png)
+![macro_argument_to_local_variables](images/macro_argument_to_local_variables.png)
 
 _Figure 1. Macro Argument to local variable mapping_
 
@@ -43,7 +43,7 @@ _Figure 1. Macro Argument to local variable mapping_
 
 Before performing any calibration routines your probe must be concentric. To make your probe concentric you must place a dial indicator on the ruby tip and rotate the probe in the spindle by hand. Adjust your probe until the dial indicator doesn't move or is within a few tenths. The height of your probe can be found using a tool setter if the force to trigger the tool setter is less than the probe. The Syil TTC-200 works with this method. If you don't have a tool setter, you can use a tool of known length and a 123 block. we recommend using a Maritool probe calibrator in this case.
 
-![probeIndicate](docs/images/probeIndicate.jpg)
+![probeIndicate](images/probeIndicate.jpg)
 
 _Figure 2. Indicating Probe_
 
@@ -69,7 +69,7 @@ _Table 3. Calibrate Probe Y Syntax_
 
 The calibrate probe diameter macro uses a ring guage to calibrate the diameter of a probes ruby tip. It's important that the probe is concentric before beginning. The A argument is the work offset that the probe will center in. The B argument is the diameter of the ring guage. The probe must be inside of the guage and roughly centered.
 
-![CALIBRATEPROBEDIAMETER](docs/images/probeRingGuage.png)
+![CALIBRATEPROBEDIAMETER](images/probeRingGuage.png)
 
 _Figure 3. Indicating Probe_
 
@@ -89,7 +89,7 @@ Example MDI Command: G65 "CALIBRATEPROBEDIAMETER" A54 B2
 
 The Probe X macro probes the side of a part in the X direction. The A argument is the selected work coordinate(G54-59). The B argument is the distance to probe in X. The X distance can be a positive or negative value depending on which side of the stock you would like to probe. If the X distance is too small, the macro will report an error at the end of the routine.
 
-![probeX](docs/images/probeX.png)
+![probeX](images/probeX.png)
 
 _Figure 4. Probe X Routine_
 
@@ -107,7 +107,7 @@ Example MDI Command To Probe Left Side: G65 "PROBEX" A54 B1
 
 The Probe Y macro probes the side of a part in the Y direction. The A argument is the selected work coordinate(G54-59). The B argument is the distance to probe in Y. The Y distance can be a positive or negative value depending on which side of the stock you would like to probe. If Y distance is too small, the macro will report an error at the end of the routine.
 
-![probeY](docs/images/probeY.png)
+![probeY](images/probeY.png)
 
 _Figure 5. Probe Y Routine_
 
@@ -126,7 +126,7 @@ Example MDI Command To Probe the Back  : G65 "PROBEY" A54 B-1
 
 The Probe Z macro probes the top surface of a part in the negative Z direction. The A argument is the selected work coordinate(G54-59). The B argument is the distance to probe in Z and should be a negative value. If the Z distance is too small or a positive value, the macro will report an error at the end of the routine.
 
-![probeZ](docs/images/probeZ.png)
+![probeZ](images/probeZ.png)
 
 _Figure 6. Probe Z Routine_
 
@@ -143,7 +143,7 @@ Example MDI Command: G65 "PROBEZ" A54 B-.5
 
 The Probe X Web macro probes two sides of the stock in the X direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the length of the stock. The C argument is the distance the probe should move in Z below the edges of the stock. The D argument enables inspection reporting which pops up a calculated length after the routine finishes. The Probe should be roughly centered and above the stock before beginning.
 
-![probeXweb](docs/images/probeXweb.png)
+![probeXweb](images/probeXweb.png)
 
 _Figure 7. Probe X Web Routine_
 
@@ -161,7 +161,7 @@ Example MDI Command With Inspection Report: G65 "PROBEXWEB" A54 B3 C-.5 D1
 
 The Probe Y Web macro probes two sides of the stock in the Y direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the width of the stock. The C argument is the distance the probe should move in Z below the edges of the stock.  The D argument enables inspection reporting which pops up a calculated width after the routine finishes. The Probe should be roughly centered and above the stock before beginning.
 
-![probeYweb](docs/images/probeYweb.png)
+![probeYweb](images/probeYweb.png)
 
 _Figure 8. Probe Y Web Routine_
 
@@ -180,7 +180,7 @@ Example MDI Command With Inspection Report: G65 "PROBEYWEB" A54 B2 C-.5 D1
 
 The Probe Circular Boss macro probes 4 points of a circular boss and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the diameter of the stock. The C argument is the distance the probe should move in Z below the edges of the stock.  The D argument enables inspection reporting which pops up a calculated diameter after the routine finishes. The Probe should be roughly centered and above the stock before beginning.
 
-![probeCircularBoss](docs/images/probeCircularBoss.png)
+![probeCircularBoss](images/probeCircularBoss.png)
 
 _Figure 9. Probe Circular Boss Routine_
 
@@ -198,7 +198,7 @@ Example MDI Command With Inspection Report: G65 "PROBECIRCULARBOSS" A54 B2 C-.5 
 
 The Probe Bore macro probes 4 points inside of a bore and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the diameter of the bore. The C argument enables inspection reporting which pops up a calculated diameter after the routine finishes. The Probe should be roughly centered and inside of the bore before beginning.
 
-![probeBore](docs/images/probeBore.png)
+![probeBore](images/probeBore.png)
 
 _Figure 10. Probe Bore Routine_
 
@@ -217,7 +217,7 @@ Example MDI Command With Inspection Reporting: G65 "PROBEBORE" A54 B1 C1
 
 The Probe Rectangular Boss macro probes all sides of the stock and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z below the edges of the stock and should be a negative value. The C argument is the length of the stock in X and the D argument is the width of the stock in Y. The E argument enables inspection reporting which pops up a calculated length and width after the routine finishes. The Probe should be roughly centered and above the stock before beginning.
 
-![probeRectangularBoss](docs/images/probeRectangularBoss.png)
+![probeRectangularBoss](images/probeRectangularBoss.png)
 
 _Figure 11. Probe Rectangular Boss Routine_
 
@@ -237,7 +237,7 @@ Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54 B3
 
 The Probe Rectangular Pocket macro probes all internal sides of a pocket and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the length of the pocket in X and the C argument is the width of the pocket in Y. The D argument enables inspection reporting which pops up a calculated length and width after the routine finishes. The Probe should be roughly centered and inside of the pocket before beginning.
 
-![probeRectangularPocket](docs/images/probeRectangularPocket.png)
+![probeRectangularPocket](images/probeRectangularPocket.png)
 
 _Figure 12. Probe Rectangular Pocket Routine_
 
@@ -256,7 +256,7 @@ Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A
 
 The Probe Slot X macro probes the internal sides of a pocket in the X direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the length of the pocket in X. The C argument enables inspection reporting which pops up a calculated length after the routine finishes. The Probe should be roughly centered and inside of the slot before beginning.
 
-![probeSlot](docs/images/probeSlot.png)
+![probeSlot](images/probeSlot.png)
 
 _Figure 13. Probe Slot Routine_
 
@@ -274,7 +274,7 @@ Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 C1
 
 The Probe Slot Y macro probes the internal sides of a pocket in the Y direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the width of the pocket in Y. The C argument enables inspection reporting which pops up a calculated width after the routine finishes. The Probe should be roughly centered and inside of the slot before beginning.
 
-![probeSlotY](docs/images/probeSlotY.PNG)
+![probeSlotY](images/probeSlotY.PNG)
 
 _Figure 14. Probe Slot Routine_
 
@@ -293,7 +293,7 @@ Example MDI Command With Inspection Reporting: G65 "PROBESLOTY" A54 B3 C1
 
 The Probe Outside Corner macro probes the outside edges of the stock and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument Selects the desired corner to probe. The C argument is the distance to travel away from the inital location before probing begins. The D argument is the probing distance for both X and Y. The Probe should be roughly centered, above and in front of the corner before beginning.
 
-![probeExternalCorner](docs/images/probeExternalCorner.png)
+![probeExternalCorner](images/probeExternalCorner.png)
 
 _Figure 15. Probe Outside Corner Routine_
 
@@ -310,7 +310,7 @@ Example MDI Command: G65 "PROBEOUTSIDECORNER" A54 B1 C1 D.5
 
 The Probe inside Corner macro probes the inside edges of a pocket and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument Selects the desired corner to probe. The C argument is the probing distance. The Probe should be roughly centered, above and behind the corner before beginning.
 
-![probeInternalCorner](docs/images/probeInternalCorner.png)
+![probeInternalCorner](images/probeInternalCorner.png)
 
 _Figure 16. Probe Inside Corner Routine_
 
