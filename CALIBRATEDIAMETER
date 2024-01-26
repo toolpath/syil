@@ -23,20 +23,15 @@ G65 "PROBEYSLOT" A#1 B#2 C0
 (this could be improved by keeping track of both X and Y diameters and controling probe orientation)
 #131 = @998          (measured ring guage diameter in x)
 #132 = @999          (measured ring guage diameter in y)
-#133 = #2-#131       (diameter error in x)
-#134 = #2-#131       (diameter error in y)
+#133 = #131-#2       (diameter error in x)
+#134 = #131-#2       (diameter error in y)
 #135 = [#133+#134]/2 (average error)
-#136 = #135-#130    (diameter update)
+#136 = #135 +#130    (diameter update)
 
  W_TOOL_DATA[0,#100,3,#136]   (comment until verified)
 
-
-IF[#130==0]
  MSG_OK["CALIBRATION REPORT", "Ruby Diameter Set To: #136",""]
-ELSE
- MSG_OK["CALIBRATION REPORT", "Ruby Diameter Adjustment: #136",""]
-END_IF
- 
+
 G90
 
 M99
