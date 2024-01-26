@@ -1,6 +1,7 @@
 **SYIL X7 LNC6800 Probing Macro Guide**
 
-Smith Coding & Design
+Justin Gray
+Joshua Smith
 
 ![syil_x7](docs/images/syil_x7.png)
 
