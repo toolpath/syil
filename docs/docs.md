@@ -289,7 +289,7 @@ Example MDI Command With Inspection Reporting: G65 "PROBESLOTY" A54 B3 C1
   
 **PROBEOUTSIDECORNER**
 
-The Probe Outside Corner macro probes the outside edges of the stock and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z below the edges of the stock and should be a negative value. The C argument is the distance to travel before probing begins. The D argument is the probing distance for both X and Y. The Probe should be roughly centered, above and in front of the corner before beginning.
+The Probe Outside Corner macro probes the outside edges of the stock and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument Selects the desired corner to probe. The C argument is the distance to travel away from the inital location before probing begins. The D argument is the probing distance for both X and Y. The Probe should be roughly centered, above and in front of the corner before beginning.
 
 ![probeExternalCorner](images/probeExternalCorner.png)
 
@@ -301,12 +301,12 @@ _Figure 14. Probe Outside Corner Routine_
 
 _Table 16. Probe Outer Corner Syntax_
 
-Example MDI Command: G65 "PROBEOUTSIDECORNER" A54 B-.5 C1 D.5
+Example MDI Command: G65 "PROBEOUTSIDECORNER" A54 B1 C1 D.5
 
   
 **PROBEINSIDECORNER**
 
-The Probe inside Corner macro probes the inside edges of a pocket and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z below the edges of the stock and should be a negative value. The C argument is the probing distance. The Probe should be roughly centered, above and behind the corner before beginning.
+The Probe inside Corner macro probes the inside edges of a pocket and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument Selects the desired corner to probe. The C argument is the probing distance. The Probe should be roughly centered, above and behind the corner before beginning.
 
 ![probeInternalCorner](images/probeInternalCorner.png)
 
@@ -318,7 +318,7 @@ _Figure 15. Probe Inside Corner Routine_
 
 _Table 17. Probe Inner Corner Syntax_
 
-Example MDI Command: G65 "PROBEINSIDECORNER" A54 B-.5 C.5
+Example MDI Command: G65 "PROBEINSIDECORNER" A54 B1 C.5
 
 # What is the SAFESPIN macro? 
 
