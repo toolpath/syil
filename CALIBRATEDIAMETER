@@ -30,7 +30,12 @@ G65 "PROBEYSLOT" A#1 B#2 C0
 
  W_TOOL_DATA[0,#100,3,#136]   (comment until verified)
 
- MSG_OK["CALIBRATION REPORT", "Ruby Diameter Is: #136",""]
+
+IF[#130==0]
+ MSG_OK["CALIBRATION REPORT", "Ruby Diameter Set To: #136",""]
+ELSE
+ MSG_OK["CALIBRATION REPORT", "Ruby Diameter Adjustment: #136",""]
+END_IF
  
 G90
 
