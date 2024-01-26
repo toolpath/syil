@@ -16,5 +16,9 @@ G65 "PROBEYWEB" A#1 B#3 C#4 D0
 (simple inspection reporting)
 (@999 and @998 are set in the web macros)
 IF[#5>0]
- MSG_OK["INSPECTION REPORT", "Part Length In X: @998/n Part Width In Y: @999",""]
+ MSG_OK["INSPECTION REPORT", "Part Length In X: @998 Part Width In Y: @999",""]
 END_IF
+
+G90
+
+M99
