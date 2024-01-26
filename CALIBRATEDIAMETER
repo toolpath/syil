@@ -8,7 +8,7 @@
 (important local variables)
 #130 = @101             (TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO)
 #100 = @100             (TOOL NUMBER PROVIDED BY PROBECONFIG MACRO)
-
+#137 = @109             (PROBE CALIBRATION TOLERANCE PROVIDED BY PROBECONFIG MACRO)
 (calling our slot macros the first time centers probe)
 G65 "PROBEXSLOT" A#1 B#2 C0 
 G65 "PROBEYSLOT" A#1 B#2 C0 
@@ -26,11 +26,14 @@ G65 "PROBEYSLOT" A#1 B#2 C0
 #133 = #131-#2                (diameter error in x)
 #134 = #131-#2                (diameter error in y)
 #135 = [#133+#134]/2          (average error)
+
+IF[#135>#137]
 #136 = ABS[#135 +#130]        (diameter update)
-W_TOOL_DATA[0,#100,3,#136]   (comment until verified)
-
-
- MSG_OK["CALIBRATION REPORT", "Ruby Diameter Set To: #136",""]
+W_TOOL_DATA[0,#100,3,#136]    (store tool diameter)
+MSG_OK["CALIBRATION REPORT", "Ruby Diameter Set To: #136",""]
+ELSE
+MSG_OK["CALIBRATION REPORT", "Ruby Diameter Is Within Tolerance",""]
+END_IF
 
 
 

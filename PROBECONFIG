@@ -13,6 +13,7 @@
 @106 = .5                        (WEB PROBE DISTANCE in, change to match your unit of choice, for metric users start at 6mm)
 @107 = [R_TOOL_DATA[0,@100,203]] (TOOL LENGHT OFFSET, DO NOT TOUCH!!!)
 @108 = .125                      (PROBE BACKOFF DISTANCE,change to match your unit of choice, for metric users start at 3mm)
+@109 = .0005                     (PROBE CALIBRATION TOLERANCE, Change to match your unit of Choice, for metric users start at .0127mm)
 
 G90
 
