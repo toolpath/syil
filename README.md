@@ -67,7 +67,7 @@ _Table 3. Calibrate Probe Y Syntax_
 
 **CALIBRATEPROBEDIAMETER**
 
-The calibrate probe diameter macro uses a ring guage to calibrate the diameter of a probes ruby tip. It's important that the probe is concentric before beginning. The A argument is the work offset that the probe will center in. The B argument is the diameter of the ring guage. The probe must be inside of the guage and roughly centered.
+The calibrate probe diameter macro uses a ring guage to calibrate the diameter of a probes ruby tip. It's important that the probe is concentric before beginning. The A argument is the work offset that the probe will center in. The B argument is the diameter of the ring guage. The probe must be inside of the guage and roughly centered. The routine will set the diameter of your probe tip or adjust the diameter. If it's your first time running calibration you can zet the offset to zero or the factory diameter of your probe. The macro doesn't care what your current diameter is as long as it's within reason.
 
 ![CALIBRATEPROBEDIAMETER](images/probeRingGuage.PNG)
 
