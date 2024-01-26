@@ -1,5 +1,5 @@
 (PROBECIRCULARBOSS)
-(Description: Probe a web in X and Y)
+(Description: Probe a circular boss in X and Y)
 (Initial Coding: Justin Gray)
 (Modified 1/14/2024: Joshua Smith)
 (Simplified WCS extended number math, added probe error checking, added probe inspection report)
@@ -8,14 +8,14 @@
 (#3 is the Z drop height)
 (#4 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
 
-(call our web macros first time centers us)
+(calling our web macros the first time centers us)
 G65 "PROBEXWEB" A#1 B#2 C#3 D0
 G65 "PROBEYWEB" A#1 B#2 C#3 D0
 
 (simple inspection reporting)
 IF[#4>0]
 
-(call our web macros second time gives accurate inspection)
+(calling our web macros the second time gives an accurate inspection)
 G65 "PROBEXWEB" A#1 B#2 C#3 D0
 G65 "PROBEYWEB" A#1 B#2 C#3 D0
 
@@ -24,7 +24,7 @@ G65 "PROBEYWEB" A#1 B#2 C#3 D0
 #131 = [@998 + @999]/2
 
  MSG_OK["INSPECTION REPORT", "Part Diameter In X: @998  Part Diameter In Y: @999 Part Average Diameter: #131",""]
- 
+
 END_IF
 
 G90

@@ -1,5 +1,5 @@
 (PROBERECTANGULARBOSS)
-(Description: Probe a web in X and Y)
+(Description: Probe a rectangular boss in X and Y)
 (Initial Coding: Justin Gray)
 (Modified 1/14/2024: Joshua Smith)
 (Simplified WCS extended number math, added probe error checking, added probe inspection report)
