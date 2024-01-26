@@ -18,7 +18,7 @@ G65 "PROBEYWEB" A#1 B#2 C#3 D0
 
 (simple inspection reporting)
 IF[#4>0]
- MSG_OK["INSPECTION REPORT", "Part Diameter In X: @998  Part Diameter In Y: @999  Part Average Diameter: #131",""]
+ MSG_OK["INSPECTION REPORT", "Part Diameter In X: @998  Part Diameter In Y: @999 Part Average Diameter: #131",""]
 END_IF
 
 G90
