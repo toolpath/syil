@@ -272,7 +272,7 @@ Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 C1
 
 The Probe Slot Y macro probes the internal sides of a pocket in the Y direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the width of the pocket in Y. The C argument enables inspection reporting which pops up a calculated width after the routine finishes. The Probe should be roughly centered and inside of the slot before beginning.
 
-![probeSlot](images/probeSlotY.png)
+![probeSlotY](images/probeSlotY.png)
 
 _Figure 13. Probe Slot Routine_
 
