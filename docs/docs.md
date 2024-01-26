@@ -197,7 +197,9 @@ _Figure 9. Probe Bore Routine_
 
 _Table 11. Probe Bore Syntax_
 
-Example MDI Command: G65 "PROBEBORE" A54 B-.5 C1
+Example MDI Command Without Inspection Reporting: G65 "PROBEBORE" A54 B1 C0
+
+Example MDI Command With Inspection Reporting: G65 "PROBEBORE" A54 B1 C1
 
   
 **PROBERECTANGULARBOSS**
