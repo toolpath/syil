@@ -99,6 +99,7 @@ G91 G01 Z#3                          (MOVE UP CLEAR OF THE PART)
 (COMPUTE RELATIVE DISTANCE TO CENTER OF THE PART)
 #106 = [[#105-#104]/2]                (calculate center)
 #107 = ABS[#105-#104]-#121            (calculate distance: distance - diameter)
+@999 = #107                           (save distance to a global variable for use with other macros)
 G91 G01 Y[-#108 - #106]               (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,2]                 (GET MACHINE Y COORDINATE)
 

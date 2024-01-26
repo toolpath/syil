@@ -4,7 +4,7 @@
 (Modified 1/14/2024: Joshua Smith)
 (Simplified WCS extended number math, added probe error checking, added probe inspection report)
 (#1 is the work coordinate system to store offsets in)
-(#2 is the expected width of the web in the x direction)
+(#2 is the expected length of the web in the x direction)
 (#3 is the Z drop height)
 (#4 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
 
@@ -102,6 +102,7 @@ G91 G01 Z#3                          (MOVE UP CLEAR OF THE PART)
 (COMPUTE RELATIVE DISTANCE TO CENTER OF THE PART)
 #106=[[#105-#104]/2]             (center point calculation)
 #107= ABS[[#105-#104]]-#121      (calculate width of part: distance - diameter)
+@998 = #107                      (save distance to a global variable for use with other macros)
 G91 G01 X[-#108 - #106]          (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,1]            (GET MACHINE Y COORDINATE)
 

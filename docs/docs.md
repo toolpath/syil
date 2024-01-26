@@ -130,7 +130,7 @@ Example MDI Command: G65 "PROBEZ" A54 B-.5
 
 **PROBEXWEB**
 
-The Probe X Web macro probes two sides of the stock in the X direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z below the edges of the stock and should be a negative value. The C argument is the length of the stock. The D argument enables inspection reporting which pops up a calculated length after the routine finishes. The Probe should be roughly centered and above the stock before beginning.
+The Probe X Web macro probes two sides of the stock in the X direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z below the edges of the stock. The C argument is the length of the stock. The D argument enables inspection reporting which pops up a calculated length after the routine finishes. The Probe should be roughly centered and above the stock before beginning.
 
 ![probeXweb](images/probeXweb.png)
 
@@ -148,7 +148,7 @@ Example MDI Command With Inspection Report: G65 "PROBEXWEB" A54 B-.5 C3 D1
   
 **PROBEYWEB**
 
-The Probe Y Web macro probes two sides of the stock in the Y direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z below the edges of the stock and should be a negative value. The C argument is the width of the stock. The D argument enables inspection reporting which pops up a calculated width after the routine finishes. The Probe should be roughly centered and above the stock before beginning.
+The Probe Y Web macro probes two sides of the stock in the Y direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z below the edges of the stock. The C argument is the width of the stock. The D argument enables inspection reporting which pops up a calculated width after the routine finishes. The Probe should be roughly centered and above the stock before beginning.
 
 ![probeYweb](images/probeYweb.png)
 
@@ -167,20 +167,21 @@ Example MDI Command With Inspection Report: G65 "PROBEYWEB" A54 B-.5 C2 D1
 
 **PROBECIRCULARBOSS**
 
-The Probe Circular Boss macro probes 4 points of a circular boss and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z below the edges of the stock and should be a negative value. The C argument is the diameter of the stock. The Probe should be roughly centered and above the stock before beginning.
+The Probe Circular Boss macro probes 4 points of a circular boss and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z below the edges of the stock. The C argument is the diameter of the stock. The Probe should be roughly centered and above the stock before beginning.
 
 ![probeCircularBoss](images/probeCircularBoss.png)
 
 _Figure 8. Probe Circular Boss Routine_
 
-| G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
-| --- | --- | --- | --- | --- |
-| G65 | "PROBECIRCULARBOSS" | A | B | C |
+| G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
+| --- | --- | --- | --- | --- | --- |
+| G65 | "PROBECIRCULARBOSS" | A | B | C | D |
 
 _Table 10. Probe Circular Boss Syntax_
 
-Example MDI Command: G65 "PROBECIRCULARBOSS" A54 B-.5 C2
+Example MDI Command Without Inspection Report: G65 "PROBECIRCULARBOSS" A54 B-.5 C2 D0
 
+Example MDI Command With Inspection Report: G65 "PROBECIRCULARBOSS" A54 B-.5 C2 D1
   
 **PROBEBORE**
 
