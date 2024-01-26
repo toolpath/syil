@@ -335,7 +335,8 @@ Example MDI Command: G65 "PROBEINSIDECORNER" A54 B-.5 C.5
 	- Change the aquisition of machine coordinates in each macro to use the R_skip function to compensate for minute overshoot after the probe triggers.
 	- The `PROBEBORE` macro does not probe for the z-height. It would be nice to make that optional. 
 	- The `PROBERECTANGLE` does not do a z-probe for the top of the stock. It would be nice to make that optional too. 
-	- Improve the probe tip diameter calibration routine to use a gague ring (at least optionally). Right now it just assumes a 123 block. 
+	- Improve the probe tip diameter calibration routine to use a gague ring (at least optionally). Right now it just assumes a 123 block.
+    - remove calibratex and calibratey with the addition of ring guage macro (need to make sure Justin agrees) 
 
 # WISHLIST of stuff I don't yet know how to do
 
