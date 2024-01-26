@@ -1,0 +1,34 @@
+(CALIBRATEDIAMETER)
+(Description: Calibrate the Diameter of the probe using a ring guage)
+(Initial coding 1/14/2024: Joshua Smith)
+(Your probe must be concentric and you must use a ring guage!!!!!!!!!!)
+(#1 is the work coordinate system to store offsets and center probe)
+(#2 is the expected DIAMETER)
+
+(important local variables)
+#130 = @101             (TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO)
+
+(calling our slot macros the first time centers probe)
+G65 "PROBEXSLOT" A#1 B#2 C0 
+G65 "PROBEYSLOT" A#1 B#2 C0 
+
+
+(calling our slot macros a second time gives an accurate inspection)
+G65 "PROBEXSLOT" A#1 B#2 C0 
+G65 "PROBEYSLOT" A#1 B#2 C0
+
+(average Diameter calculation)
+(@999 and @998 are set in the slot macros)
+(this could be improved by keeping track of both X and Y diameters and controling probe orientation)
+#131 = @998          (measured ring guage diameter in x)
+#132 = @999          (measured ring guage diameter in y)
+#133 = #131-#2       (diameter error in x)
+#134 = #131-#2       (diameter error in y)
+#135 = [#133+#134]/2 (average error)
+#136 = #135 +#130    (diameter update)
+
+ MSG_OK["CALIBRATION REPORT", "Ruby Diameter Is: #136",""]
+ 
+G90
+
+M99

@@ -65,13 +65,20 @@ _Table 2. Calibrate Probe X Syntax_
 _Table 3. Calibrate Probe Y Syntax_
 
 
-**CALIBRATEPROBERADIUS**
+**CALIBRATEPROBEDIAMETER**
+
+The calibrate probe diameter macro uses a ring guage to calibrate the diameter of a probes ruby tip. It's important that the probe is concentric before beginning. The A argument is the work offset that the probe will center in. The B argument is the diameter of the ring guage. The probe must be inside of the guage and roughly centered.
+
+![probeY](images/probeRingGuage.png)
+
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument |
 | --- | --- | --- | --- |
-| G65 | "CALIBRATEPROBERADIUS" | A | B |
+| G65 | "CALIBRATEPROBEDIAMETER" | A | B |
 
 _Table 4. Calibrate Probe Radius Syntax_
+
+Example MDI Command: G65 "CALIBRATEPROBEDIAMETER" A54 B2
 
 # Probing Routines
 

@@ -1,6 +1,7 @@
 **SYIL X7 LNC6800 Probing Macro Guide**
 
 Justin Gray
+
 Joshua Smith
 
 ![syil_x7](docs/images/syil_x7.png)
@@ -64,13 +65,20 @@ _Table 2. Calibrate Probe X Syntax_
 _Table 3. Calibrate Probe Y Syntax_
 
 
-**CALIBRATEPROBERADIUS**
+**CALIBRATEPROBEDIAMETER**
+
+The calibrate probe diameter macro uses a ring guage to calibrate the diameter of a probes ruby tip. It's important that the probe is concentric before beginning. The A argument is the work offset that the probe will center in. The B argument is the diameter of the ring guage. The probe must be inside of the guage and roughly centered.
+
+![probeY](docs/images/probeRingGuage.png)
+
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument |
 | --- | --- | --- | --- |
-| G65 | "CALIBRATEPROBERADIUS" | A | B |
+| G65 | "CALIBRATEPROBEDIAMETER" | A | B |
 
 _Table 4. Calibrate Probe Radius Syntax_
+
+Example MDI Command: G65 "CALIBRATEPROBEDIAMETER" A54 B2
 
 # Probing Routines
 
@@ -312,3 +320,31 @@ _Table 17. Probe Inner Corner Syntax_
 
 Example MDI Command: G65 "PROBEINSIDECORNER" A54 B-.5 C.5
 
+# What is the SAFESPIN macro? 
+
+	I occationally command a spindle RPM speed from MDI. However, on occation I may have forgotten to comment that back out when changing to my probe in MDI ... bad things happen when you spin probes :(
+
+	I could not find any kind of tool-number based RPM limits to ensure the probe never spins. 
+	Maybe I'm just missing it, but failing that I keep a bit in one of the wear values for the probe that flips to true whenever a probing routine is called. 
+	The `SAFESPIN` macro checks that bit before calling any spindle rotations commands, and gives a big flashy warning message to help you remember not to spin you probe. 
+
+	Why did I keep the bit in the wear table? I couldn't figure out where else to store it persistantly. I think there are some parameters memory locations I can get access to, but I haven't spent the time to figure out that syntax. 
+
+# TODO
+
+	- Change the aquisition of machine coordinates in each macro to use the R_skip function to compensate for minute overshoot after the probe triggers.
+	- The `PROBEBORE` macro does not probe for the z-height. It would be nice to make that optional. 
+	- The `PROBERECTANGLE` does not do a z-probe for the top of the stock. It would be nice to make that optional too. 
+	- Improve the probe tip diameter calibration routine to use a gague ring (at least optionally). Right now it just assumes a 123 block. 
+
+# WISHLIST of stuff I don't yet know how to do
+
+	- Add a `CHECKTOOL` macro that can look at the tool table and see if a tool number is present (would like to add this to the top of my postprocessor!)
+	- Add a macro to check min/max values against soft-limits (would also like to add this to my post processor) 
+	- Add a macro to calibrate the tool probe z value
+	- Test out a spindle-position command in the probe diameter calibration. Probe at different spindle angles, and record the values. Then compute a true-center for the probe and store the various offsets as some kind of angle map. Use that to compensate for any probe runout. 
+
+
+The spindle rotation command requires some kind of update from Mr. Chen. I installed it, but haven't had time to play with that yet. 
+
+PRs are more than welcome. I've been using these for several months and haven't had any problems, but use at your own risk. Run all the macros in MPG Dry Run mode until you're sure they work. Don't blame me if you crash your machine or break a probe-tip :) 
