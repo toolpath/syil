@@ -12,6 +12,10 @@ The objective of this document is to provide guidance on the use of the provided
 
 The probing routines only support probes that don't require special macros to turn them on. Recommend probes included the drewtronics wireless probe or the Silver CNC Infrared Touch probe. All the macros need to be stored in the same file as your posted gcode programs. Always test the macros with MPG DRN the first time. SYIL configurates may change and we're not responsible for broken tips or machine crashes.
 
+**Probe Configuration Macro**
+
+Every probing routine calls the configuration macro to initialize global variables. It allows all probing parameters to be specified in one place. The probe configuration macro must be opened and customized to your specific needs. The various probing parameters must be set in your desired units. The default parameters are in inches but comments provide suggested metric values. Start with the recommended settings and fine tune from there. Please set your fusion360 probing feed rate to the same value that you use in the config macro. In you decide to change feed rates, you should always run calibration again.
+
 **Macro Syntax**
 
 Macros are called with G65 as opposed to M codes to speed up execution. G65 is followed by the macro name and whatever arguments need passed into the macro. The example below shows how to probe a square. The A argument is the work offset and the B argument is the width. Each argument starts with a letter followed by a value. For example, a macro requiring three arguments would have A#, B# and C# after the macro name. Simply copy the macro into the MDI and adjust the arguments according to your needs. A table mapping the macro arguments to local variables is also provided below. Extended G54 work offsets are supported with the use of a decimal point. For example, G54P5 can be entered into the A argument as G54.5.
