@@ -250,7 +250,7 @@ Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A
 Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54 B2 C3 D1
 
   
-**PROBESLOTX**
+**PROBEXSLOT**
 
 The Probe Slot X macro probes the internal sides of a pocket in the X direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the length of the pocket in X. The C argument enables inspection reporting which pops up a calculated length after the routine finishes. The Probe should be roughly centered and inside of the slot before beginning.
 
@@ -268,7 +268,7 @@ Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 C0
 
 Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 C1
   
-**PROBESLOTY**
+**PROBEYSLOT**
 
 The Probe Slot Y macro probes the internal sides of a pocket in the Y direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the width of the pocket in Y. The C argument enables inspection reporting which pops up a calculated width after the routine finishes. The Probe should be roughly centered and inside of the slot before beginning.
 
@@ -289,7 +289,7 @@ Example MDI Command With Inspection Reporting: G65 "PROBESLOTY" A54 B3 C1
   
 **PROBEOUTSIDECORNER**
 
-The Probe Outside Corner macro probes the outside edges of the stock and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z below the edges of the stock and should be a negative value. The C argument is the distance to travel before probing begins. The D argument is the probing distance for both X and Y. The Probe should be roughly centered, above and in front of the corner before beginning.
+The Probe Outside Corner macro probes the outside edges of the stock and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument Selects the desired corner to probe. The C argument is the distance to travel away from the inital location before probing begins. The D argument is the probing distance for both X and Y. The Probe should be roughly centered, above and in front of the corner before beginning.
 
 ![probeExternalCorner](docs/images/probeExternalCorner.png)
 
@@ -301,12 +301,12 @@ _Figure 14. Probe Outside Corner Routine_
 
 _Table 16. Probe Outer Corner Syntax_
 
-Example MDI Command: G65 "PROBEOUTSIDECORNER" A54 B-.5 C1 D.5
+Example MDI Command: G65 "PROBEOUTSIDECORNER" A54 B1 C1 D.5
 
   
 **PROBEINSIDECORNER**
 
-The Probe inside Corner macro probes the inside edges of a pocket and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the distance the probe should move in Z below the edges of the stock and should be a negative value. The C argument is the probing distance. The Probe should be roughly centered, above and behind the corner before beginning.
+The Probe inside Corner macro probes the inside edges of a pocket and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument Selects the desired corner to probe. The C argument is the probing distance. The Probe should be roughly centered, above and behind the corner before beginning.
 
 ![probeInternalCorner](docs/images/probeInternalCorner.png)
 
@@ -318,7 +318,7 @@ _Figure 15. Probe Inside Corner Routine_
 
 _Table 17. Probe Inner Corner Syntax_
 
-Example MDI Command: G65 "PROBEINSIDECORNER" A54 B-.5 C.5
+Example MDI Command: G65 "PROBEINSIDECORNER" A54 B1 C.5
 
 # What is the SAFESPIN macro? 
 
@@ -335,8 +335,9 @@ Example MDI Command: G65 "PROBEINSIDECORNER" A54 B-.5 C.5
 	- Change the aquisition of machine coordinates in each macro to use the R_skip function to compensate for minute overshoot after the probe triggers.
 	- The `PROBEBORE` macro does not probe for the z-height. It would be nice to make that optional. 
 	- The `PROBERECTANGLE` does not do a z-probe for the top of the stock. It would be nice to make that optional too. 
-	- Improve the probe tip diameter calibration routine to use a gague ring (at least optionally). Right now it just assumes a 123 block.
+	- Improve the probe tip diameter calibration routine to use a gague ring (at least optionally). Right now it just assumes a 123 block. 
     - remove calibratex and calibratey with the addition of ring guage macro (need to make sure Justin agrees) 
+
 
 # WISHLIST of stuff I don't yet know how to do
 
