@@ -250,7 +250,7 @@ Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A
 Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54 B2 C3 D1
 
   
-**PROBESLOTX**
+**PROBEXSLOT**
 
 The Probe Slot X macro probes the internal sides of a pocket in the X direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the length of the pocket in X. The C argument enables inspection reporting which pops up a calculated length after the routine finishes. The Probe should be roughly centered and inside of the slot before beginning.
 
@@ -268,7 +268,7 @@ Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 C0
 
 Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 C1
   
-**PROBESLOTY**
+**PROBEYSLOT**
 
 The Probe Slot Y macro probes the internal sides of a pocket in the Y direction and calculates the center. The A argument is the selected work coordinate(G54-59). The B argument is the width of the pocket in Y. The C argument enables inspection reporting which pops up a calculated width after the routine finishes. The Probe should be roughly centered and inside of the slot before beginning.
 
