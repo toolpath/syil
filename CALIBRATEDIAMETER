@@ -21,16 +21,18 @@ G65 "PROBEYSLOT" A#1 B#2 C0
 (average Diameter calculation)
 (@999 and @998 are set in the slot macros)
 (this could be improved by keeping track of both X and Y diameters and controling probe orientation)
-#131 = @998            (measured ring guage diameter in x)
-#132 = @999            (measured ring guage diameter in y)
-#133 = #131-#2         (diameter error in x)
-#134 = #131-#2         (diameter error in y)
-#135 = [#133+#134]/2   (average error)
-#136 = ABS[#135 +#130] (diameter update)
+#131 = @998                   (measured ring guage diameter in x)
+#132 = @999                   (measured ring guage diameter in y)
+#133 = #131-#2                (diameter error in x)
+#134 = #131-#2                (diameter error in y)
+#135 = [#133+#134]/2          (average error)
+#136 = ABS[#135 +#130]        (diameter update)
+W_TOOL_DATA[0,#100,3,#136]   (comment until verified)
 
- W_TOOL_DATA[0,#100,3,#136]   (comment until verified)
 
  MSG_OK["CALIBRATION REPORT", "Ruby Diameter Set To: #136",""]
+
+
 
 G90
 
