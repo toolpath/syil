@@ -2,7 +2,7 @@
 (Description: Calibrate the Diameter of the probe using a ring guage)
 (Initial coding 1/14/2024: Joshua Smith)
 (Your probe must be concentric and you must use a ring guage!!!!!!!!!!)
-(#1 is the expected DIAMETER)
+(#1 is the expected DIAMETER of the artifact)
 
 (load probe config)
 G65 "PROBECONFIG"
@@ -28,11 +28,10 @@ G65 "PROBEYSLOT" B#1 Q0
 #131 = @998                   (measured ring guage diameter in x)
 #132 = @999                   (measured ring guage diameter in y)
 #133 = #1-#131                (error in x)
-#134 = #1-#131                (error in y)
+#134 = #1-#132                (error in y)
 #135 = ABS[#133 + #134]/2     (average error)
 W_TOOL_DATA[0,#100,3,#135]    (store tool diameter)
 MSG_OK["CALIBRATION REPORT", "Ruby Diameter Set To: #135",""]
-
 
 G90
 
