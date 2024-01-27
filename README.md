@@ -243,7 +243,7 @@ _Figure 12. Probe Pocket Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- |
-| G65 | "PROBERECTANGULARPOCKET" | A | B | C | D |
+| G65 | "PROBEPOCKET" | A | B | C | D |
 
 _Table 13. Probe Rectangular Pocket Syntax_
 
