@@ -20,17 +20,17 @@ Every probing routine calls the configuration macro to initialize global variabl
 
 **Macro Syntax**
 
-Macros are called with G65 as opposed to M codes to speed up execution. G65 is followed by the macro name and whatever arguments need passed into the macro. The example below shows how to probe a square. The A argument is the work offset and the B argument is the width. Each argument starts with a letter followed by a value. For example, a macro requiring three arguments would have A#, B# and C# after the macro name. Simply copy the macro into the MDI and adjust the arguments according to your needs. A table mapping the macro arguments to local variables is also provided below. Extended G54 work offsets are supported with the use of a decimal point. For example, G54P5 can be entered into the A argument as G54.5.
+Macros are called with G65 as opposed to M codes to speed up execution. G65 is followed by the macro name and whatever arguments need passed into the macro. The example below shows how to probe the side of a part along the X axis. The A argument is the work offset and the B argument is the probing distance. Each argument starts with a letter followed by a value. For example, a macro requiring three arguments will have A#, B# and C# after the macro name. Simply copy the macro examples into your MDI and adjust the arguments according to your needs. A table mapping the macro arguments to local variables is also provided below. Extended G54 work offsets are supported with the use of a decimal point. For example, G54P5 can be entered into the A argument as G54.5.
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument |
 | --- | --- | --- | --- |
-| G65 | "PROBESQUARE" | A | B |
+| G65 | "PROBEX" | A | B |
 
 _Table 1: Macro Syntax and Example_
 
-Example MDI Command: G65 "PROBESQUARE" A54 B2
+Example MDI Command: G65 "PROBEX" A54 B2
 
-Example MDI Command: G65 "PROBESQUARE" A54.5 B2
+Example MDI Command: G65 "PROBEX" A54.5 B2
 
 ![macro_argument_to_local_variables](images/macro_argument_to_local_variables.png)
 
