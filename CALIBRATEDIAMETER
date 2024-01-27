@@ -9,11 +9,8 @@
 #130 = @101             (TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO)
 #100 = @100             (TOOL NUMBER PROVIDED BY PROBECONFIG MACRO)
 
-(Error Checking)
-IF[#130 > 0]
- MSG_OK["CALIBRATEDIAMETER", "ERROR: THE RADIUS IN THE TOOL TABLE MUST BE SET TO ZERO BEFORE RUNNING",""]
- GOTO1 (go to line with N1 and quit)
-END_IF
+(Make sure diameter is zero when calibrating)
+W_TOOL_DATA[0,#100,3,0]    (store tool diameter)
 
 (calling our slot macros the first time centers probe)
 G65 "PROBEXSLOT" A#1 B#2 C0 
@@ -35,8 +32,6 @@ G65 "PROBEYSLOT" A#1 B#2 C0
 W_TOOL_DATA[0,#100,3,#135]    (store tool diameter)
 MSG_OK["CALIBRATION REPORT", "Ruby Diameter Set To: #135",""]
 
-
-N1
 
 G90
 
