@@ -2,32 +2,33 @@
 (Description: Calibrate the Diameter of the probe using a ring guage)
 (Initial coding 1/14/2024: Joshua Smith)
 (Your probe must be concentric and you must use a ring guage!!!!!!!!!!)
-(#1 is the work coordinate system to store offsets and center probe)
-(#2 is the expected DIAMETER)
+(#1 is the expected DIAMETER)
+
+(load probe config)
+G65 "PROBECONFIG"
 
 (important local variables)
-#130 = @101             (TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO)
 #100 = @100             (TOOL NUMBER PROVIDED BY PROBECONFIG MACRO)
 
 (Make sure diameter is zero when calibrating)
 W_TOOL_DATA[0,#100,3,0]    (store tool diameter)
 
 (calling our slot macros the first time centers probe)
-G65 "PROBEXSLOT" A#1 B#2 C0 
-G65 "PROBEYSLOT" A#1 B#2 C0 
+G65 "PROBEXSLOT" B#1 C0 
+G65 "PROBEYSLOT" B#1 C0 
 
 
 (calling our slot macros a second time gives an accurate inspection)
-G65 "PROBEXSLOT" A#1 B#2 C0 
-G65 "PROBEYSLOT" A#1 B#2 C0
+G65 "PROBEXSLOT" B#1 C0 
+G65 "PROBEYSLOT" B#1 C0
 
 (average Diameter calculation)
 (@999 and @998 are set in the slot macros)
 (this could be improved by keeping track of both X and Y diameters and controling probe orientation)
 #131 = @998                   (measured ring guage diameter in x)
 #132 = @999                   (measured ring guage diameter in y)
-#133 = #2-#131                (error in x)
-#134 = #2-#131                (error in y)
+#133 = #1-#131                (error in x)
+#134 = #1-#131                (error in y)
 #135 = ABS[#133 + #134]/2     (average error)
 W_TOOL_DATA[0,#100,3,#135]    (store tool diameter)
 MSG_OK["CALIBRATION REPORT", "Ruby Diameter Set To: #135",""]
