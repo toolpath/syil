@@ -14,13 +14,13 @@ G65 "PROBECONFIG"
 W_TOOL_DATA[0,#100,3,0]    (store tool diameter)
 
 (calling our slot macros the first time centers probe)
-G65 "PROBEXSLOT" B#1 C0 
-G65 "PROBEYSLOT" B#1 C0 
+G65 "PROBEXSLOT" B#1 Q0 
+G65 "PROBEYSLOT" B#1 Q0 
 
 
 (calling our slot macros a second time gives an accurate inspection)
-G65 "PROBEXSLOT" B#1 C0 
-G65 "PROBEYSLOT" B#1 C0
+G65 "PROBEXSLOT" B#1 Q0 
+G65 "PROBEYSLOT" B#1 Q0
 
 (average Diameter calculation)
 (@999 and @998 are set in the slot macros)

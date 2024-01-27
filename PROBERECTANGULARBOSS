@@ -10,8 +10,8 @@
 (#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
 
 (call our web macros)
-G65 "PROBEXWEB" A#1 B#2 C#4 D0
-G65 "PROBEYWEB" A#1 B#3 C#4 D0
+G65 "PROBEXWEB" A#1 B#2 C#4 Q0
+G65 "PROBEYWEB" A#1 B#3 C#4 Q0
 
 (simple inspection reporting)
 (@999 and @998 are set in the web macros)
