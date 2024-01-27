@@ -4,7 +4,7 @@
 (macro to setup probe specs and units, called by every macro)
 
 (important local variables)
-@100 = R_SYS_INFO[0,2]           (TOOL NUMBER, GRABS THE CURRENT TOOL AND ASSUMES IT'S THE PROBE. CAN BE CHANGED TO A SPECIFIC VALUE EX: 99)
+@100 = 99           (TOOL NUMBER, GRABS THE CURRENT TOOL AND ASSUMES IT'S THE PROBE. CAN BE CHANGED TO A SPECIFIC VALUE EX: 99)
 @101 = R_TOOL_DATA[0,@100,3]     (TOOL DIAMETER, DO NOT TOUCH!!!)
 @102 = @101/2                    (TOOL RADIUS, DO NOT TOUCH!!!)
 @103 = 50                        (FEED SPEED in/m, change to match your unit of choice, for metric users start at 2540mm))
