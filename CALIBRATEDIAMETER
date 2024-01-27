@@ -8,7 +8,13 @@
 (important local variables)
 #130 = @101             (TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO)
 #100 = @100             (TOOL NUMBER PROVIDED BY PROBECONFIG MACRO)
-#137 = @109             (PROBE CALIBRATION TOLERANCE PROVIDED BY PROBECONFIG MACRO)
+
+(Error Checking)
+IF[#130 > 0]
+ MSG_OK["CALIBRATEDIAMETER", "ERROR: THE TOOL RADIUS IN THE TOOL TABLE MUST BE SET TO ZERO BEFORE RUNNING",""]
+ GOTO1 (go to line with N1 and quit)
+END_IF
+
 (calling our slot macros the first time centers probe)
 G65 "PROBEXSLOT" A#1 B#2 C0 
 G65 "PROBEYSLOT" A#1 B#2 C0 
@@ -23,19 +29,14 @@ G65 "PROBEYSLOT" A#1 B#2 C0
 (this could be improved by keeping track of both X and Y diameters and controling probe orientation)
 #131 = @998                   (measured ring guage diameter in x)
 #132 = @999                   (measured ring guage diameter in y)
-#133 = #131-#2                (diameter error in x)
-#134 = #131-#2                (diameter error in y)
-#135 = [#133+#134]/2          (average error)
-
-IF[#135>#137]
-#136 = ABS[#135 +#130]        (diameter update)
-W_TOOL_DATA[0,#100,3,#136]    (store tool diameter)
-MSG_OK["CALIBRATION REPORT", "Ruby Diameter Set To: #136",""]
-ELSE
-MSG_OK["CALIBRATION REPORT", "Ruby Diameter Is Within Tolerance",""]
-END_IF
+#133 = #2-#131                (error in x)
+#134 = #2-#131                (error in y)
+#135 = ABS[#133 + #134]/2     (average error)
+W_TOOL_DATA[0,#100,3,#135]    (store tool diameter)
+MSG_OK["CALIBRATION REPORT", "Ruby Diameter Set To: #135",""]
 
 
+N1
 
 G90
 
