@@ -7,7 +7,7 @@
 (#2 is the expected length of the web in the x direction)
 (#3 is the expected width of the web in the 3 direction)
 (#4 is the Z drop height)
-(#5 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
+(#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
 
 (call our web macros)
 G65 "PROBEXWEB" A#1 B#2 C#4 D0
@@ -15,7 +15,7 @@ G65 "PROBEYWEB" A#1 B#3 C#4 D0
 
 (simple inspection reporting)
 (@999 and @998 are set in the web macros)
-IF[#5>0]
+IF[#17>0]
  MSG_OK["INSPECTION REPORT", "Part Length In X:@998  Part Width In Y:@999",""]
 END_IF
 

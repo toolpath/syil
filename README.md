@@ -12,7 +12,7 @@ The objective of this document is to provide guidance on the use of the provided
 
 **Important Precautions**
 
-The probing routines only support probes that don't require special macros to turn them on. Recommend probes included the drewtronics wireless probe or the Silver CNC Infrared Touch probe. All the macros need to be stored in the same file as your posted gcode programs. Always test the macros with MPG DRN the first time. SYIL configurates may change and we're not responsible for broken tips or machine crashes.
+The probing routines only support probes that don't require special macros to turn them on. Recommend probes included the drewtronics wireless probe or the Silver CNC Infrared Touch probe. All the macros need to be stored in the same file as your posted gcode programs. Always test the macros with MPG DRN the first time. SYIL configurations may change and we're not responsible for broken tips or machine crashes.
 
 **Probe Configuration Macro**
 
@@ -149,13 +149,13 @@ _Figure 7. Probe X Web Routine_
 
 | GCode | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | ---|
-| G65 | "PROBEXWEB" | A | B | C | D |
+| G65 | "PROBEXWEB" | A | B | C | Q |
 
 _Table 8. Probe X Web Syntax_
 
-Example MDI Command Without Inspection Report: G65 "PROBEXWEB" A54 B3 C-.5 D0
+Example MDI Command Without Inspection Report: G65 "PROBEXWEB" A54 B3 C-.5 Q0
 
-Example MDI Command With Inspection Report: G65 "PROBEXWEB" A54 B3 C-.5 D1
+Example MDI Command With Inspection Report: G65 "PROBEXWEB" A54 B3 C-.5 Q1
   
 **PROBEYWEB**
 
@@ -167,13 +167,13 @@ _Figure 8. Probe Y Web Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- |
-| G65 | "PROBEYWEB" | A | B | C | D |
+| G65 | "PROBEYWEB" | A | B | C | Q |
 
 _Table 9. Probe Y Web Syntax_
 
-Example MDI Command Without Inspection Report: G65 "PROBEYWEB" A54 B2 C-.5 D0
+Example MDI Command Without Inspection Report: G65 "PROBEYWEB" A54 B2 C-.5 Q0
 
-Example MDI Command With Inspection Report: G65 "PROBEYWEB" A54 B2 C-.5 D1
+Example MDI Command With Inspection Report: G65 "PROBEYWEB" A54 B2 C-.5 Q1
 
 
 **PROBECIRCULARBOSS**
@@ -186,13 +186,13 @@ _Figure 9. Probe Circular Boss Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- |
-| G65 | "PROBECIRCULARBOSS" | A | B | C | D |
+| G65 | "PROBECIRCULARBOSS" | A | B | C | Q |
 
 _Table 10. Probe Circular Boss Syntax_
 
-Example MDI Command Without Inspection Report: G65 "PROBECIRCULARBOSS" A54 B2 C-.5 D0
+Example MDI Command Without Inspection Report: G65 "PROBECIRCULARBOSS" A54 B2 C-.5 Q0
 
-Example MDI Command With Inspection Report: G65 "PROBECIRCULARBOSS" A54 B2 C-.5 D1
+Example MDI Command With Inspection Report: G65 "PROBECIRCULARBOSS" A54 B2 C-.5 Q1
   
 **PROBEBORE**
 
@@ -204,13 +204,13 @@ _Figure 10. Probe Bore Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
-| G65 | "PROBEBORE" | A | B | C |
+| G65 | "PROBEBORE" | A | B | Q |
 
 _Table 11. Probe Bore Syntax_
 
-Example MDI Command Without Inspection Reporting: G65 "PROBEBORE" A54 B1 C0
+Example MDI Command Without Inspection Reporting: G65 "PROBEBORE" A54 B1 Q0
 
-Example MDI Command With Inspection Reporting: G65 "PROBEBORE" A54 B1 C1
+Example MDI Command With Inspection Reporting: G65 "PROBEBORE" A54 B1 Q1
 
   
 **PROBERECTANGULARBOSS**
@@ -223,13 +223,13 @@ _Figure 11. Probe Rectangular Boss Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- | --- |
-| G65 | "PROBERECTANGULARBOSS" | A | B | C | D | E |
+| G65 | "PROBERECTANGULARBOSS" | A | B | C | D | Q |
 
 _Table 12. Probe Rectangular Boss Syntax_
 
-Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54 B3 C2 D-.5 E0
+Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54 B3 C2 D-.5 Q0
 
-Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54 B3 C2 D-.5 E1
+Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54 B3 C2 D-.5 Q1
 
 
   
@@ -243,13 +243,13 @@ _Figure 12. Probe Pocket Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- |
-| G65 | "PROBEPOCKET" | A | B | C | D |
+| G65 | "PROBEPOCKET" | A | B | C | Q |
 
 _Table 13. Probe Rectangular Pocket Syntax_
 
-Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54 B2 C3 D0
+Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54 B2 C3 Q0
 
-Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54 B2 C3 D1
+Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54 B2 C3 Q1
 
   
 **PROBEXSLOT**
@@ -262,13 +262,13 @@ _Figure 13. Probe Slot Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
-| G65 | "PROBESLOTX" | A | B | C |
+| G65 | "PROBESLOTX" | A | B | Q |
 
 _Table 14. Probe Slot Syntax_
 
-Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 C0
+Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 Q0
 
-Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 C1
+Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 Q1
   
 **PROBEYSLOT**
 
@@ -280,13 +280,13 @@ _Figure 14. Probe Slot Routine_
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
-| G65 | "PROBESLOTY" | A | B | C |
+| G65 | "PROBESLOTY" | A | B | Q |
 
 _Table 15. Probe Slot Syntax_
 
-Example MDI Command Without Inspection Reporting: G65 "PROBESLOTY" A54 B3 C0
+Example MDI Command Without Inspection Reporting: G65 "PROBESLOTY" A54 B3 Q0
 
-Example MDI Command With Inspection Reporting: G65 "PROBESLOTY" A54 B3 C1
+Example MDI Command With Inspection Reporting: G65 "PROBESLOTY" A54 B3 Q1
 
   
 **PROBEOUTSIDECORNER**
@@ -332,10 +332,49 @@ Example MDI Command: G65 "PROBEINSIDECORNER" A54 B1 C.5
 
 	Why did I keep the bit in the wear table? I couldn't figure out where else to store it persistantly. I think there are some parameters memory locations I can get access to, but I haven't spent the time to figure out that syntax. 
 
+# Toal Loading Macros
+
+These macros are for the 12 tool carousel ATC specifically.
+They allow you to add and remove tools without having to manually modify the tool table at all.
+Use any tool number you want, up to 198.  
+Tool number 199 is used to signify an empty pocket in the tool table. 
+
+Both the load and unload macros set the tool gauge length to 999 and clear any tool wear compensation values. 
+999 was chosen because its safe. If you don't toolset the tool before use, then you'll get a z-height error when you try to run. 
+
+**LOAD TOOL**
+
+| G Code | "Macro Name" | Macro Argument  |
+| --- | --- | --- |
+| G65 | "LOADTOOL" | T |
+
+Example MDI Command: G65 "LOADTOOL" T10
+
+There are three conditions considered: 
+
+1) The tool number already exists in the tool table. 
+In this case, call up that tool number and swap in the new tool. 
+
+2) The tool number does not exist in the tool table, and there is an open tool pocket. 
+In this case, assign the new tool to an empty pocket
+
+3) The tool number does not exist in the tool table, but there is no empty tool pocket. 
+In this case, prompt the user for which number tool they want to remove. 
+Then re-assign that tool pocket to the new tool number.  
+
+After you have loaded the tool, the macro will automatically run the `TOOLSET` macro to set the gauge length. 
+
+**UNLOADTOOL**
+
+| G Code | "Macro Name" | Macro Argument  |
+| --- | --- | --- |
+| G65 | "UNLOADTOOL" | T |
+
+Example MDI Command: G65 "UNLOAD" T10
+
+
 # TODO
-    - Remove probesidcyl? I'm not sure if its needed
 	- The `PROBEBORE` macro does not probe for the z-height. It would be nice to make that optional. 
-	- The `PROBERECTANGLE` does not do a z-probe for the top of the stock. It would be nice to make that optional too. 
     - remove calibrate x and calibrate y with the addition of ring guage macro (need to make sure Justin agrees) 
 	- add descriptions to documentation for non probing routines. Justin to do this
 

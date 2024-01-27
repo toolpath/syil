@@ -6,7 +6,7 @@
 (#1 is the work coordinate system to store offsets in)
 (#2 is the expected width of the web in the Y direction)
 (#3 is the Z drop height)
-(#4 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
+(#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
 
 (load probe config)
 G65 "PROBECONFIG"
@@ -112,7 +112,7 @@ ELSE
 END_IF
 
 (simple inspection reporting)
-IF[#4>0]
+IF[#17>0]
  MSG_OK["INSPECTION REPORT", "Part Width: #107",""]
 END_IF
 
