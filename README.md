@@ -333,12 +333,11 @@ Example MDI Command: G65 "PROBEINSIDECORNER" A54 B1 C.5
 	Why did I keep the bit in the wear table? I couldn't figure out where else to store it persistantly. I think there are some parameters memory locations I can get access to, but I haven't spent the time to figure out that syntax. 
 
 # TODO
-
-	- Change the aquisition of machine coordinates in each macro to use the R_skip function to compensate for minute overshoot after the probe triggers.
+    - Remove probesidcyl? I'm not sure if its needed
 	- The `PROBEBORE` macro does not probe for the z-height. It would be nice to make that optional. 
 	- The `PROBERECTANGLE` does not do a z-probe for the top of the stock. It would be nice to make that optional too. 
-	- Improve the probe tip diameter calibration routine to use a gague ring (at least optionally). Right now it just assumes a 123 block. 
-    - remove calibratex and calibratey with the addition of ring guage macro (need to make sure Justin agrees) 
+    - remove calibrate x and calibrate y with the addition of ring guage macro (need to make sure Justin agrees) 
+	- add descriptions to documentation for non probing routines. Justin to do this
 
 
 # WISHLIST of stuff I don't yet know how to do
@@ -346,7 +345,10 @@ Example MDI Command: G65 "PROBEINSIDECORNER" A54 B1 C.5
 	- Add a `CHECKTOOL` macro that can look at the tool table and see if a tool number is present (would like to add this to the top of my postprocessor!)
 	- Add a macro to check min/max values against soft-limits (would also like to add this to my post processor) 
 	- Add a macro to calibrate the tool probe z value
-	- Test out a spindle-position command in the probe diameter calibration. Probe at different spindle angles, and record the values. Then compute a true-center for the probe and store the various offsets as some kind of angle map. Use that to compensate for any probe runout. 
+	- Test out a spindle-position command in the probe diameter calibration. Probe at different spindle angles, and record the values. Then compute a true-center for the probe and store the various offsets as some kind of angle map. Use that to compensate for any probe runout.
+	- Add probe Angle routines
+	- Add 4th Axis probing routines
+	- Add wear comp macros or wear comp to existing macros 
 
 
 The spindle rotation command requires some kind of update from Mr. Chen. I installed it, but haven't had time to play with that yet. 
