@@ -59,7 +59,7 @@ END_IF
 
 G91 G01 X[-#108]                     (Back OFF)
 G31 G91 P2 X[#108] F#112             (FEED UNTIL SKIP SLOW)
-#104=R_MACH_COOR[0,1]                (GET FIRST MACHINE X COORDINATE)
+#104=R_SKIP[0,201]                   (GET FIRST MACHINE X COORDINATE)
 G91 G01 X-[#108]                     (Back off)
 
 (lift Z after probe)
@@ -94,7 +94,7 @@ END_IF
 
 G91 G01 X[#108]                      (BACK OFF)
 G31 G91 P2 X[-#108] F#112            (FEED UNTIL SKIP SLOW)
-#105=R_MACH_COOR[0,1]                (GET SECOND MACHINE X COORDINATE)
+#105=R_SKIP[0,201]                   (GET SECOND MACHINE X COORDINATE)
 G91 G01 X[#108] F#110                (BACK OFF)
 G91 G01 Z#3                          (MOVE UP CLEAR OF THE PART)
 
@@ -104,7 +104,7 @@ G91 G01 Z#3                          (MOVE UP CLEAR OF THE PART)
 #107= ABS[[#105-#104]]-#121      (calculate width of part: distance - diameter)
 @998 = #107                      (save distance to a global variable for use with other macros)
 G91 G01 X[-#108 - #106]          (MOVE TO CENTER OF THE PART)
-#104=R_MACH_COOR[0,1]            (GET MACHINE Y COORDINATE)
+#104=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
 
 
 (STORE X OFFSET)

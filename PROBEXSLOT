@@ -37,7 +37,7 @@ END_IF
 
 G91 G01 X[#108]                     (Back OFF)
 G31 G91 P2 X-[#108] F#112           (FEED UNTIL SKIP SLOW)
-#104=R_MACH_COOR[0,1]               (GET FIRST MACHINE X COORDINATE)
+#104=R_SKIP[0,201]                  (GET FIRST MACHINE X COORDINATE)
 G91 G01 X[#108]                     (Back off)
 
 
@@ -52,7 +52,7 @@ END_IF
 
 G91 G01 X[-#108]                    (BACK OFF)
 G31 G91 P2 X[#108] F#112            (FEED UNTIL SKIP SLOW)
-#105=R_MACH_COOR[0,1]               (GET SECOND MACHINE X COORDINATE)
+#105=R_SKIP[0,201]                  (GET SECOND MACHINE X COORDINATE)
 G91 G01 X[-#108]                    (BACK OFF)
 
 

@@ -29,7 +29,7 @@ G31 G91 P2 Y[#2] F#111           (FEED UNTIL SKIP FAST)
 IF[R_SKIP[0,1] == 1]
  G91 G01 Y-[#108]                     (back off 1/4 the probing distance)
  G31 G91 P2 Y[#2] F#112               (FEED UNTIL SKIP SLOW)
- #104=R_MACH_COOR[0,2]                (GET MACHINE Y COORDINATE)
+ #104=R_SKIP[0,202]                   (GET MACHINE Y COORDINATE)
  G91 G01 Y-[#108]                     (back off 1/4 the probing distance)
  #106 = [#104+[[#2/abs[#2]]*#105]]    (current position +/- probe radius)
 

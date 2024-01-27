@@ -56,7 +56,7 @@ END_IF
 
 G91 G01 Y[-#108]                    (back off)
 G31 G91 P2 Y[#108] F#112            (FEED UNTIL SKIP SLOW)
-#104=R_MACH_COOR[0,2]               (GET FIRST MACHINE Y COORDINATE)
+#104=R_SKIP[0,202]                  (GET FIRST MACHINE Y COORDINATE)
 G91 G01 Y[-#108]                    (back off)
 
 (lift Z after probe)
@@ -91,7 +91,7 @@ END_IF
 
 G91 G01 Y[#108]                      (back off)
 G31 G91 P2 Y[-#108] F#112            (FEED UNTIL SKIP SLOW)
-#105=R_MACH_COOR[0,2]                (GET SECOND MACHINE Y COORDINATE)
+#105=R_SKIP[0,202]                   (GET SECOND MACHINE Y COORDINATE)
 G91 G01 Y[#108] F#110                (back off)
 G91 G01 Z#3                          (MOVE UP CLEAR OF THE PART)
 
