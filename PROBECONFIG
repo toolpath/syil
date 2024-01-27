@@ -3,8 +3,13 @@
 (Initial Coding 1/25/2024: Joshua Smith)
 (macro to setup probe specs and units, called by every macro)
 
-(important local variables)
-@100 = 99           (TOOL NUMBER, GRABS THE CURRENT TOOL AND ASSUMES IT'S THE PROBE. CAN BE CHANGED TO A SPECIFIC VALUE EX: 99)
+(important global variables)
+@100= -1                         (PROBE TOOL NUMBER, EX: 99)
+
+IF [@100==-1]
+	ALARM["HARD CODE PROBE NUMBER IN PROBECONFIG MACRO"]
+END_IF
+
 @101 = R_TOOL_DATA[0,@100,3]     (TOOL DIAMETER, DO NOT TOUCH!!!)
 @102 = @101/2                    (TOOL RADIUS, DO NOT TOUCH!!!)
 @103 = 50                        (FEED SPEED in/m, change to match your unit of choice, for metric users start at 2540mm))

@@ -12,12 +12,12 @@
 G65 "PROBEXWEB" A#1 B#2 C#3 Q0
 G65 "PROBEYWEB" A#1 B#2 C#3 Q0
 
-(simple inspection reporting)
-IF[#17>0]
-
-(calling our web macros the second time gives an accurate inspection)
+(calling our web macros the second time gives an accurate center)
 G65 "PROBEXWEB" A#1 B#2 C#3 Q0
 G65 "PROBEYWEB" A#1 B#2 C#3 Q0
+
+(simple inspection reporting)
+IF[#17>0]
 
 (average Diameter calculation)
 (@999 and @998 are set in the web macros)

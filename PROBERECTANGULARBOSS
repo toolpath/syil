@@ -4,8 +4,8 @@
 (Modified 1/14/2024: Joshua Smith)
 (Simplified WCS extended number math, added probe error checking, added probe inspection report)
 (#1 is the work coordinate system to store offsets in)
-(#2 is the expected length of the web in the x direction)
-(#3 is the expected width of the web in the 3 direction)
+(#2 is the expected length of the web in the X direction)
+(#3 is the expected width of the web in the Y direction)
 (#4 is the Z drop height)
 (#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
 
