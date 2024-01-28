@@ -25,8 +25,8 @@ G65 "PROBECONFIG"
 #3   = ABS[#3]
 
 (CALCULATE EXTENDED WCS NUMBER)
-(FIX is a round down function and MOD is modulo)
-#114 = MOD[#1,FIX[#1]]*10 
+(FIX removes any decimal value)
+#114 = [[#1 - FIX[#1]] * 10] 
 
 (probe Y starting from a negative offset and probing in the positive direction)
 (MOVE TO -Y SIDE OF THE PART, BEFORE STARTING TO PROBE)
@@ -107,7 +107,7 @@ G91 G01 Y[-#108 - #106]               (MOVE TO CENTER OF THE PART)
 
 
 (STORE Y OFFSET)
-IF [#114 == 0]
+IF [#1 < 53]
   (DO NOT SET ANYTHING INTO WCS)
 ELSEIF [#114 < 1]  
   W_G53G59_COOR[0,#1,2,#104]
