@@ -37,7 +37,7 @@ G31 G91 P2 Z[#123] F#111
   #104 = R_SKIP[0,203]                 (GET MACHINE X COORDINATE)
   G91 G01 Z+[#108]                     (back off 1/4 the probing distance)
   #106 = #2-[#104-#120]                (probe length CALCULATION)
-  W_TOOL_DATA[0,#100,1,#106]           (store tool diameter)
+  W_TOOL_DATA[0,#100,1,#106]           (store tool length)
  ELSE
   MSG_OK["PROBEZ", "ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE PRESS CYCLE STOP AND THEN RESET",""]
  END_IF
