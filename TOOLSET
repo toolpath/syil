@@ -6,11 +6,16 @@
 (#2 is the tool angle)
 (#3 is one less than number of test locations)
 
+(load probe config)
+G65 "PROBECONFIG"
+
 
 #100=R_SYS_INFO[0,2]            (SAVE CURRENT TOOL NUMBER TO #100)
+#102 = @104             (FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
+#103 = @105             (SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
+#104 = @109                     (MASTER GAUGE TOOL LENGTH)
 
-#102=100                        (FAST FEED)
-#103=2.5                        (SLOW FEED)
+
 
 G90 G94 G17 G49 G40 G80
 G20                             (INCH)
@@ -33,9 +38,8 @@ G31 Z-.21 F#103             (FEED UNTIL SKIP SLOWER)
 
 
 #105=R_TOOL_DATA[0,199,203]     (GET CALIBRATION TOOL - T199 - LENGTH OFFSET)
-(#106=[#104-#105+3-0.1266])              
-(COMPUTE THE TOOL OFFSET; +3 is for length of calibration tool)
-#106=[#104-#105+3]  
+(COMPUTE THE TOOL OFFSET; + #100 is for length of calibration tool)
+#106=[#104-#105+#104]  
 
 
 W_TOOL_DATA[0,#100,203,#106]    (WRITE TOOL Z LENGTH)
