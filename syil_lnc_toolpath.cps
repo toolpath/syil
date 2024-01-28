@@ -1884,12 +1884,13 @@ function onCyclePoint(x, y, z) {
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
       XWEB_WIDTH="B"+xyzFormat.format(cycle.width1)
-      YWEB_WIDTH="B"+xyzFormat.format(cycle.width2)
-      Z_DROP = "C"+xyzFormat.format(cycle.depth),
+      YWEB_WIDTH="C"+xyzFormat.format(cycle.width2)
+      Z_DROP = "D"+xyzFormat.format(cycle.depth),
 
-      writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE, XWEB_WIDTH, Z_DROP, "Q0");
+      // writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE, XWEB_WIDTH, Z_DROP, "Q0");
+      // writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE, YWEB_WIDTH, Z_DROP, "Q0");
 
-      writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE, YWEB_WIDTH, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"PROBERECTANGULARBOSS"', WCS_CODE, XWEB_WIDTH, YWEB_WIDTH, Z_DROP, "Q0");
       break;
     case "probing-xy-rectangular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));
