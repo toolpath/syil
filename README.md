@@ -132,6 +132,34 @@ _Table 4. Calibrate Probe Radius Syntax_
 
 Example MDI Command: G65 "CALIBRATEPROBERING" A1.5
 
+# Calibrating a toolsetter
+
+Before you do any toolsetting, you need to tell the control where the toolsetter is. 
+
+You should manually move your spindle to be located over the center of your toolsetter. 
+You can do this by eye, using the MPG to drive the gauge tool till it looks centered. 
+If you want a more precise location, 
+you can use a dial indicator or coaxial indicator and sweep it around untill you are prefectly centered. 
+
+Once you find your location, you will use the `TEACH IN` function in the offsets page to save that location as 
+The origin for G54P100. 
+The toolsetting location will be X0 Y0 in G54P100. 
+
+
+## CALIBRATETOOLSET
+
+This macro will use a master gauge tool to find the trigger height of your tool setter. 
+Once you have set the G54P100 WCS to locate the tool setter, 
+you can run this macro with the gauge tool in the spindle to calibrate the tool setter. 
+
+The toolsetter trigger height will be saved to the tool height offset of tool 199.
+
+| G Code | "Macro Name" | 
+| --- | --- |
+| G65 | "CALIBRATETOOLSET" |
+
+Example MDI Command: G65 "CALIBRATETOOLSET"
+
 # Probing Routines
 
 ## PROBEX
@@ -489,6 +517,7 @@ After you have loaded the tool, the macro will automatically run the `TOOLSET` m
 Example MDI Command: G65 "UNLOAD" T10
 
 
+
 # TODO
 	- The `PROBEBORE` macro does not probe for the z-height. It would be nice to make that optional. 
 	- Add a `CHECKTOOL` macro that can look at the tool table and see if a tool number is present (would like to add this to the top of my postprocessor!)
@@ -503,8 +532,12 @@ Example MDI Command: G65 "UNLOAD" T10
 	- Add 4th Axis probing routines
 	- Add wear comp macros or wear comp to existing macros 
 
-
-The spindle rotation command requires some kind of update from Mr. Chen. 
-I installed it, but haven't had time to play with that yet. 
+Note: 
+    ```
+	The spindle rotation command requires some kind of update from Mr. Chen. 
+    I have not gotten this to work. 
+    M19 does orient the spindle, but only in the fixed tool change location. 
+    Not an arbitrary angle. 
+    ```
 
 PRs are more than welcome. I've been using these for several months and haven't had any problems, but use at your own risk. Run all the macros in MPG Dry Run mode until you're sure they work. Don't blame me if you crash your machine or break a probe-tip :) 
