@@ -46,7 +46,12 @@ After the first touch, the probe will back off by `@108` (inches of mm depending
 This value needs to be large enough to allow the probe to fully disengage from the surface + some amount of clearance, 
 but no larger than that. 
 
-Reasonable defaults for `@106` and `@108` are provided and you don't need to edit them, but you can.  
+`@109` is the calibrated length of your master a gauge tool. 
+This length is critical in calibrating your tool setter and getting accurate tool lengths using it. 
+A default of 2.9997 inches is given, 
+but you really should input the specific value from the certificate of your gague tool. 
+
+Reasonable defaults for `@106`, `@108`, and `@109` are provided and you don't need to edit them, but you can.  
 
 **Macro Syntax**
 
