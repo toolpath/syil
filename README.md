@@ -105,6 +105,8 @@ By default you can call the macro without any arguments, which does a full calib
 
 Example MDI Command: G65 "CALIBRATEPROBEZ"
 
+![calibrateProbeZ](images/calibrateprobez.png)
+
 Put your master tool into the spindle and lower it untill it is just below the top edge of your reference artifact. 
 Slowly raise the spindle till the artifact can just barely pass beneath the master tool (you should be in X1 mode on the MPG for this). 
 Make careful note of where you do this calibration, so you'll be able to place the calibration artifact in the same place later when you want to recalibrate your probe offset --- for example if you change the probe tip. 
