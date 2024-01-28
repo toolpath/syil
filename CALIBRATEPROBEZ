@@ -1,0 +1,49 @@
+(CALIBRATEZ)
+(Description: Probe in Z from the above stock)
+(initial coding 1/14/2024: Joshua Smith)
+(Simplified WCS extended number math, added probe error checking, added probe distance argument,removed air blast)
+(Argument B -> #2 is the length of your master tool)
+
+(load probe config)
+G65 "PROBECONFIG"
+
+(important local variables)
+#100 = @100             (TOOL NUMBER PROVIDED BY PROBECONFIG MACRO)
+#110 = @103             (FEED SPEED PROVIDED BY PROBECONFIG MACRO)
+#111 = @104             (FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
+#112 = @105             (SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
+#105 = @107             (TOOL LENGTH PROVIDED BY PROBECONFIG MACRO)
+#108 = @108             (PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO)
+#120 = R_MACH_COOR[0,3] (GET MACHINE Z COORDINATE WHICH SHOULD BE THE TOP OF A 123 BLOCK)
+
+(COMMAND A TOOL CHANGE)
+T#100 M6
+
+(TELL THE PERSON TO PUT THE TOOL INTO THE SPINDLE)
+MSG_OK["INSTALL TOOL", "SWITCH TO MPG MODE AND INSTALL T#100",""]
+
+#121 = R_MACH_COOR[0,3] (GET MACHINE Z COORDINATE AFTER TOOL CHANGE)
+(COMMAND TOOL CHANGE TO PROBE)
+
+#123 = #120-#121 (DELTA DISTANCE WE HAVE MOVED)
+
+(Probe Z ALL TEH BACK TO 123 BLOCK)
+G31 G91 P2 Z[#123] F#111
+
+ (Check that the probe has triggered)
+ IF[R_SKIP[0,1] == 1]
+  G91 G01 Z+[#108]                     (back off 1/4 the probing distance)
+  G31 G91 P2 Z[#2] F#112               (Probe X the desired distance at slow feed)
+  #104 = R_SKIP[0,203]                 (GET MACHINE X COORDINATE)
+  G91 G01 Z+[#108]                     (back off 1/4 the probing distance)
+  #106 = #2-[#104-#120]                (probe length CALCULATION)
+  W_TOOL_DATA[0,#100,1,#106]           (store tool length)
+ ELSE
+  MSG_OK["PROBEZ", "ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE PRESS CYCLE STOP AND THEN RESET",""]
+ END_IF
+
+
+
+G90
+
+M99
