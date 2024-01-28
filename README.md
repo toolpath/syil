@@ -86,6 +86,45 @@ The height of your probe can be found using a tool setter if the force to trigge
 
 _Figure 2. Indicating Probe_
 
+## Probe Length Calibration
+
+Length calibration is done with the `CALIBRATEPROBEZ` macro. 
+The first time you use this macro, you will start by setting the calibration height of your reference artifact. 
+The artifact can be nearly anything for this, as it's precise dimensions don't matter. 
+Its common to choose either a 123 block or a gauge ring. 
+The important thing is that this reference artifact doesn't change (or you redo the initial calibration if it does) from use to use. 
+
+| GCode | "Macro Name" | Macro Argument |
+| --- | --- | --- |
+| G65 | "CALIBRATEPROBEZ" | A | 
+
+This macro has an optional argument `A`. 
+By default you can call the macro without any arguments, which does a full calibration starting with setting the reference height. 
+
+## Full Probe Z Height Calibration
+
+Example MDI Command: G65 "CALIBRATEPROBEZ"
+
+Put your master tool into the spindle and lower it untill it is just below the top edge of your reference artifact. 
+Slowly raise the spindle till the artifact can just barely pass beneath the master tool (you should be in X1 mode on the MPG for this). 
+Make careful note of where you do this calibration, so you'll be able to place the calibration artifact in the same place later when you want to recalibrate your probe offset --- for example if you change the probe tip. 
+
+![masterToolCalibration](images/master_tool_z_calibration.jpg)
+
+The macro will record the reference height of that artifact in the global variable @5109. 
+Then it will raise the spindle and ask you to do a manual tool change to the probe (i.e. remove the master gauge tool). 
+Finally it will do a protected move down toward the artifact to calibrate the probe z offset and store it in the tool length of your perscribed probe tool number. 
+
+## Quick Probe Z Height Calibration
+
+Example MDI Command: G65 "CALIBRATEPROBEZ" A1
+
+Once you have done the full calibration one time, 
+you can use a quick version of the macro to recalibrate the probe offset without the need to use the master tool. 
+
+
+
+
 ## Probe Tip Diameter Calibration 
 
 You can use one of the two provided calibration methods: 
@@ -105,7 +144,7 @@ and you want to put the true dimension into the macro arguments.
 `B` is the gauge block's true Y dimension 
 `C` is the amount of Z drop you want between your initial position and the measurement height. It needs to be a negative value.
 
-![CALIBRATEPROBEBLOCK](images/probeRingGuage.PNG)
+![CALIBRATEPROBEBLOCK](images/calibrateprobeblock.png)
 
 | GCode | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
