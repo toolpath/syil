@@ -112,6 +112,7 @@ Make careful note of where you do this calibration, so you'll be able to place t
 ![masterToolCalibration](images/master_tool_z_calibration.jpg)
 
 The macro will record the reference height of that artifact in the global variable @5109. 
+It will also record the XY position into the extended work offset you configured in the `PROBECONFIG` macro (default is G54P99).
 Then it will raise the spindle and ask you to do a manual tool change to the probe (i.e. remove the master gauge tool). 
 Finally it will do a protected move down toward the artifact to calibrate the probe z offset and store it in the tool length of your perscribed probe tool number. 
 
@@ -121,7 +122,9 @@ Example MDI Command: G65 "CALIBRATEPROBEZ" A1
 
 Once you have done the full calibration one time, 
 you can use a quick version of the macro to recalibrate the probe offset without the need to use the master tool. 
+But you must re-install your calibration artifact onto your table before calling this macro. 
 
+This will move the table to the origin of the saved WCS (default is G54P99) and then do a protected move to calibrate the probe offset. 
 
 
 
