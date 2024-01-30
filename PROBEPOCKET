@@ -21,10 +21,6 @@ G65 "PROBEYSLOT" A#1 B#3 Q0
 (simple inspection reporting)
 IF[#17>0]
 
-(calling our slot macros a second time gives an accurate inspection)
-G65 "PROBEXSLOT" A#1 B#2 Q0 
-G65 "PROBEYSLOT" A#1 B#3 Q0
-
 (average Diameter calculation)
 (@999 and @998 are set in the web macros)
 #131 = @998
