@@ -568,25 +568,14 @@ Example MDI Command: G65 "UNLOAD" T10
 
 
 # TODO
-	- The `PROBEBORE` macro does not probe for the z-height. It would be nice to make that optional. 
+
+** contributions welcome! ** 
+
 	- Add a `CHECKTOOL` macro that can look at the tool table and see if a tool number is present (would like to add this to the top of my postprocessor!)
 	- Add a macro to check min/max values against soft-limits (would also like to add this to my post processor) 
-	- Add a macro to calibrate the tool probe z value, based on a known location for an artifact and a reference position for it found using a gauge tool.
-
-
-# WISHLIST of stuff I don't yet know how to do
-
-	- Test out a spindle-position command in the probe diameter calibration. Probe at different spindle angles, and record the values. Then compute a true-center for the probe and store the various offsets as some kind of angle map. Use that to compensate for any probe runout.
-	- Add probe Angle routines
+	- Add probe runout compensation into the calibration: Rotate the spindle 180 degrees with M19P180. Then re-do calibration and compare results to compute runout. Need to figure out the math for how to compensate for it during probing. 
+	- Add probe Angle routines (i.e. probe a wall and compute its angle, so you can rotate the X/Y axes)
 	- Add 4th Axis probing routines
 	- Add wear comp macros or wear comp to existing macros 
 
-Note: 
-    ```
-	The spindle rotation command requires some kind of update from Mr. Chen. 
-    I have not gotten this to work. 
-    M19 does orient the spindle, but only in the fixed tool change location. 
-    Not an arbitrary angle. 
-    ```
 
-PRs are more than welcome. I've been using these for several months and haven't had any problems, but use at your own risk. Run all the macros in MPG Dry Run mode until you're sure they work. Don't blame me if you crash your machine or break a probe-tip :) 
