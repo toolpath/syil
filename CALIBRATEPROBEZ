@@ -59,18 +59,16 @@ G31 G91 P2 Z[#123] F#104
 (Check that the probe has triggered)
 IF[R_SKIP[0,1] == 1]
 
-  (force feed rate overide to 100% for probing measurement)
-  FIX_CUT_OR_ON
+  
 
   G91 G01 Z[#108]                      (BACK OFF)
+  FIX_CUT_OR_ON
   G31 G91 P2 Z-[1.5*108] F#105         (PROBE Z AT SLOW SPEED)
+  FIX_CUT_OR_OFF
   #125 = R_SKIP[0,203]                 (GET MACHINE Z COORDINATE)
   G91 G01 Z[#108]                      (BACK OFF)
   #126 = [#125-#120+#109]              (PROBE LENGTH CALCULATION, ACCOUNTING FOR GAUGE TOOL LENGTH)
   W_TOOL_DATA[0,#100,203,#126]           (STORE PROBE LENGTH)
-
-  (force feed rate overide off)
-  FIX_CUT_OR_OFF
 
 ELSE
   ALARM["FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
