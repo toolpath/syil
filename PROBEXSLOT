@@ -38,11 +38,16 @@ IF[R_SKIP[0,1] == 0]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
+(force feed rate overide to 100% for probing measurement)
+FIX_CUT_OR_ON
+
 G91 G01 X[#108]                     (Back OFF)
 G31 G91 P2 X-[#108] F#112           (FEED UNTIL SKIP SLOW)
 #104=R_SKIP[0,201]                  (GET FIRST MACHINE X COORDINATE)
 G91 G01 X[#108]                     (Back off)
 
+(force feed rate overide off)
+FIX_CUT_OR_OFF
 
 (Move to opposite side of part)
 G31 G91 P2 X[#2+#122-#108] F#111          (move to other side of the part, probe distance  away)
@@ -53,11 +58,16 @@ IF[R_SKIP[0,1] == 0]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
+(force feed rate overide to 100% for probing measurement)
+FIX_CUT_OR_ON
+
 G91 G01 X[-#108]                    (BACK OFF)
 G31 G91 P2 X[#108] F#112            (FEED UNTIL SKIP SLOW)
 #105=R_SKIP[0,201]                  (GET SECOND MACHINE X COORDINATE)
 G91 G01 X[-#108]                    (BACK OFF)
 
+(force feed rate overide off)
+FIX_CUT_OR_OFF
 
 (COMPUTE RELATIVE DISTANCE TO CENTER OF THE PART)
 #106=[[#105-#104]/2]             (center point calculation)

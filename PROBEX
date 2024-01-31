@@ -28,11 +28,18 @@ G31 G91 P2 X[#2] F#111
 
 (Check that the probe has triggered)
 IF[R_SKIP[0,1] == 1]
+
+(force feed rate overide to 100% for probing measurement)
+ FIX_CUT_OR_ON
+
  G91 G01 X-[#108]                     (back off 1/4 the probing distance)
  G31 G91 P2 X[#2] F#112               (Probe X the desired distance at slow feed)
  #104=R_SKIP[0,201]                   (GET MACHINE X COORDINATE)
  G91 G01 X-[#108]                     (back off 1/4 the probing distance)
  #106 = [#104+[[#2/abs[#2]]*#105]]    (current position +/- probe radius)
+
+ (force feed rate overide off)
+ FIX_CUT_OR_OFF
 
  (STORE X OFFSET FOR WCS ZERO)
  IF [#1 < 53]
