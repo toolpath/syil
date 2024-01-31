@@ -27,7 +27,7 @@ IF[#17>0]
 
  MENU_ADD["Part Diameter In X: @998",""]; 
  MENU_ADD["Part Diameter In Y: @999",""];
- MENU_ADD["Part Average Diameter: #131",""];  
+ MENU_ADD["AVG Diameter: #131",""]; (THE WORD AVERAGE IS TO LONG FOR THE MENU)
  MENU["INSPECTION REPORT","RESULTS","",1];
 
 END_IF

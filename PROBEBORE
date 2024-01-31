@@ -23,8 +23,6 @@ G65 "PROBEYSLOT" A#1 B#2 Q0
 (simple inspection reporting)
 IF[#17>0]
 
-
-
 (average Diameter calculation)
 (@999 and @998 are set in the web macros)
 #131 = @998
@@ -33,7 +31,7 @@ IF[#17>0]
 
  MENU_ADD["Part Diameter In X: #131",""]; 
  MENU_ADD["Part Diameter In Y: #132",""];
- MENU_ADD["Part Average Diameter: #133",""];  
+ MENU_ADD["AVG Diameter: #133",""];  (THE WORD AVERAGE IS TO LONG FOR THE MENU)
  MENU["INSPECTION REPORT","RESULTS","",1];
  
 END_IF
