@@ -31,7 +31,10 @@ IF[#17>0]
 #132 = @999
 #133 = [#131 + #132]/2
 
- MSG_OK["INSPECTION REPORT", "Part Diameter In X: #131  Part Diameter In Y: #132 Part Average Diameter: #133",""]
+ MENU_ADD["Part Diameter In X: #131",""]; 
+ MENU_ADD["Part Diameter In Y: #132",""];
+ MENU_ADD["Part Average Diameter: #133",""];  
+ MENU["INSPECTION REPORT","","",1];
  
 END_IF
 

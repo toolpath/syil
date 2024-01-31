@@ -19,7 +19,9 @@ G65 "PROBEYWEB" A#1 B#3 C#4 Q0
 (simple inspection reporting)
 (@999 and @998 are set in the web macros)
 IF[#17>0]
- MSG_OK["INSPECTION REPORT", "Part Length In X:@998  Part Width In Y:@999",""]
+ MENU_ADD["Part Length In X: @998",""]; 
+ MENU_ADD["Part Width In Y: @999",""]; 
+ MENU["INSPECTION REPORT","RESULTS","",1];
 END_IF
 
 G90

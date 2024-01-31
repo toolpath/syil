@@ -34,7 +34,7 @@ G31 G91 P2 Y-[#2/2+#122] F#110
 
 (Error Checking)
 IF[R_SKIP[0,1] == 1]
- MSG_OK["PROBEYWEB", "ERROR: PREMATURE PROBE COLLISION",""]
+ ALARM["ERROR: PREMATURE PROBE COLLISION"]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
@@ -43,7 +43,7 @@ G31 G91 P2 Z-#3 F#110
 
 (Error Checking)
 IF[R_SKIP[0,1] == 1]
- MSG_OK["PROBEYWEB", "ERROR: PREMATURE PROBE COLLISION",""]
+ ALARM["ERROR: PREMATURE PROBE COLLISION"]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
@@ -52,20 +52,16 @@ G31 G91 P2 Y[#122+#108] F#111       (FEED PROBING DINSTANCE + BACK OFF UNTIL SKI
 
 (Error Checking)
 IF[R_SKIP[0,1] == 0]
- MSG_OK["PROBEYWEB", "ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE",""]
+ ALARM["ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
-(force feed rate overide to 100% for probing measurement)
-FIX_CUT_OR_ON
-
 G91 G01 Y[-#108]                    (back off)
+FIX_CUT_OR_ON
 G31 G91 P2 Y[#108] F#112            (FEED UNTIL SKIP SLOW)
+FIX_CUT_OR_OFF
 #104=R_SKIP[0,202]                  (GET FIRST MACHINE Y COORDINATE)
 G91 G01 Y[-#108]                    (back off)
-
-(force feed rate overide off)
-FIX_CUT_OR_OFF
 
 (lift Z after probe)
 G31 G91 P2 Z#3 F#110             (move above the part)
@@ -75,7 +71,7 @@ G31 G91 P2 Y[#2+#122+#108] F#110  (move to other side of the part,pobe distance 
 
 (Error Checking)
 IF[R_SKIP[0,1] == 1]
- MSG_OK["PROBEYWEB", "ERROR: PREMATURE PROBE COLLISION",""]
+ ALARM["ERROR: PREMATURE PROBE COLLISION"]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
@@ -84,7 +80,7 @@ G31 G91 P2 Z-#3 F#110             (move back down to probe height)
 
 (Error Checking)
 IF[R_SKIP[0,1] == 1]
- MSG_OK["PROBEYWEB", "ERROR: PREMATURE PROBE COLLISION",""]
+ ALARM["ERROR: PREMATURE PROBE COLLISION"]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
@@ -93,21 +89,17 @@ G31 G91 P2 Y[-1*[#122+#108]] F#111      (FEED PROBING DINSTANCE + BACK OFF UNTIL
 
 (Error Checking)
 IF[R_SKIP[0,1] == 0]
- MSG_OK["PROBEYWEB", "ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE",""]
+ ALARM["ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
-(force feed rate overide to 100% for probing measurement)
-FIX_CUT_OR_ON
-
 G91 G01 Y[#108]                      (back off)
+FIX_CUT_OR_ON
 G31 G91 P2 Y[-#108] F#112            (FEED UNTIL SKIP SLOW)
+FIX_CUT_OR_OFF
 #105=R_SKIP[0,202]                   (GET SECOND MACHINE Y COORDINATE)
 G91 G01 Y[#108] F#110                (back off)
 G91 G01 Z#3                          (MOVE UP CLEAR OF THE PART)
-
-(force feed rate overide off)
-FIX_CUT_OR_OFF
 
 (COMPUTE RELATIVE DISTANCE TO CENTER OF THE PART)
 #106 = [[#105-#104]/2]                (calculate center)
@@ -115,7 +107,6 @@ FIX_CUT_OR_OFF
 @999 = #107                           (save distance to a global variable for use with other macros)
 G91 G01 Y[-#108 - #106]               (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,2]                 (GET MACHINE Y COORDINATE)
-
 
 (STORE Y OFFSET)
 IF [#1 < 53]
@@ -126,10 +117,15 @@ ELSE
   W_G54EXP_COOR[0,#114,2,#104]
 END_IF
 
+
+
 (simple inspection reporting)
 IF[#17>0]
- MSG_OK["INSPECTION REPORT", "Part Width: #107",""]
+MENU_ADD["Part Width: #107",""]; 
+MENU["INSPECTION REPORT","RESULTS","",1];
 END_IF
+
+
 
 N1
 
