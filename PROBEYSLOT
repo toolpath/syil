@@ -32,40 +32,36 @@ G31 G91 P2 Y-[#2/2+#122] F#111
 
 (Error Checking)
 IF[R_SKIP[0,1] == 0]
- MSG_OK["PROBEYSLOT", "ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE",""]
+ ALARM["ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
-(force feed rate overide to 100% for probing measurement)
-FIX_CUT_OR_ON
+
 
 G91 G01 Y[#108]                    (back off)
+FIX_CUT_OR_ON
 G31 G91 P2 Y[-#108] F#112          (FEED UNTIL SKIP SLOW)
+FIX_CUT_OR_OFF
 #104=R_SKIP[0,202]                 (GET FIRST MACHINE Y COORDINATE)
 G91 G01 Y[#108]                    (back off)
 
-(force feed rate overide off)
-FIX_CUT_OR_OFF
+
 
 (move to the opposite side of the part)
 G31 G91 P2 Y[#2+#122-#108] F#111  (move to other side of the part,pobe distance  away)
 
 (Error Checking)
 IF[R_SKIP[0,1] == 0]
- MSG_OK["PROBEYSLOT", "ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE",""]
+ ALARM["ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
-(force feed rate overide to 100% for probing measurement)
-FIX_CUT_OR_ON
-
 G91 G01 Y[-#108]                      (back off)
+FIX_CUT_OR_ON
 G31 G91 P2 Y[#108] F#112              (FEED UNTIL SKIP SLOW)
+FIX_CUT_OR_OFF
 #105=R_SKIP[0,202]                    (GET SECOND MACHINE Y COORDINATE)
 G91 G01 Y[-#108] F#110                (back off)
-
-(force feed rate overide off)
-FIX_CUT_OR_OFF
 
 (COMPUTE RELATIVE DISTANCE TO CENTER OF THE PART)
 #106 = [[#105-#104]/2]                (calculate center)
@@ -76,7 +72,9 @@ G91 G01 Y[-#106 + #108]               (MOVE TO CENTER OF THE PART)
 
 
 (STORE Y OFFSET)
-IF [#114 < 1]  
+IF [#1 < 53]
+ (DO NOT WRITE ANYTHING TO WCS)
+ELSEIF [#114 < 1]  
   W_G53G59_COOR[0,#1,2,#104]
 ELSE
   W_G54EXP_COOR[0,#114,2,#104]
@@ -84,7 +82,8 @@ END_IF
 
 (simple inspection reporting)
 IF[#17>0]
- MSG_OK["INSPECTION REPORT", "Part Width: #107",""]
+ MENU_ADD["Part Width: #107",""]; 
+ MENU["INSPECTION REPORT","RESULTS","",1];
 END_IF
 
 N1

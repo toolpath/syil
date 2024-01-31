@@ -25,9 +25,10 @@ IF[#17>0]
 (@999 and @998 are set in the web macros)
 #131 = @998
 #132 = @999
-#133 = [#131 + #132]/2
 
- MSG_OK["INSPECTION REPORT", "Part Length In X: #131  Part Width In Y: #132",""]
+ MENU_ADD["Part Length In X: @998",""]; 
+ MENU_ADD["Part Width In Y: @999",""]; 
+ MENU["INSPECTION REPORT","RESULTS","",1];
  
 END_IF
 

@@ -31,7 +31,9 @@ G65 "PROBEYWEB" A0 B#2 C#3 Q0
 #134 = #2-#132                (error in y)
 #135 = ABS[#133 + #134]/2     (average error)
 W_TOOL_DATA[0,#100,3,#135]    (store tool diameter)
-MSG_OK["CALIBRATION REPORT", "Ruby Diameter Set To: #135",""]
+
+MENU_ADD["Ruby Diameter Set To: #135",""];  
+MENU["CALIBRATION REPORT","RESULTS","",1];
 
 G90
 

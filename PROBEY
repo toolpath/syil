@@ -28,17 +28,16 @@ G31 G91 P2 Y[#2] F#111           (FEED UNTIL SKIP FAST)
 (Check that the probe has triggered)
 IF[R_SKIP[0,1] == 1]
 
-(force feed rate overide to 100% for probing measurement)
- FIX_CUT_OR_ON
+ 
 
  G91 G01 Y-[#108]                     (back off 1/4 the probing distance)
+ FIX_CUT_OR_ON
  G31 G91 P2 Y[#2] F#112               (FEED UNTIL SKIP SLOW)
+ FIX_CUT_OR_OFF
  #104=R_SKIP[0,202]                   (GET MACHINE Y COORDINATE)
  G91 G01 Y-[#108]                     (back off 1/4 the probing distance)
  #106 = [#104+[[#2/abs[#2]]*#105]]    (current position +/- probe radius)
-
-(force feed rate overide off)
- FIX_CUT_OR_OFF
+ 
 
 (STORE Y OFFSET For WCS Zero)
 IF [#1 < 53]
@@ -50,7 +49,7 @@ ELSE
 END_IF
 
 ELSE
- MSG_OK["PROBEY", "ERROR: FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE PRESS CYCLE STOP AND THEN RESET",""]
+ ALARM["ERROR: FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
 END_IF
 
 G90

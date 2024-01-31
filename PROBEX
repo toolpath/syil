@@ -27,19 +27,15 @@ G65 "PROBECONFIG"
 G31 G91 P2 X[#2] F#111        
 
 (Check that the probe has triggered)
-IF[R_SKIP[0,1] == 1]
-
-(force feed rate overide to 100% for probing measurement)
- FIX_CUT_OR_ON
+IF[R_SKIP[0,1] == 1] 
 
  G91 G01 X-[#108]                     (back off 1/4 the probing distance)
+ FIX_CUT_OR_ON
  G31 G91 P2 X[#2] F#112               (Probe X the desired distance at slow feed)
+ FIX_CUT_OR_OFF
  #104=R_SKIP[0,201]                   (GET MACHINE X COORDINATE)
  G91 G01 X-[#108]                     (back off 1/4 the probing distance)
  #106 = [#104+[[#2/abs[#2]]*#105]]    (current position +/- probe radius)
-
- (force feed rate overide off)
- FIX_CUT_OR_OFF
 
  (STORE X OFFSET FOR WCS ZERO)
  IF [#1 < 53]
@@ -50,7 +46,7 @@ IF[R_SKIP[0,1] == 1]
    W_G54EXP_COOR[0,#114,1,#106]
  END_IF
 ELSE
- MSG_OK["PROBEX", "ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE PRESS CYCLE STOP AND THEN RESET",""]
+ ALARM["ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
 END_IF
 
 G90
