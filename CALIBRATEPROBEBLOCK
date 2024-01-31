@@ -21,8 +21,8 @@ W_TOOL_DATA[0,#100,3,0]    (store tool diameter)
 
 
 (calling web probe macros macros to measure the rectangle)
-G65 "PROBEXWEB" A0 B#1 C#3 Q0 
-G65 "PROBEYWEB" A0 B#2 C#3 Q0 
+G65 "PROBEXWEB" A54 B#1 C#3 Q0 
+G65 "PROBEYWEB" A54 B#2 C#3 Q0 
 
 #131 = @998 (stored value of the measured X distance)
 #132 = @999 (stored valued of the measured Y distance)
@@ -32,8 +32,8 @@ G65 "PROBEYWEB" A0 B#2 C#3 Q0
 #135 = ABS[#133 + #134]/2     (average error)
 W_TOOL_DATA[0,#100,3,#135]    (store tool diameter)
 
-MENU_ADD["Ruby Diameter Set To: #135",""];  
-MENU["CALIBRATION REPORT","","",1];
+MENU_ADD["Ruby Diameter: #135",""];  
+MENU["CALIBRATION REPORT","RESULTS","",1];
 
 G90
 

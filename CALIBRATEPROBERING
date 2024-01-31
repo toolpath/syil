@@ -16,13 +16,13 @@ G65 "PROBECONFIG"
 W_TOOL_DATA[0,#100,3,0]    (store tool diameter)
 
 (calling our slot macros the first time centers probe)
-G65 "PROBEXSLOT" A0 B#1 Q0 
-G65 "PROBEYSLOT" A0 B#1 Q0 
+G65 "PROBEXSLOT" A54 B#1 Q0 
+G65 "PROBEYSLOT" A54 B#1 Q0 
 
 
 (calling our slot macros a second time gives an accurate inspection)
-G65 "PROBEXSLOT" A0 B#1 Q0 
-G65 "PROBEYSLOT" A0 B#1 Q0
+G65 "PROBEXSLOT" A54 B#1 Q0 
+G65 "PROBEYSLOT" A54 B#1 Q0
 
 (average Diameter calculation)
 (@999 and @998 are set in the slot macros)
@@ -34,7 +34,7 @@ G65 "PROBEYSLOT" A0 B#1 Q0
 #135 = ABS[#133 + #134]/2     (average error)
 W_TOOL_DATA[0,#100,3,#135]    (store tool diameter)
 
-MENU_ADD["Ruby Diameter Set To: #135",""];  
+MENU_ADD["Ruby Diameter: #135",""];  
 MENU["CALIBRATION REPORT","RESULTS","",1];
 
 G90
