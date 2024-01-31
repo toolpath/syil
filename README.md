@@ -23,8 +23,14 @@ Every probing routine calls the configuration macro to initialize global variabl
 This is contained in `PROBECONFIG`
 It allows all probing parameters to be specified in one place. 
 The probe configuration macro must be opened and customized to your specific needs. 
-The various probing parameters must be set in your desired units. 
+
+### Imperial vs Metric units
+The various probing parameters must be set in your desired units in the `PROBECONFIG` file. 
+No other other changes are needed to configure the units. 
 The default parameters are in inches but comments provide suggested metric values. 
+
+### Customize Settings
+
 Start with the recommended settings and fine tune from there. 
 Please set your fusion360 probing feed rate to the same value that you use in the config macro. 
 In you decide to change feed rates, you should always run calibration again.
