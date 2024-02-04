@@ -10,13 +10,17 @@
 (#2 is the expected length)
 (#3 is the expected width)
 (#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
+(#18 expected stock length )
+(#19 expected stock Width )
+(#20 oversize tolorance)
+(#21 enable oversize check)
 
 (important local variables)
 #130 = @101             (TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO)
 
 (calling our slot macros the first time centers probe)
-G65 "PROBEXSLOT" A#1 B#2 Q0 
-G65 "PROBEYSLOT" A#1 B#3 Q0 
+G65 "PROBEXSLOT" A#1 B#2 Q0 R#18 S#20 T#21 
+G65 "PROBEYSLOT" A#1 B#3 Q0 R#19 S#20 T#21 
 
 (simple inspection reporting)
 IF[#17>0]

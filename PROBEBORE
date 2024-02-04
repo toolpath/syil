@@ -8,17 +8,20 @@
 (#1 is the work coordinate system to store offsets in)
 (#2 is the expected DIAMETER)
 (#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
+(#18 expected stock Diameter )
+(#19 oversize tolorance)
+(#20 enable oversize check)
 
 (important local variables)
 #130 = @101             (TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO)
 
 (calling our slot macros the first time centers probe)
-G65 "PROBEXSLOT" A#1 B#2 Q0 
-G65 "PROBEYSLOT" A#1 B#2 Q0 
+G65 "PROBEXSLOT" A#1 B#2 Q0 R#18 S#19 T#20
+G65 "PROBEYSLOT" A#1 B#2 Q0 R#18 S#19 T#20
 
 (calling our slot macros a second time gives an accurate inspection)
-G65 "PROBEXSLOT" A#1 B#2 Q0 
-G65 "PROBEYSLOT" A#1 B#2 Q0
+G65 "PROBEXSLOT" A#1 B#2 Q0 R#18 S#19 T#20
+G65 "PROBEYSLOT" A#1 B#2 Q0 R#18 S#19 T#20
 
 (simple inspection reporting)
 IF[#17>0]

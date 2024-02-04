@@ -9,6 +9,9 @@
 (#2 is the expected width of the web in the Y direction)
 (#3 is the Z drop height)
 (#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
+(#18 expected stock length )
+(#19 oversize tolorance)
+(#20 enable oversize check)
 
 (load probe config)
 G65 "PROBECONFIG"
@@ -107,6 +110,7 @@ G91 G01 Z#3                          (MOVE UP CLEAR OF THE PART)
 @999 = #107                           (save distance to a global variable for use with other macros)
 G91 G01 Y[-#108 - #106]               (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,2]                 (GET MACHINE Y COORDINATE)
+#126=ABS[#107-#18]                    (expected stock error)
 
 (STORE Y OFFSET)
 IF [#1 < 53]
@@ -125,6 +129,10 @@ MENU_ADD["Part Width: #107",""];
 MENU["INSPECTION REPORT","RESULTS","",1];
 END_IF
 
+(oversized stock alarm if stock error is greater than tolorance)
+IF[#20>0 && #126>#19 ]
+ ALARM["ERROR: STOCK OVERSIZED IN Y"]
+END_IF
 
 
 N1
