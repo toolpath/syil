@@ -40,7 +40,7 @@ IF[R_SKIP[0,1] == 1]
  
 
 (STORE Y OFFSET For WCS Zero)
-IF [#1 < 53]
+IF [#1 < 53 || #1 == #0]
  (DO NOT WRITE ANYTHING TO WCS)
 ELSEIF [#114 < 1]  
   W_G53G59_COOR[0,#1,2,#106]

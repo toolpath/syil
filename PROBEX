@@ -38,7 +38,7 @@ IF[R_SKIP[0,1] == 1]
  #106 = [#104+[[#2/abs[#2]]*#105]]    (current position +/- probe radius)
 
  (STORE X OFFSET FOR WCS ZERO)
- IF [#1 < 53]
+ IF [#1 < 53 || #1 == #0]
   (DO NOT SET ANYTHING INTO WCS)
  ELSEIF [#114 < 1]  
    W_G53G59_COOR[0,#1,1,#106]

@@ -36,13 +36,13 @@ G31 G91 P2 Z[#2] F#111
   FIX_CUT_OR_ON
   G31 G91 P2 Z[#2] F#112               (Probe X the desired distance at slow feed)
   FIX_CUT_OR_OFF
-  #104=R_SKIP[0,203]                   (GET MACHINE X COORDINATE)
+  #104=R_SKIP[0,203]                   (GET MACHINE Z COORDINATE)
   G91 G01 Z+[#108]                     (back off 1/4 the probing distance)
   #106 = [#104-#105]                   (current position - probe length)
   
 
-  (STORE X OFFSET FOR WCS ZERO)
-  IF [#1 < 53]
+  (STORE Z OFFSET FOR WCS ZERO)
+  IF [#1 < 53 || #1 == #0]
     (DO NOT SET ANYTHING INTO WCS)
   ELSEIF [#114 < 1]  
     W_G53G59_COOR[0,#1,3,#106]
