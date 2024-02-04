@@ -17,22 +17,22 @@ G65 "PROBECONFIG"
 
 #120=R_SYS_INFO[0,2] (CURRENT TOOL NUMBER)
 
+(NOTE: #0 IS ALWAYS VACANT, SO YOU CAN CHECK AGAINST IT TO SEE IF AN ARGUMENT WAS PASSED)
 
 G90
-(Probe X the desired distance and at fast feed)
-IF[#24==VACANT && #25==VACANT && #26!=VACANT] (Z ONLY)
+IF[#24==#0 && #25==#0 && #26!=#0] (Z ONLY)
     G31 P2 Z[#26] F#110  
-ELSEIF[#24!=VACANT && #25==VACANT && #26==VACANT] (X ONLY)
+ELSEIF[#24!=#0 && #25==#0 && #26==#0] (X ONLY)
     G31 P2 X[#24] F#110  
-ELSEIF[#24==VACANT && #25!=VACANT && #26!=VACANT] (Y ONLY)
+ELSEIF[#24==#0 && #25!=#0 && #26==#0] (Y ONLY)
     G31 P2 Y[#25] F#110  
-ELSEIF[#24!=VACANT && #25==VACANT && #26!=VACANT] (X + Z)
+ELSEIF[#24!=#0 && #25==#0 && #26!=#0] (X + Z)
     G31 P2 X[#24] Z[#26] F#110  
-ELSEIF[#24==VACANT && #25!=VACANT && #26!=VACANT] (Y + Z)
+ELSEIF[#24==#0 && #25!=#0 && #26!=#0] (Y + Z)
     G31 P2 Y[#25] Z[#26] F#110  
-ELSEIF[#24!=VACANT && #25==VACANT && #26==VACANT] (X + Y)
+ELSEIF[#24!=#0 && #25!=#0 && #26==#0] (X + Y)
     G31 P2 X[#24] Y[#25] F#110  
-ELSEIF[#24!=VACANT && #25!=VACANT && #26!=VACANT] (X+ Y + Z)
+ELSEIF[#24!=#0 && #25!=#0 && #26!=#0] (X+ Y + Z)
     G31 P2 X[#24] Y[#25] Z[#26] F#110  
 END_IF
 
