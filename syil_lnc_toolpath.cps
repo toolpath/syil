@@ -1699,7 +1699,7 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
-      B_ARG = "B" + xyzFormat.format(-cycle.depth-cycle.probeOvertravel)
+      B_ARG = "B" + xyzFormat.format(-cycle.depth)
 
       writeBlock(gFormat.format(65), '"PROBEZ"', WCS_CODE, B_ARG);
       break;
@@ -1903,28 +1903,25 @@ function onCyclePoint(x, y, z) {
     case "probing-xy-outer-corner":
       xdir =  approach(cycle.approach1)
       ydir =  approach(cycle.approach2) 
-      var CORNER_NUM = 0
-      if (xdir==1 && ydir==1){CORNER_NUM = 3}
-      else if (xdir==1 && ydir == -1){CORNER_NUM = 1}
-      else if (xdir==-1 && ydir == 1){CORNER_NUM = 4}
-      else if (xdir==-1 && ydir==-1){CORNER_NUM = 2}
+      corner_number = 0
+      if (xdir==1 && ydir==1){corner_number = 3}
+      else if (xdir==1 && ydir == -1){corner_number = 1}
+      else if (xdir==-1 && ydir == 1){corner_number = 4}
+      else if (xdir==-1 && ydir==-1){corner_number = 2}
 
       forceXYZ();
-      // writeBlock(gFormat.format(31), "P2 ", zOutput.format(z), "F50");  // protected positioning move 
-      writeBlock(gFormat.format(65), '"PROTECTEDMOVE"', zOutput.format(z-cycle.depth));
+        // writeBlock(gFormat.format(31), "P2 ", zOutput.format(z), "F50");  // protected positioning move 
+        writeBlock(gFormat.format(65), '"PROTECTEDMOVE"', zOutput.format(z));
 
-      WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
-      CORNER_POSITION ="B"+CORNER_NUM
-      TRAVEL_DISTANCE ="C"+xyzFormat.format(2*cycle.probeClearance + tool.diameter / 2)
-      PROBING_DISTANCE = "D"+xyzFormat.format(cycle.probeClearance + cycle.probeOvertravel)
-      
+        WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
-      writeBlock(gFormat.format(65), '"PROBEOUTSIDECORNER"', 
-                 WCS_CODE, 
-                 CORNER_POSITION, 
-                 TRAVEL_DISTANCE, 
-                 PROBING_DISTANCE, "Q0");
-      break;
+        CORNER_POSITION ="B"+xyzFormat.format(cycle.width1)
+        TRAVEL_DISTANCE ="C"+xyzFormat.format(cycle.width2)
+        PROBING_DISTANCE = "D"+xyzFormat.format()
+        
+
+        writeBlock(gFormat.format(65), '"PROBEOUTSIDECORNER"', WCS_CODE, CORNER_POSITION, PROBING_DISTANCE, TRAVEL_DISTANCE, "Q0");
+        break;
 
     case "probing-x-plane-angle":
         error(localize("Unsupported Probing Cycle"));
