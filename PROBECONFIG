@@ -1,4 +1,4 @@
-(Copyright (c) 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith)
+(Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith)
 
 (PROBECONFIG)
 (Description: Probe Configuration File)
@@ -6,7 +6,7 @@
 (macro to setup probe specs and units, called by every macro)
 
 (important global variables)
-@100= -1                         (PROBE TOOL NUMBER, EX: 99)
+@100 = -1                        (PROBE TOOL NUMBER, EX: 99)
 
 IF [@100==-1]
 	ALARM["HARD CODE PROBE NUMBER IN PROBECONFIG MACRO"]
@@ -27,6 +27,13 @@ END_IF
 
 @111 = 99                        (EXTENDED WORKOFFSET TO STORE PROBE Z CALIBRATION LOCATION)
 @112 = 100                       (EXTENDED WORKOFFSET TO STORT TOOLSETTER LOCATION)
+
+#120=R_SYS_INFO[0,2] (CURRENT TOOL NUMBER)
+IF [@100 != #120] (THE PROBE IS NOT LOADED)
+    ALARM["ERROR:  PROTECTED MOVE WITHOUT PROBE - CHANGE TO T#120 "]
+END_IF
+
+M19
 
 G90
 

@@ -1,16 +1,14 @@
-**SYIL X7 LNC6800 Probing Macro Guide**
+# SYIL X7 LNC6800 Probing Macro Guide
 
-Justin Gray
-
-Joshua Smith
+Justin Gray, Joshua Smith
 
 ![syil_x7](images/syil_x7.png)
 
-# Introduction
+## Introduction
 
 The objective of this document is to provide guidance on the use of the provided open-source probing macros. The macros are meant to provide basic probing routines and support WCS probing within fusion360. They also serve as a reference for anyone interested in making their own custom macros. Community support and feedback is highly recommended, we are all in this together.
 
-# Important Precautions
+## Important Precautions
 
 The probing routines only support probes that don't require special macros to turn them on. 
 They will work for both wired and (some wireless probes). 
@@ -19,19 +17,25 @@ Recommend probes included the drewtronics wireless probe or the Silver CNC Infra
 The tormach wired probe works, with and without the xoomspeed wireless kit. 
 All the macros need to be stored in the same file as your posted gcode programs. Always test the macros with MPG DRN the first time. SYIL configurations may change and we're not responsible for broken tips or machine crashes.
 
-# Probe Configuration Macro
+## Probe Configuration Macro
 
 Every probing routine calls the configuration macro to initialize global variables. 
 This is contained in `PROBECONFIG`
 It allows all probing parameters to be specified in one place. 
 The probe configuration macro must be opened and customized to your specific needs. 
-The various probing parameters must be set in your desired units. 
+
+### Imperial vs Metric units
+The various probing parameters must be set in your desired units in the `PROBECONFIG` file. 
+No other other changes are needed to configure the units. 
 The default parameters are in inches but comments provide suggested metric values. 
+
+### Customize Settings
+
 Start with the recommended settings and fine tune from there. 
 Please set your fusion360 probing feed rate to the same value that you use in the config macro. 
 In you decide to change feed rates, you should always run calibration again.
 
-## Configuration setup
+### Configuration setup
 
 You need to manually set the value of `@100` inthe `PROBECONFIG` file to the tool number you want to use for your probe. 
 Tool 12 or Tool 99 are common choices. 
@@ -72,9 +76,9 @@ Example MDI Command: G65 "PROBEX" A54.5 B2
 _Figure 1. Macro Argument to local variable mapping_
 
 
-# Probe Calibration
+## Probe Calibration
 
-## Basic Probe Setup
+### Basic Probe Setup
 
 Before performing any calibration routines your probe must be concentric. 
 To make your probe concentric you must place a dial indicator on the ruby tip and rotate the probe in the spindle by hand. 
@@ -86,7 +90,7 @@ The height of your probe can be found using a tool setter if the force to trigge
 
 _Figure 2. Indicating Probe_
 
-## Probe Length Calibration
+### Probe Length Calibration
 
 Length calibration is done with the `CALIBRATEPROBEZ` macro. 
 The first time you use this macro, you will start by setting the calibration height of your reference artifact. 
@@ -101,7 +105,7 @@ The important thing is that this reference artifact doesn't change (or you redo 
 This macro has an optional argument `A`. 
 By default you can call the macro without any arguments, which does a full calibration starting with setting the reference height. 
 
-## Full Probe Z Height Calibration
+### Full Probe Z Height Calibration
 
 Example MDI Command: G65 "CALIBRATEPROBEZ"
 
@@ -118,7 +122,7 @@ It will also record the XY position into the extended work offset you configured
 Then it will raise the spindle and ask you to do a manual tool change to the probe (i.e. remove the master gauge tool). 
 Finally it will do a protected move down toward the artifact to calibrate the probe z offset and store it in the tool length of your perscribed probe tool number. 
 
-## Quick Probe Z Height Calibration
+### Quick Probe Z Height Calibration
 
 Example MDI Command: G65 "CALIBRATEPROBEZ" A1
 
@@ -130,14 +134,14 @@ This will move the table to the origin of the saved WCS (default is G54P99) and 
 
 
 
-## Probe Tip Diameter Calibration 
+### Probe Tip Diameter Calibration 
 
 You can use one of the two provided calibration methods: 
 
 	* `CALIBRATEPROBEBLOCK`
 	* `CALIBRATEPROBERING`
 
-### CALIBRATEPROBEBLOCK
+#### CALIBRATEPROBEBLOCK
 
 This macro uses a gauge block to calibrate the diameter of a probes ruby tip. 
 It's important that the probe is concentric before beginning. 
@@ -160,7 +164,7 @@ _Table 2. Calibrate Probe X Syntax_
 Example MDI Command: G65 "CALIBRATEPROBEBLOCK" A1.0002 B2.0001 C-0.5
 
 
-### CALIBRATEPROBERING
+#### CALIBRATEPROBERING
 
 This macro uses a ring guage to calibrate the diameter of a probes ruby tip. 
 It's important that the probe is concentric before beginning. 
@@ -181,7 +185,7 @@ _Table 4. Calibrate Probe Radius Syntax_
 
 Example MDI Command: G65 "CALIBRATEPROBERING" A1.5
 
-# Calibrating a toolsetter
+## Calibrating a toolsetter
 
 Before you do any toolsetting, you need to tell the control where the toolsetter is. 
 
@@ -195,7 +199,7 @@ The origin for G54P100.
 The toolsetting location will be X0 Y0 in G54P100. 
 
 
-## CALIBRATETOOLSET
+### CALIBRATETOOLSET
 
 This macro will use a master gauge tool to find the trigger height of your tool setter. 
 Once you have set the G54P100 WCS to locate the tool setter, 
@@ -209,9 +213,9 @@ The toolsetter trigger height will be saved to the tool height offset of tool 19
 
 Example MDI Command: G65 "CALIBRATETOOLSET"
 
-# Probing Routines
+## Probing Routines
 
-## PROBEX
+### PROBEX
 
 The Probe X macro probes the side of a part in the X direction. 
 `A` is the selected work coordinate(G54-59). 
@@ -233,7 +237,7 @@ Example MDI Command To Probe Right Side: G65 "PROBEX" A54 B-1
 
 Example MDI Command To Probe Left Side: G65 "PROBEX" A54 B1
 
-## PROBEY
+### PROBEY
 
 The Probe Y macro probes the side of a part in the Y direction. 
 `A` is the selected work coordinate(G54-59). 
@@ -256,7 +260,7 @@ Example MDI Command To Probe the Front : G65 "PROBEY" A54.2 B1
 Example MDI Command To Probe the Back  : G65 "PROBEY" A54.2 B-1
 
 
-## PROBEZ
+### PROBEZ
 
 The Probe Z macro probes the top surface of a part in the negative Z direction. 
 `A` is the selected work coordinate(G54-59). 
@@ -276,7 +280,7 @@ _Table 7. Probe Z Syntax_
 Example MDI Command: G65 "PROBEZ" A54 B-.5
 
 
-## PROBEXWEB
+### PROBEXWEB
 
 The Probe X Web macro probes two sides of the stock in the X direction and calculates the center. 
 `A` is the selected work coordinate(G54-59). 
@@ -299,7 +303,7 @@ Example MDI Command Without Inspection Report: G65 "PROBEXWEB" A54 B3 C-.5 Q0
 
 Example MDI Command With Inspection Report: G65 "PROBEXWEB" A54 B3 C-.5 Q1
   
-## PROBEYWEB
+### PROBEYWEB
 
 The Probe Y Web macro probes two sides of the stock in the Y direction and calculates the center. 
 `A` is the selected work coordinate(G54-59). 
@@ -323,7 +327,7 @@ Example MDI Command Without Inspection Report: G65 "PROBEYWEB" A54 B2 C-.5 Q0
 Example MDI Command With Inspection Report: G65 "PROBEYWEB" A54 B2 C-.5 Q1
 
 
-## PROBECIRCULARBOSS
+### PROBECIRCULARBOSS
 
 The Probe Circular Boss macro probes 4 points of a circular boss and calculates the center. 
 `A` is the selected work coordinate(G54-59). 
@@ -346,7 +350,7 @@ Example MDI Command Without Inspection Report: G65 "PROBECIRCULARBOSS" A54 B2 C-
 
 Example MDI Command With Inspection Report: G65 "PROBECIRCULARBOSS" A54 B2 C-.5 Q1
   
-## PROBEBORE
+### PROBEBORE
 
 The Probe Bore macro probes 4 points inside of a bore and calculates the center. 
 `A` is the selected work coordinate(G54-59). 
@@ -369,7 +373,7 @@ Example MDI Command Without Inspection Reporting: G65 "PROBEBORE" A54 B1 Q0
 Example MDI Command With Inspection Reporting: G65 "PROBEBORE" A54 B1 Q1
 
   
-## PROBERECTANGULARBOSS
+### PROBERECTANGULARBOSS
 
 The Probe Rectangular Boss macro probes all sides of the stock and calculates the center. 
 `A` is the selected work coordinate(G54-59). 
@@ -395,7 +399,7 @@ Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54 B3
 Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54 B3 C2 D-.5 Q1
 
 
-## PROBEPOCKET
+### PROBEPOCKET
 
 The Probe Pocket macro probes all internal sides of a pocket and calculates the center. 
 `A` is the selected work coordinate(G54-59). 
@@ -420,7 +424,7 @@ Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A
 Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54 B2 C3 Q1
 
   
-## PROBEXSLOT
+### PROBEXSLOT
 
 The Probe Slot X macro probes the internal sides of a pocket in the X direction and calculates the center. 
 `A` is the selected work coordinate(G54-59). 
@@ -442,7 +446,7 @@ Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 Q0
 
 Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 Q1
   
-## PROBEYSLOT
+### PROBEYSLOT
 
 The Probe Slot Y macro probes the internal sides of a pocket in the Y direction and calculates the center. 
 `A` is the selected work coordinate(G54-59). 
@@ -465,7 +469,7 @@ Example MDI Command Without Inspection Reporting: G65 "PROBESLOTY" A54 B3 Q0
 Example MDI Command With Inspection Reporting: G65 "PROBESLOTY" A54 B3 Q1
 
   
-## PROBEOUTSIDECORNER
+### PROBEOUTSIDECORNER
 
 The Probe Outside Corner macro probes the outside edges of the stock and calculates the center. 
 `A`is the selected work coordinate(G54-59). 
@@ -487,7 +491,7 @@ _Table 16. Probe Outer Corner Syntax_
 Example MDI Command: G65 "PROBEOUTSIDECORNER" A54 B1 C1 D.5
 
   
-## PROBEINSIDECORNER
+### PROBEINSIDECORNER
 
 The Probe inside Corner macro probes the inside edges of a pocket and calculates the center. 
 `A` is the selected work coordinate(G54-59). 
@@ -507,7 +511,7 @@ _Table 17. Probe Inner Corner Syntax_
 
 Example MDI Command: G65 "PROBEINSIDECORNER" A54 B1 C.5
 
-# SAFESPIN macro 
+## SAFESPIN macro 
 
 You might occationally command a spindle RPM speed from MDI. 
 However, if you forget to comment/delete that RPM command before calling a probing routine ... 
@@ -519,7 +523,7 @@ The `SAFESPIN` macro checks that bit before calling any spindle rotations comman
 
 Why did I keep the bit in the wear table? I couldn't figure out where else to store it persistantly. I think there are some parameters memory locations I can get access to, but I haven't spent the time to figure out that syntax. 
 
-# Toal Loading/Unloading Macros
+## Tool Loading/Unloading Macros
 
 These macros are for the 12 tool carousel ATC specifically, and if your controller has been updated to allow tool numbers higher than 12. 
 
@@ -535,7 +539,7 @@ Tool number 199 is used to signify an empty pocket in the tool table.
 Both the load and unload macros set the tool gauge length to 999 and clear any tool wear compensation values. 
 999 was chosen because its safe. If you don't toolset the tool before use, then you'll get a z-height error when you try to run. 
 
-## LOADTOOL
+### LOADTOOL
 
 | G Code | "Macro Name" | Macro Argument  |
 | --- | --- | --- |
@@ -557,7 +561,7 @@ Then re-assign that tool pocket to the new tool number.
 
 After you have loaded the tool, the macro will automatically run the `TOOLSET` macro to set the gauge length. 
 
-## UNLOADTOOL
+### UNLOADTOOL
 
 | G Code | "Macro Name" | Macro Argument  |
 | --- | --- | --- |
@@ -567,9 +571,9 @@ Example MDI Command: G65 "UNLOAD" T10
 
 
 
-# TODO
+## TODO
 
-** contributions welcome! ** 
+** Contributions Welcome! ** 
 
 	- Add a `CHECKTOOL` macro that can look at the tool table and see if a tool number is present (would like to add this to the top of my postprocessor!)
 	- Add a macro to check min/max values against soft-limits (would also like to add this to my post processor) 

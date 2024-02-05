@@ -1,4 +1,4 @@
-(Copyright (c) 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith)
+(Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith)
 
 (PROBEYSLOT)
 (Description: Probe a web in X from left to right)
@@ -75,7 +75,7 @@ G91 G01 Y[-#106 + #108]               (MOVE TO CENTER OF THE PART)
 
 
 (STORE Y OFFSET)
-IF [#1 < 53]
+IF [#1 < 53 || #1 == #0]
  (DO NOT WRITE ANYTHING TO WCS)
 ELSEIF [#114 < 1]  
   W_G53G59_COOR[0,#1,2,#104]

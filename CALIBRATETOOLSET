@@ -1,4 +1,4 @@
-(Copyright (c) 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith)
+(Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith)
 
 
 G94 G17 G49 G40 G80
@@ -8,25 +8,25 @@ G65 "PROBECONFIG"
 
 #102 = @104             (FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
 #103 = @105             (SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
-#109=@109               (MASTER GAUGE TOOL LENGTH)
-#112=@112               (TOOLSETTER EXTENDED WORKOFFSET NUMBER)
+#110=R_TOOL_DATA[0,199,203]     (TOOLSETTER - T199 - LENGTH OFFSET)
 
 G20                             (INCH)
 
-G54P#112                        (LOCATION OF TOOL SETTER IS X0 Y0 ON G54P#112)
-G28 G91 Z0.
-G90 X0. Y0.                     (MOVE TO TOOLSETTER)
+G54P100                         (LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100)
+G90 X0 Y0                       (MOVE TO TOOLSETTER)
 
+M19                             (ORIENT SPINDLE)
+M20
 
 G91
 G31 Z-20 F#101                  (FEED UNTIL INPUT SIGNAL AKA SKIP)
-G91 G0 Z0.25                    (MOVE UP)
+G91 G0 Z0.2                     (MOVE UP)
 M7                              (TURN ON AIR BLAST)
 G04 P250
 M9                              (TURN OFF AIR BLAST)
-G31 Z-.21 F#103                 (FEED UNTIL SKIP SLOWER)
+G31 Z-.21 F2#103                (FEED UNTIL SKIP SLOWER)
 
-#120=[R_MACH_COOR[0,3]+#109]    (MACHINE Z COORDINATE - ACCOUNTING FOR MASTER TOOL LENGTH)
+#120=[R_MACH_COOR[0,3]-#110]    (MACHINE Z COORDINATE WITH - T199 ACCOUNTING FOR MASTER TOOL LENGTH)
 W_TOOL_DATA[0,199,203,#120]
 
 G28 G91 Z0.

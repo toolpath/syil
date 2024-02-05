@@ -1,4 +1,4 @@
-(Copyright (c) 2024 Toolpath Labs Inc., Justin Gray and Josh Smith)
+(Copyright 2024 Toolpath Labs Inc., Justin Gray and Josh Smith)
 
 (CALIBRATEZ)
 (THIS MACRO ASSUMES THAT YOU HAVE PUT YOUR GAUGE TOOL IN THE SPINDLE)
@@ -22,7 +22,7 @@ G65 "PROBECONFIG"
 #109 = @109             (MASTER TOOL GAUGE LENGTH)
                         (NOTE: @5109 will be used to save reference block height)
 #111 = @111             (PROBE CALIBRATION EXTENDED WORKOFFSET NUMBER)
-IF [#1!=1]
+IF [#1==0]
   MSG_OK["CALIBRATE PROBE", "ZERO MASTER GAUGE TOOL ON CALIBRATION ARTIFACT AND LEAVE IT THERE",""]
 
   @5109 = R_MACH_COOR[0,3]  (GET MACHINE Z COORDINATE WHICH SHOULD BE THE TOP OF A 123 BLOCK)
