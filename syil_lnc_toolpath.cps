@@ -1706,10 +1706,12 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
-      WEB_WIDTH="B"+xyzFormat.format(cycle.width1)
-      Z_DROP = "C"+xyzFormat.format(cycle.depth),
+      WEB_WIDTH      = "B"+xyzFormat.format(cycle.width1);
+      Z_DROP         = "C"+xyzFormat.format(cycle.depth);
+      TOLORANCE      = "R"+xyzFormat.format(cycle.toleranceSize);
+      WRONGSIZE_ENA  = "S"+xyzFormat.format(cycle.wrongSizeAction);
 
-      writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE, WEB_WIDTH, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE, WEB_WIDTH, Z_DROP, "Q0",TOLORANCE,WRONGSIZE_ENA);
       break;
     case "probing-y-wall":
       forceXYZ();
@@ -1717,26 +1719,27 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
-      WEB_WIDTH="B"+xyzFormat.format(cycle.width1)
-      Z_DROP = "C"+xyzFormat.format(cycle.depth),
+      WEB_WIDTH      = "B"+xyzFormat.format(cycle.width1);
+      Z_DROP         = "C"+xyzFormat.format(cycle.depth);
+      TOLORANCE      = "R"+xyzFormat.format(cycle.toleranceSize);
+      WRONGSIZE_ENA  = "S"+xyzFormat.format(cycle.wrongSizeAction);
 
-      writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE, WEB_WIDTH, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE, WEB_WIDTH, Z_DROP, "Q0", TOLORANCE,WRONGSIZE_ENA);
       break;
     case "probing-x-channel":
-      error(localize("Unsupported Probing Cycle"));
-      GV_X_APPROACH = xyzFormat.format(cycle.width1),
-      X_data = formatSetVar(GV_APPROACH1, GV_X_APPROACH),
-      
-      writeBlock(
-        X_data
-      );
-      writeBlock(
-        getProbingArguments(cycle, probeWorkOffsetCode)
-      );
-      writeBlock(
-        "M" + 10812,
-        "X@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-      );
+      forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z), "F50");  // protected positioning move 
+
+      WCS_CODE       = getProbingArguments(cycle, probeWorkOffsetCode);
+      XSLOT_WIDTH    = "B"+xyzFormat.format(cycle.width1);
+      YSLOT_WIDTH    = "C"+xyzFormat.format(cycle.width2);
+      Z_DROP         = "D"+xyzFormat.format(cycle.depth);
+      TOLORANCE      = "R"+xyzFormat.format(cycle.toleranceSize);
+      WRONGSIZE_ENA  = "S"+xyzFormat.format(cycle.wrongSizeAction);
+
+      // writeBlock(gFormat.format(65), '"PROBEXSLOT"', WCS_CODE, XSLOT_WIDTH, "Q0");
+
+      writeBlock(gFormat.format(65), '"PROBEXSLOT"', WCS_CODE, XSLOT_WIDTH, "Q0", TOLORANCE, WRONGSIZE_ENA);
       break;
     case "probing-x-channel-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1751,20 +1754,19 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-y-channel":
-      error(localize("Unsupported Probing Cycle"));
-      GV_Y_APPROACH = xyzFormat.format(cycle.width1),
-      Y_data = formatSetVar(GV_APPROACH1, GV_Y_APPROACH),
-      
-      writeBlock(
-        Y_data
-      );
-      writeBlock(
-        getProbingArguments(cycle, probeWorkOffsetCode)
-      );
-      writeBlock(
-        "M" + 10812,
-        "Y@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-      );
+      forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z), "F50");  // protected positioning move 
+
+      WCS_CODE       = getProbingArguments(cycle, probeWorkOffsetCode);
+      XSLOT_WIDTH    = "B"+xyzFormat.format(cycle.width1);
+      YSLOT_WIDTH    = "C"+xyzFormat.format(cycle.width2);
+      Z_DROP         = "D"+xyzFormat.format(cycle.depth);
+      TOLORANCE      = "R"+xyzFormat.format(cycle.toleranceSize);
+      WRONGSIZE_ENA  = "S"+xyzFormat.format(cycle.wrongSizeAction);
+
+      // writeBlock(gFormat.format(65), '"PROBEYSLOT"', WCS_CODE, YSLOT_WIDTH, "Q0");
+
+      writeBlock(gFormat.format(65), '"PROBEYSLOT"', WCS_CODE, YSLOT_WIDTH, "Q0", TOLORANCE, WRONGSIZE_ENA);
       break;
     case "probing-y-channel-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1779,26 +1781,16 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-circular-boss":
-      error(localize("Unsupported Probing Cycle"));
-      GV_D_WIDTH = xyzFormat.format(cycle.width1),
-      GV_Z_DEPTH = xyzFormat.format(z - cycle.depth),
-      GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
-      D_data = formatSetVar(GV_APPROACH1, GV_D_WIDTH),
-      Z_data = formatSetVar(GV_DEPTH, GV_Z_DEPTH),
-      Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
-      writeBlock(
-          D_data
-      );
-      writeBlock(
-          Z_data
-        );
-      writeBlock(
-          getProbingArguments(cycle, probeWorkOffsetCode)
-      );
-      writeBlock(
-          "M" + 10814,
-          "D@880 Z@882 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-      );
+      forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z), "F50");  // protected positioning move 
+
+      WCS_CODE       = getProbingArguments(cycle, probeWorkOffsetCode);
+      HOLE_DIAMTER   = "B"+xyzFormat.format(cycle.width1);
+      Z_DROP         = "c"+xyzFormat.format(cycle.depth);
+      TOLORANCE      = "R"+xyzFormat.format(cycle.toleranceSize);
+      WRONGSIZE_ENA  = "S"+xyzFormat.format(cycle.wrongSizeAction);
+
+      writeBlock(gFormat.format(65), '"PROBECIRCULARBOSS"', WCS_CODE, HOLE_DIAMTER, Z_DROP, "Q0",TOLORANCE,WRONGSIZE_ENA);
       break;
     case "probing-xy-circular-partial-boss":
       error(localize("Unsupported Probing Cycle"));
@@ -1816,21 +1808,15 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-circular-hole":
-      error(localize("Unsupported Probing Cycle"));
-      GV_D_WIDTH = xyzFormat.format(cycle.width1),
-      GV_Z_CLEARANCE = xyzFormat.format(cycle.probeClearance),
-      D_data = formatSetVar(GV_APPROACH1, GV_D_WIDTH),
-      Z_clearance_data = formatSetVar(GV_CLEARANCE, GV_Z_CLEARANCE),
-      writeBlock(
-          D_data
-      );
-      writeBlock(
-          getProbingArguments(cycle, probeWorkOffsetCode)
-      );
-      writeBlock(
-          "M" + 10814,
-          "D@880 S@860 " + feedOutput.format(cycle.feedrate) + ";"
-      );
+      forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z), "F50");  // protected positioning move 
+
+      WCS_CODE       = getProbingArguments(cycle, probeWorkOffsetCode);
+      HOLE_DIAMTER   = "B"+xyzFormat.format(cycle.width1);
+      TOLORANCE      = "R"+xyzFormat.format(cycle.toleranceSize);
+      WRONGSIZE_ENA  = "S"+xyzFormat.format(cycle.wrongSizeAction);
+
+      writeBlock(gFormat.format(65), '"PROBEBORE"', WCS_CODE, HOLE_DIAMTER, "Q0",TOLORANCE,WRONGSIZE_ENA);
       break;
     case "probing-xy-circular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1860,22 +1846,20 @@ function onCyclePoint(x, y, z) {
       );
       break;
     case "probing-xy-rectangular-hole":
-      error(localize("Unsupported Probing Cycle"));
-      protectedProbeMove(cycle, x, y, z - cycle.depth);
-      writeBlock(
-        gFormat.format(65), "M" + 9812,
-        "X" + xyzFormat.format(cycle.width1),
-        "Q" + xyzFormat.format(cycle.probeOvertravel),
-        // not required "R" + xyzFormat.format(-cycle.probeClearance),
-        getProbingArguments(cycle, probeWorkOffsetCode)
-      );
-      writeBlock(
-        "M" + 9812,
-        "Y" + xyzFormat.format(cycle.width2),
-        "Q" + xyzFormat.format(cycle.probeOvertravel),
-        // not required "R" + xyzFormat.format(-cycle.probeClearance),
-        getProbingArguments(cycle, probeWorkOffsetCode)
-      );
+      forceXYZ();
+      writeBlock(gFormat.format(31), "P2 ", zOutput.format(z), "F50");  // protected positioning move 
+
+      WCS_CODE       = getProbingArguments(cycle, probeWorkOffsetCode);
+      XSLOT_WIDTH     = "B"+xyzFormat.format(cycle.width1);
+      YSLOT_WIDTH     = "C"+xyzFormat.format(cycle.width2);
+      Z_DROP         = "D"+xyzFormat.format(cycle.depth);
+      TOLORANCE      = "R"+xyzFormat.format(cycle.toleranceSize);
+      WRONGSIZE_ENA  = "S"+xyzFormat.format(cycle.wrongSizeAction);
+
+      // writeBlock(gFormat.format(65), '"PROBEXSLOT"', WCS_CODE, XSLOT_WIDTH, Z_DROP, "Q0");
+      // writeBlock(gFormat.format(65), '"PROBEYSLOT"', WCS_CODE, YSLOT_WIDTH, Z_DROP, "Q0");
+
+      writeBlock(gFormat.format(65), '"PROBEPOCKET"', WCS_CODE, XSLOT_WIDTH, YSLOT_WIDTH, "Q0",TOLORANCE,WRONGSIZE_ENA);
       break;
     case "probing-xy-rectangular-boss":
       forceXYZ();
@@ -1883,14 +1867,16 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
-      XWEB_WIDTH="B"+xyzFormat.format(cycle.width1)
-      YWEB_WIDTH="C"+xyzFormat.format(cycle.width2)
-      Z_DROP = "D"+xyzFormat.format(cycle.depth),
+      XWEB_WIDTH     ="B"+xyzFormat.format(cycle.width1);
+      YWEB_WIDTH     ="C"+xyzFormat.format(cycle.width2);
+      Z_DROP         = "D"+xyzFormat.format(cycle.depth);
+      TOLORANCE      = "R"+xyzFormat.format(cycle.toleranceSize);
+      WRONGSIZE_ENA  = "S"+xyzFormat.format(cycle.wrongSizeAction);
 
       // writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE, XWEB_WIDTH, Z_DROP, "Q0");
       // writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE, YWEB_WIDTH, Z_DROP, "Q0");
 
-      writeBlock(gFormat.format(65), '"PROBERECTANGULARBOSS"', WCS_CODE, XWEB_WIDTH, YWEB_WIDTH, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"PROBERECTANGULARBOSS"', WCS_CODE, XWEB_WIDTH, YWEB_WIDTH, Z_DROP, "Q0",TOLORANCE,WRONGSIZE_ENA);
       break;
     case "probing-xy-rectangular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));

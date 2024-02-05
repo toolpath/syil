@@ -9,9 +9,8 @@
 (#1 is the work coordinate system to store offsets in)
 (#2 is the expected length of the web in the x direction)
 (#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
-(#18 expected stock length )
-(#19 oversize tolorance)
-(#20 enable oversize check)
+(#18 oversize tolorance)
+(#19 enable oversize check)
 
 (load probe config)
 G65 "PROBECONFIG"
@@ -72,7 +71,7 @@ G91 G01 X[-#108]                    (BACK OFF)
 @998 = #107                      (save distance to a global variable for use with other macros)
 G91 G01 X[-#106 + #108]          (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,1]            (GET MACHINE Y COORDINATE)
-#126=ABS[#107-#18]               (expected stock error)
+#126=ABS[#107-#2]                (expected stock error)
 
 (STORE X OFFSET)
 
@@ -91,8 +90,8 @@ IF[#17>0]
 END_IF
 
 (oversized stock alarm if stock error is greater than tolorance)
-IF[#20>0 && #126>#19 ]
- ALARM["ERROR: STOCK OVERSIZED IN X"]
+IF[#19>0 && #126>#18 ]
+ ALARM["ERROR: STOCK OUTSIDE OF TOLORANCE IN X"]
 END_IF
 
 N1
