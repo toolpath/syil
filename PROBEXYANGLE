@@ -110,7 +110,7 @@ ELSE
  FIX_CUT_OR_OFF
  #120 = R_SKIP[0,201]                   (GET MACHINE X COORDINATE)
  #121 = R_SKIP[0,202]                   (GET MACHINE Y COORDINATE)
- #122 = R_SKIP[0,202]                   (GET MACHINE Y COORDINATE)
+ #122 = R_SKIP[0,202]                   (GET MACHINE Z COORDINATE)
  G91 G01 Y-[#108]                     (back off 1/4 the probing distance)
  
  (move to original Y position)
@@ -148,7 +148,7 @@ ELSE
  FIX_CUT_OR_OFF
  #123 = R_SKIP[0,201]                   (GET MACHINE X COORDINATE)
  #124 = R_SKIP[0,202]                   (GET MACHINE Y COORDINATE)
- #125 = R_SKIP[0,202]                   (GET MACHINE Y COORDINATE)
+ #125 = R_SKIP[0,202]                   (GET MACHINE Z COORDINATE)
  G91 G01 Y-[#108]                     (back off 1/4 the probing distance)
  
  (move to original X position)
