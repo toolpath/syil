@@ -1696,7 +1696,7 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
-      B_ARG = "B" + xyzFormat.format(-cycle.depth)
+      B_ARG = "B" + xyzFormat.format(-cycle.depth - cycle.probeOvertravel)
 
       writeBlock(gFormat.format(65), '"PROBEZ"', WCS_CODE, B_ARG);
       break;
