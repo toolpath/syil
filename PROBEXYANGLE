@@ -93,6 +93,10 @@ IF[#4== 1]
   ALARM["ERROR: PREMATURE PROBE COLLISION"]
   GOTO1 (go to line with N1 and quit)
  END_IF
+
+ (angle claculation)
+ #126 = ATAN[[#123-#120],[#124-#121]]
+
 ELSE
  (Probe Y the desired distance and at fast feed)
  G31 G91 P2 Y[#3] F#111    
@@ -159,10 +163,13 @@ ELSE
   ALARM["ERROR: PREMATURE PROBE COLLISION"]
   GOTO1 (go to line with N1 and quit)
  END_IF
+
+ (angle claculation)
+ #126 = ATAN[[#124-#121],[#123-#120]]
+
 END_IF
 
-(angle claculation)
-#126 = ATAN[[#123-#120],[#124-#121]]
+
 
 (simple inspection reporting)
 IF[#17>0]
