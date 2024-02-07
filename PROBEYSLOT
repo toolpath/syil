@@ -90,7 +90,7 @@ IF[#17>0]
 END_IF
 
 (oversized stock alarm if stock error is greater than tolorance)
-IF[#19>0 && #126>#18 ]
+IF[#19!=#0 && #126>#18 ]
  ALARM["ERROR: STOCK OUTSIDE OF TOLORANCE IN Y"]
 END_IF
 
