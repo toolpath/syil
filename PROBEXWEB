@@ -136,6 +136,11 @@ MENU_ADD["Part Length: #107",""];
 MENU["INSPECTION REPORT","RESULTS","",1];
 END_IF
 
+(if the tolorance is null, default it to global variable from the probe config)
+IF[#18==#0]
+ #18 = @110
+END_IF
+
 (oversized stock alarm if stock error is greater than tolorance)
 IF[#19!=#0 && #126>#18 ]
  ALARM["ERROR: STOCK OUTSIDE OF TOLORANCE IN X"]

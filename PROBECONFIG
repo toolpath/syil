@@ -14,14 +14,14 @@ END_IF
 
 @101 = R_TOOL_DATA[0,@100,3]     (TOOL DIAMETER, DO NOT TOUCH!!!)
 @102 = @101/2                    (TOOL RADIUS, DO NOT TOUCH!!!)
-@103 = 50                        (FEED SPEED in/m, change to match your unit of choice, for metric users start at 2540mm))
+@103 = 50                        (FEED SPEED in/m, change to match your unit of choice, for metric users start at 2540mm)
 @104 = 50                        (FAST PROBE SPEED in/m, change to match your unit of choice, for metric users start at 1270mm)
 @105 = 2.5                       (SLOW PROBE SPEED in/m, change to match your unit of choice, for metric users start at 63mm)
 @106 = .5                        (PROBE CLEARANCE DISTANCE in, change to match your unit of choice, for metric users start at 6mm)
 @107 = [R_TOOL_DATA[0,@100,203]] (TOOL LENGHT OFFSET, DO NOT TOUCH!!!)
 @108 = .125                      (PROBE BACKOFF DISTANCE,change to match your unit of choice, for metric users start at 3mm)
-
 @109 = 2.9997                    (CALIBRATED LENGTH OF YOUR MASTER GAUGE TOOL)
+@110 = .05                       (default part tolerance)
 
 (NOTE: @5109 STORES THE REFERENCE HEIGHT FOR FAST PROBE Z CALIBRATION)
 
