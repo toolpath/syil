@@ -9,6 +9,8 @@
 (#2 is the expected length of the web in the x direction)
 (#3 is the Z drop height)
 (#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
+(#18 oversize tolorance)
+(#19 enable oversize check)
 
 (load probe config)
 G65 "PROBECONFIG"
@@ -117,7 +119,7 @@ G91 G01 Z#3                          (MOVE UP CLEAR OF THE PART)
 @998 = #107                      (save distance to a global variable for use with other macros)
 G91 G01 X[-#108 - #106]          (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
-
+#126=ABS[#107-#2]                (expected stock error)
 
 (STORE X OFFSET)
 IF [#1 < 53 || #1 == #0]
@@ -132,6 +134,16 @@ END_IF
 IF[#17>0]
 MENU_ADD["Part Length: #107",""]; 
 MENU["INSPECTION REPORT","RESULTS","",1];
+END_IF
+
+(if the tolorance is null, default it to global variable from the probe config)
+IF[#18==#0]
+ #18 = @110
+END_IF
+
+(oversized stock alarm if stock error is greater than tolorance)
+IF[#19!=#0 && #126>#18 ]
+ ALARM["ERROR: STOCK OUTSIDE OF TOLORANCE IN X"]
 END_IF
 
 N1

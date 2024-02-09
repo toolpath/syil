@@ -11,10 +11,12 @@
 (#3 is the expected width of the web in the Y direction)
 (#4 is the Z drop height)
 (#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
+(#18 oversize tolorance)
+(#19 enable oversize check)
 
 (call our web macros)
-G65 "PROBEXWEB" A#1 B#2 C#4 Q0
-G65 "PROBEYWEB" A#1 B#3 C#4 Q0
+G65 "PROBEXWEB" A#1 B#2 C#4 Q0 R#18 S#19 
+G65 "PROBEYWEB" A#1 B#3 C#4 Q0 R#18 S#19 
 
 (simple inspection reporting)
 (@999 and @998 are set in the web macros)
