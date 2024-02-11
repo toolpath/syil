@@ -111,17 +111,6 @@ G91 G01 Y[-#108 - #106]               (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,2]                 (GET MACHINE Y COORDINATE)
 #126=ABS[#107-#2]                     (expected stock error)
 
-(STORE Y OFFSET)
-IF [#1 < 53 || #1 == #0]
-  (DO NOT SET ANYTHING INTO WCS)
-ELSEIF [#114 < 1]  
-  W_G53G59_COOR[0,#1,2,#104]
-ELSE
-  W_G54EXP_COOR[0,#114,2,#104]
-END_IF
-
-
-
 (simple inspection reporting)
 IF[#17>0]
 MENU_ADD["Part Width: #107",""]; 
@@ -137,6 +126,16 @@ END_IF
 IF[#19!=#0 && #126>#18 ]
  ALARM["ERROR: STOCK OUTSIDE OF TOLORANCE IN Y"]
 END_IF
+
+(STORE Y OFFSET)
+IF [#1 < 53 || #1 == #0]
+  (DO NOT SET ANYTHING INTO WCS)
+ELSEIF [#114 < 1]  
+  W_G53G59_COOR[0,#1,2,#104]
+ELSE
+  W_G54EXP_COOR[0,#114,2,#104]
+END_IF
+
 
 
 N1

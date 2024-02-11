@@ -102,9 +102,6 @@ IF[R_SKIP[0,1] == 0]
  GOTO1 (go to line with N1 and quit)
 END_IF
 
-
-
-
 G91 G01 X[#108]                      (BACK OFF)
 FIX_CUT_OR_ON
 G31 G91 P2 X[-#108] F#112            (FEED UNTIL SKIP SLOW)
@@ -121,15 +118,6 @@ G91 G01 X[-#108 - #106]          (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,1]            (GET MACHINE X COORDINATE)
 #126=ABS[#107-#2]                (expected stock error)
 
-(STORE X OFFSET)
-IF [#1 < 53 || #1 == #0]
-  (DO NOT SET ANYTHING INTO WCS)
-ELSEIF [#114 < 1] 
-  W_G53G59_COOR[0,#1,1,#104]
-ELSE
-  W_G54EXP_COOR[0,#114,1,#104]
-END_IF
-
 (simple inspection reporting)
 IF[#17>0]
 MENU_ADD["Part Length: #107",""]; 
@@ -144,6 +132,15 @@ END_IF
 (oversized stock alarm if stock error is greater than tolorance)
 IF[#19!=#0 && #126>#18 ]
  ALARM["ERROR: STOCK OUTSIDE OF TOLORANCE IN X"]
+END_IF
+
+(STORE X OFFSET)
+IF [#1 < 53 || #1 == #0]
+  (DO NOT SET ANYTHING INTO WCS)
+ELSEIF [#114 < 1] 
+  W_G53G59_COOR[0,#1,1,#104]
+ELSE
+  W_G54EXP_COOR[0,#114,1,#104]
 END_IF
 
 N1
