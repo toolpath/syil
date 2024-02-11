@@ -73,12 +73,6 @@ G91 G01 Y[-#106 + #108]               (MOVE TO CENTER OF THE PART)
 #104=R_MACH_COOR[0,2]                 (GET MACHINE Y COORDINATE)
 #126=ABS[#107-#2]                    (expected stock error)
 
-(simple inspection reporting)
-IF[#17>0]
- MENU_ADD["Part Width: #107",""]; 
- MENU["INSPECTION REPORT","RESULTS","",1];
-END_IF
-
 (if the tolorance is null, default it to global variable from the probe config)
 IF[#18==#0]
  #18 = @110
@@ -98,6 +92,13 @@ ELSEIF [#114 < 1]
 ELSE
   W_G54EXP_COOR[0,#114,2,#104]
 END_IF
+
+(simple inspection reporting)
+IF[#17>0]
+ MENU_ADD["Part Width: #107",""]; 
+ MENU["INSPECTION REPORT","RESULTS","",1];
+END_IF
+
 
 N1
 
