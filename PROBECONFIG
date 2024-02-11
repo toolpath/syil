@@ -24,10 +24,9 @@ END_IF
 @110 = .05                       (default part tolerance)
 
 (NOTE: @5109 STORES THE REFERENCE HEIGHT FOR FAST PROBE Z CALIBRATION)
+
 @111 = 99                        (EXTENDED WORKOFFSET TO STORE PROBE Z CALIBRATION LOCATION)
 @112 = 100                       (EXTENDED WORKOFFSET TO STORT TOOLSETTER LOCATION)
-@113 = 0                         (Enable ZeroPoint Compensation)
-@114 = .05                       (default positional tolerance)
 
 #120=R_SYS_INFO[0,2] (CURRENT TOOL NUMBER)
 IF [@100 != #120] (THE PROBE IS NOT LOADED)
