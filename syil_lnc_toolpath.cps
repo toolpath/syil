@@ -1780,10 +1780,29 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
+      if (currentWorkOffset ==0) {
+       Current_WCS = "B54"
+      } else if (currentWorkOffset ==1) {
+       Current_WCS = "B54"
+      } else if (currentWorkOffset ==2) {
+       Current_WCS = "B55"
+      } else if (currentWorkOffset ==3) {
+       Current_WCS = "B56"
+      } else if (currentWorkOffset ==4) {
+       Current_WCS = "B57"
+      } else if (currentWorkOffset ==5) {
+       Current_WCS = "B58"
+      } else if (currentWorkOffset ==6) {
+       Current_WCS = "B59"
+      } 
+     
+
       BOSS_DIAMETER ="B"+xyzFormat.format(cycle.width1);
       Z_DROP = "C"+xyzFormat.format(cycle.depth);
+      STOCK_HEIGHT="C"+xyzFormat.format(cycle.stock);
 
       writeBlock(gFormat.format(65), '"PROBECIRCULARBOSS"', WCS_CODE, BOSS_DIAMETER, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"COMPZEROPOINTXY"', WCS_CODE, Current_WCS, STOCK_HEIGHT);
       break;
     case "probing-xy-circular-partial-boss":
       error(localize("Unsupported Probing Cycle"));
@@ -1808,9 +1827,27 @@ function onCyclePoint(x, y, z) {
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
       BORE_DIAMETER ="B"+xyzFormat.format(cycle.width1);
+      STOCK_HEIGHT="C"+xyzFormat.format(cycle.stock);
+
+      if (currentWorkOffset ==0) {
+       Current_WCS = "B54"
+      } else if (currentWorkOffset ==1) {
+       Current_WCS = "B54"
+      } else if (currentWorkOffset ==2) {
+       Current_WCS = "B55"
+      } else if (currentWorkOffset ==3) {
+       Current_WCS = "B56"
+      } else if (currentWorkOffset ==4) {
+       Current_WCS = "B57"
+      } else if (currentWorkOffset ==5) {
+       Current_WCS = "B58"
+      } else if (currentWorkOffset ==6) {
+       Current_WCS = "B59"
+      } 
      
 
       writeBlock(gFormat.format(65), '"PROBEBORE"', WCS_CODE, BORE_DIAMETER, "Q0");
+      writeBlock(gFormat.format(65), '"COMPZEROPOINTXY"', WCS_CODE, Current_WCS, STOCK_HEIGHT);
       break;
     case "probing-xy-circular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1846,10 +1883,28 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
-      XWEB_WIDTH="B"+xyzFormat.format(cycle.width1)
-      YWEB_WIDTH="C"+xyzFormat.format(cycle.width2)
+      if (currentWorkOffset ==0) {
+       Current_WCS = "B54"
+      } else if (currentWorkOffset ==1) {
+       Current_WCS = "B54"
+      } else if (currentWorkOffset ==2) {
+       Current_WCS = "B55"
+      } else if (currentWorkOffset ==3) {
+       Current_WCS = "B56"
+      } else if (currentWorkOffset ==4) {
+       Current_WCS = "B57"
+      } else if (currentWorkOffset ==5) {
+       Current_WCS = "B58"
+      } else if (currentWorkOffset ==6) {
+       Current_WCS = "B59"
+      } 
+
+      XWEB_WIDTH="B"+xyzFormat.format(cycle.width1);
+      YWEB_WIDTH="C"+xyzFormat.format(cycle.width2);
+      STOCK_HEIGHT="C"+xyzFormat.format(cycle.stock);
 
       writeBlock(gFormat.format(65), '"PROBEPOCKET"', WCS_CODE, XWEB_WIDTH, YWEB_WIDTH, "Q0");
+      writeBlock(gFormat.format(65), '"COMPZEROPOINTXY"', WCS_CODE, Current_WCS, STOCK_HEIGHT);
       break;
     case "probing-xy-rectangular-boss":
       forceXYZ();
@@ -1858,14 +1913,32 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
+      if (currentWorkOffset ==0) {
+       Current_WCS = "B54"
+      } else if (currentWorkOffset ==1) {
+       Current_WCS = "B54"
+      } else if (currentWorkOffset ==2) {
+       Current_WCS = "B55"
+      } else if (currentWorkOffset ==3) {
+       Current_WCS = "B56"
+      } else if (currentWorkOffset ==4) {
+       Current_WCS = "B57"
+      } else if (currentWorkOffset ==5) {
+       Current_WCS = "B58"
+      } else if (currentWorkOffset ==6) {
+       Current_WCS = "B59"
+      } 
+
       XWEB_WIDTH="B"+xyzFormat.format(cycle.width1)
       YWEB_WIDTH="C"+xyzFormat.format(cycle.width2)
+      STOCK_HEIGHT="C"+xyzFormat.format(cycle.stock)
       Z_DROP = "D"+xyzFormat.format(cycle.depth),
 
       // writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE, XWEB_WIDTH, Z_DROP, "Q0");
       // writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE, YWEB_WIDTH, Z_DROP, "Q0");
 
       writeBlock(gFormat.format(65), '"PROBERECTANGULARBOSS"', WCS_CODE, XWEB_WIDTH, YWEB_WIDTH, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"COMPZEROPOINTXY"', WCS_CODE, Current_WCS, STOCK_HEIGHT);
       break;
     case "probing-xy-rectangular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -2050,7 +2123,7 @@ function getProbingArguments(cycle, probeWorkOffsetCode) {
     (cycle.angleAskewAction == "stop-message" ? "B" + xyzFormat.format(cycle.toleranceAngle ? cycle.toleranceAngle : 0) : undefined),
     ((cycle.updateToolWear && cycle.toolWearErrorCorrection < 100) ? "F" + xyzFormat.format(cycle.toolWearErrorCorrection ? cycle.toolWearErrorCorrection / 100 : 100) : undefined),
     (cycle.wrongSizeAction == "stop-message" ? "R" + xyzFormat.format(cycle.toleranceSize ? cycle.toleranceSize : 0) + " S1" : undefined),
-    (cycle.outOfPositionAction == "stop-message" ? "M" + xyzFormat.format(cycle.tolerancePosition ? cycle.tolerancePosition : 0) : undefined),
+    (cycle.outOfPositionAction == "stop-message" ? "T" + xyzFormat.format(cycle.tolerancePosition ? cycle.tolerancePosition : 0) + " U1" : undefined),
     ((cycle.updateToolWear && cycleType == "probing-z") ? "T" + xyzFormat.format(cycle.toolLengthOffset) : undefined),
     ((cycle.updateToolWear && cycleType !== "probing-z") ? "T" + xyzFormat.format(cycle.toolDiameterOffset) : undefined),
     (cycle.updateToolWear ? "V" + xyzFormat.format(cycle.toolWearUpdateThreshold ? cycle.toolWearUpdateThreshold : 0) : undefined),
