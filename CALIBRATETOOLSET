@@ -1,7 +1,7 @@
 (Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith)
 
 
-G94 G17 G49 G40 G8
+G94 G17 G49 G40 G80
 
 #100=R_SYS_INFO[0,2]            (SAVE CURRENT TOOL NUMBER TO #100)
 
