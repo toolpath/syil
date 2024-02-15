@@ -6,11 +6,13 @@
 (#2 is the tool angle)
 (#3 is one less than number of test locations)
 
-(load probe config)
-G65 "PROBECONFIG"
-
-
 #100=R_SYS_INFO[0,2]            (SAVE CURRENT TOOL NUMBER TO #100)
+
+
+(load probe config)
+G65 "PROBECONFIG" T#100
+
+
 #104 = @104                     (FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
 #105 = @105                     (SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO)
 #110=R_TOOL_DATA[0,199,203]     (TOOLSETTER - T199 - REFERENCE HEIGHT)
