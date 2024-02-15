@@ -5,6 +5,8 @@
 (Initial Coding 1/25/2024: Joshua Smith)
 (macro to setup probe specs and units, called by every macro)
 
+(#20 turns off probe tool number checking : VACANT leaves it on (default); non VACANT turns it off )
+
 (important global variables)
 @100 = -1                        (PROBE TOOL NUMBER, EX: 99)
 
@@ -29,8 +31,8 @@ END_IF
 @112 = 100                       (EXTENDED WORKOFFSET TO STORT TOOLSETTER LOCATION)
 
 #120=R_SYS_INFO[0,2] (CURRENT TOOL NUMBER)
-IF [@100 != #120] (THE PROBE IS NOT LOADED)
-    ALARM["ERROR:  PROTECTED MOVE WITHOUT PROBE - CHANGE TO T#120 "]
+IF [@100 != #120 && #20==#0] (THE PROBE IS NOT LOADED)
+    ALARM["ERROR:  PROTECTED MOVE WITHOUT PROBE - CHANGE TO T#100 "]
 END_IF
 
 M19
