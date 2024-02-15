@@ -21,12 +21,14 @@ END_IF
 @107 = [R_TOOL_DATA[0,@100,203]] (TOOL LENGHT OFFSET, DO NOT TOUCH!!!)
 @108 = .125                      (PROBE BACKOFF DISTANCE,change to match your unit of choice, for metric users start at 3mm)
 @109 = 2.9997                    (CALIBRATED LENGTH OF YOUR MASTER GAUGE TOOL)
-@110 = .05                       (default part tolerance)
+@110 = .05                       (DEFAULT PART TOLERANCE)
 
 (NOTE: @5109 STORES THE REFERENCE HEIGHT FOR FAST PROBE Z CALIBRATION)
 
 @111 = 99                        (EXTENDED WORKOFFSET TO STORE PROBE Z CALIBRATION LOCATION)
 @112 = 100                       (EXTENDED WORKOFFSET TO STORT TOOLSETTER LOCATION)
+@113 = 0                         (ENABLE ZEROPOINT COMP)
+@114 = .05                       (DEFAULT POSITION TOLERANCE)
 
 #120=R_SYS_INFO[0,2] (CURRENT TOOL NUMBER)
 IF [@100 != #120] (THE PROBE IS NOT LOADED)
