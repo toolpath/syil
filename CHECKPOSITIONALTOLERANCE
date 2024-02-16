@@ -47,14 +47,11 @@ G65 "PROBECONFIG"
    #121 =  R_G54EXP_COOR[0,#115,3] (z work zero)
  END_IF
 
+                            (error = probed point - expected point)
+  #122 = #116 - [#24 + #119] (x error calculation between selected wcs and expected probe point)
+  #123 = #117 - [#25 + #120] (y error calculation between selected wcs and expected probe point)
+  #124 = #118 - [#26 + #121] (z error calculation between selected wcs and expected probe point)
 
-  #122 = [#24 + #119] - #116 (x error calculation between selected wcs and expected probe point)
-  #123 = [#25 + #120] - #117 (y error calculation between selected wcs and expected probe point)
-  #124 = [#26 + #121] - #118 (z error calculation between selected wcs and expected probe point)
-
-  #125 = #119 + #122 (shift x wcs by the error) 
-  #126 = #120 + #123 (shift y wcs by the error) 
-  #127 = #121 + #124 (shift z wcs by the error) 
 
 (if the tolorance is null, default it to global variable from the probe config)
 IF[#20==#0]
