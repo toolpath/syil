@@ -116,7 +116,9 @@ Slowly raise the spindle till the artifact can just barely pass beneath the mast
 Make careful note of where you do this calibration, so you'll be able to place the calibration artifact in the same place later when you want to recalibrate your probe offset --- for example if you change the probe tip. 
 
 Then switch from MPG mode to MDI mode and run the macro. 
-This means the macro starts with the gauge tool in the spindle and zeroed on the reference artifact. 
+This means the macro starts with the gauge tool in the spindle and it just resting on the reference artifact. 
+
+Note: DO NOT lower the spindle onto the reference artifact. You must start with the tool below the artifact and raise it till you can just barely pass the artifact underneath it. 
 
 ![masterToolCalibration](images/master_tool_z_calibration.jpg)
 
