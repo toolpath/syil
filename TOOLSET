@@ -33,12 +33,14 @@ G91 G0 Z0.2                     (MOVE UP)
 M7                              (TURN ON AIR BLAST)
 G04 P250                        (WAIT 1/4 SECOND)
 M9                              (TURN OFF AIR BLAST)
+FIX_CUT_OR_ON
 G31 Z-.21 F#105                 (FEED UNTIL SKIP SLOWER)
+FIX_CUT_OR_OFF
 #120=R_MACH_COOR[0,3]           (GET MACHINE Z COORDINATE)
 
 (NOTE: LENGTH OF MASTER GAUGE TOOL IS ACOUNTED FOR IN CALIBRATION)
 (      MAKE SURE THE CORRECT VALUE IS SET IN PROBECONFIG)
-#121 = [#110 - #120]           (COMPUTE TOOL LENGTH)
+#121 = [#120 - #110]           (COMPUTE TOOL LENGTH)
 
 
 
