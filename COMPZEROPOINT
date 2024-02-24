@@ -20,7 +20,7 @@ G65 "PROBECONFIG"
 
  (get WCS ZERO)
  IF [#1 < 53 || #1 == #0 ]
-  (DO NOT SET ANYTHING INTO WCS)
+  ALARM["ERROR: PROBE WCS NOT PROVIDED"]
  ELSEIF [#114 < 1]  
    #116 =  R_G53G59_COOR[0,#1,1] (x work zero)
    #117 =  R_G53G59_COOR[0,#1,2] (y work zero)
@@ -34,7 +34,7 @@ G65 "PROBECONFIG"
 
   (Get override ZERO)
  IF [ #2 < 53 || #2 == #0]
-  (DO NOT SET ANYTHING INTO WCS)
+  ALARM["ERROR: OVERRIDE WCS NOT PROVIDED"]
  ELSEIF [#115 < 1]  
    #119 =  R_G53G59_COOR[0,#2,1] (x override zero)
    #120 =  R_G53G59_COOR[0,#2,2] (y override zero)
@@ -55,7 +55,7 @@ G65 "PROBECONFIG"
   #127 = #121 + #124 (translate z wcs by the error) 
 
 (Compensate WCS For ZeroPoint)
-IF [#1 < 53 || #1 == #0 || @113 == 0]
+IF [#1 < 53 || #1 == #0 || @113 == 0 || #1 == #2]
  (DO NOT SET ANYTHING INTO WCS)
 ELSEIF [#114 < 1]  
   W_G53G59_COOR[0,#1,1,#125]
