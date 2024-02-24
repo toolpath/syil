@@ -1693,7 +1693,7 @@ function onCyclePoint(x, y, z) {
       B_ARG = "B"+xyzFormat.format(DISTANCE)
 
       writeBlock(gFormat.format(65), '"PROBEX"', WCS_CODE[8], B_ARG);
-      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], 'V1', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], WCS_CODE[3],'V1', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       break;
     case "probing-y":
       forceXYZ();
@@ -1717,7 +1717,7 @@ function onCyclePoint(x, y, z) {
       B_ARG = "B"+xyzFormat.format(DISTANCE)
 
       writeBlock(gFormat.format(65), '"PROBEY"', WCS_CODE[8], B_ARG);
-      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], 'V2', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], 'V2', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       break;
     case "probing-z":
       forceXYZ();
@@ -1733,7 +1733,7 @@ function onCyclePoint(x, y, z) {
       B_ARG = "B" + xyzFormat.format(-cycle.depth-cycle.probeOvertravel)
 
       writeBlock(gFormat.format(65), '"PROBEZ"', WCS_CODE[8], B_ARG);
-      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], 'V3', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], 'V3', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       break;
     case "probing-x-wall":
       forceXYZ();
@@ -1745,7 +1745,7 @@ function onCyclePoint(x, y, z) {
       WEB_WIDTH="B"+xyzFormat.format(cycle.width1)
       Z_DROP = "C"+xyzFormat.format(cycle.depth),
 
-      writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE[8], WEB_WIDTH, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE[8], WEB_WIDTH, Z_DROP, "Q0", WCS_CODE[2]);
       break;
     case "probing-y-wall":
       forceXYZ();
@@ -1757,7 +1757,7 @@ function onCyclePoint(x, y, z) {
       WEB_WIDTH="B"+xyzFormat.format(cycle.width1)
       Z_DROP = "C"+xyzFormat.format(cycle.depth),
 
-      writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE[8], WEB_WIDTH, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE[8], WEB_WIDTH, Z_DROP, "Q0", WCS_CODE[2]);
       break;
     case "probing-x-channel":
       forceXYZ();
@@ -1768,7 +1768,7 @@ function onCyclePoint(x, y, z) {
 
       SLOT_WIDTH ="B"+xyzFormat.format(cycle.width1);
       
-      writeBlock(gFormat.format(65), '"PROBEXSLOT"', WCS_CODE[8], SLOT_WIDTH, "Q0");
+      writeBlock(gFormat.format(65), '"PROBEXSLOT"', WCS_CODE[8], SLOT_WIDTH, "Q0", WCS_CODE[2]);
       break;
     case "probing-x-channel-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1791,7 +1791,7 @@ function onCyclePoint(x, y, z) {
 
       SLOT_WIDTH ="B"+xyzFormat.format(cycle.width1);
 
-      writeBlock(gFormat.format(65), '"PROBEYSLOT"', WCS_CODE[8], SLOT_WIDTH, "Q0");
+      writeBlock(gFormat.format(65), '"PROBEYSLOT"', WCS_CODE[8], SLOT_WIDTH, "Q0", WCS_CODE[2]);
       break;
     case "probing-y-channel-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1818,8 +1818,8 @@ function onCyclePoint(x, y, z) {
       EXPECTED_Y = yOutput.format(y);
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock - cycle.depth);
 
-      writeBlock(gFormat.format(65), '"PROBECIRCULARBOSS"', WCS_CODE[8], BOSS_DIAMETER, Z_DROP, "Q0");
-      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9],'V4', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"PROBECIRCULARBOSS"', WCS_CODE[8], BOSS_DIAMETER, Z_DROP, "Q0", WCS_CODE[2]);
+      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], WCS_CODE[3],'V4', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       if(properties.EnableZeroPointCompensation == true){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       }
@@ -1851,8 +1851,8 @@ function onCyclePoint(x, y, z) {
       EXPECTED_Y = yOutput.format(y);
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock - cycle.depth);
 
-      writeBlock(gFormat.format(65), '"PROBEBORE"', WCS_CODE[8], BORE_DIAMETER, "Q0");
-      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9],'V4', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"PROBEBORE"', WCS_CODE[8], BORE_DIAMETER, "Q0", WCS_CODE[2]);
+      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], WCS_CODE[3],'V4', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       if(properties.EnableZeroPointCompensation == true){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       }
@@ -1897,8 +1897,8 @@ function onCyclePoint(x, y, z) {
       EXPECTED_Y = yOutput.format(y);
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock - cycle.depth);
 
-      writeBlock(gFormat.format(65), '"PROBEPOCKET"', WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, "Q0");
-      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], 'V4', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"PROBEPOCKET"', WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, "Q0", WCS_CODE[2]);
+      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], 'V4', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       if(properties.EnableZeroPointCompensation == true){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       }
@@ -1917,8 +1917,8 @@ function onCyclePoint(x, y, z) {
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock - cycle.depth);
       Z_DROP     ="D"+xyzFormat.format(cycle.depth);
 
-      writeBlock(gFormat.format(65), '"PROBERECTANGULARBOSS"', WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, Z_DROP, "Q0");
-      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9],'V4', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"PROBERECTANGULARBOSS"', WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, Z_DROP, "Q0", WCS_CODE[2]);
+      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], WCS_CODE[3],'V4', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
 
       if(properties.EnableZeroPointCompensation == true){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
