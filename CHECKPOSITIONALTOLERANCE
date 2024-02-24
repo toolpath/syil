@@ -63,11 +63,11 @@ END_IF
 #132 = ABS[#124] (absolute z error)
 
 (out of postion alarm if error is greater than tolorance)
-IF[#21!=#0 && #130 > #20 && [#22 == 1 || #22 = 4 || #22 = 5]]
+IF[#21!=#0 && #130 > #20 && #1!=#2 && [#22 == 1 || #22 = 4 || #22 = 5]]
  ALARM["ERROR: STOCK OUTSIDE OF POSITIONAL TOLORANCE IN X"]
-ELSEIF [#21!=#0 && #131 > #20 && [#22 == 2 || #22 = 4 || #22 = 5]] 
+ELSEIF [#21!=#0 && #131 > #20 && #1!=#2 && [#22 == 2 || #22 = 4 || #22 = 5]] 
  ALARM["ERROR: STOCK OUTSIDE OF POSITIONAL TOLORANCE IN Y"]
-ELSEIF [#21!=#0 && #132 > #20 && [#22 == 3 || #22 = 5]] 
+ELSEIF [#21!=#0 && #132 > #20 && #1!=#2 && [#22 == 3 || #22 = 5]] 
  ALARM["ERROR: STOCK OUTSIDE OF POSITIONAL TOLORANCE IN Z"]
 END_IF
 
