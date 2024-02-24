@@ -55,7 +55,7 @@ G65 "PROBECONFIG"
   #127 = #121 + #124 (translate z wcs by the error) 
 
 (Compensate WCS For ZeroPoint)
-IF [#1 < 53 || #1 == #0 || @113 == 0 || #1 == #2]
+IF [#1 < 53 || #1 == #0 || #1 == #2]
  (DO NOT SET ANYTHING INTO WCS)
 ELSEIF [#114 < 1]  
   W_G53G59_COOR[0,#1,1,#125]

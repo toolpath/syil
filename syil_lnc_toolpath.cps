@@ -69,6 +69,7 @@ properties = {
   ForceTCPosition: false, // Change Position Prior to Toolchange
   TCposX: 0, // Toolchange Position On X Axis
   TCposY: 0, // Toolchange Position On Y Axis
+  EnableZeroPointCompensation: false,
 };
 
 // user-defined property definitions
@@ -114,6 +115,7 @@ propertyDefinitions = {
   ForceTCPosition: {title:"Change Position Before Toolchange", description:"Change the machine position before executing a toolchange.", group:4, type:"boolean"},
   TCposX: {title:"Toolchange Position X Axis - Machine Coordinate", description:"Machine Coordinate for toolchange on X Axis.", group:4, type:"number"},
   TCposY: {title:"Toolchange Position Y Axis - Machine Coordinate", description:"Machine Coordinate for toolchange on Y Axis.", group:4, type:"number"},
+  EnableZeroPointCompensation: {title:"Enable Zero Point Compensation", description:"Allows probing cycles to compensate for deltas bewteen a probed part and it's expected postition. The WCS after probing becomes the override origin translated by the computed deltas.", group:5, type:"boolean"},
 };
 
 // wcs definiton
@@ -1788,7 +1790,9 @@ function onCyclePoint(x, y, z) {
 
       writeBlock(gFormat.format(65), '"PROBECIRCULARBOSS"', WCS_CODE[8], BOSS_DIAMETER, Z_DROP, "Q0");
       writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      if(properties.EnableZeroPointCompensation == true){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      }
       break;
     case "probing-xy-circular-partial-boss":
       error(localize("Unsupported Probing Cycle"));
@@ -1819,7 +1823,9 @@ function onCyclePoint(x, y, z) {
 
       writeBlock(gFormat.format(65), '"PROBEBORE"', WCS_CODE[8], BORE_DIAMETER, "Q0");
       writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      if(properties.EnableZeroPointCompensation == true){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      }
       break;
     case "probing-xy-circular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1863,7 +1869,9 @@ function onCyclePoint(x, y, z) {
 
       writeBlock(gFormat.format(65), '"PROBEPOCKET"', WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, "Q0");
       writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      if(properties.EnableZeroPointCompensation == true){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      }
       break;
     case "probing-xy-rectangular-boss":
       forceXYZ();
@@ -1881,7 +1889,10 @@ function onCyclePoint(x, y, z) {
 
       writeBlock(gFormat.format(65), '"PROBERECTANGULARBOSS"', WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, Z_DROP, "Q0");
       writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+
+      if(properties.EnableZeroPointCompensation == true){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      }
       break;
     case "probing-xy-rectangular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));
