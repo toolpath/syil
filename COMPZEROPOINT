@@ -1,6 +1,6 @@
 (Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith)
 (COMPZEROPOINT)
-(Description: Probe in X from the left or right side)
+(Description: set probing wcs to probed part deltas plus zero point origin)
 (Modified 2/10/2024: Joshua Smith)
 (Simplified WCS extended number math, added probe error checking, added probe distance argument)
 (Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset(G54.5))
