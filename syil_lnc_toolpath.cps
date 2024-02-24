@@ -1677,7 +1677,7 @@ function onCyclePoint(x, y, z) {
       DISTANCE = approach(cycle.approach1)*(cycle.probeClearance + tool.diameter / 2 + cycle.probeOvertravel)
       B_ARG = "B"+xyzFormat.format(DISTANCE)
 
-      writeBlock(gFormat.format(65), '"PROBEX"', WCS_CODE, B_ARG);
+      writeBlock(gFormat.format(65), '"PROBEX"', WCS_CODE[8], B_ARG);
       break;
     case "probing-y":
       forceXYZ();
@@ -1689,7 +1689,7 @@ function onCyclePoint(x, y, z) {
       DISTANCE = approach(cycle.approach1)*(cycle.probeClearance + tool.diameter / 2 + cycle.probeOvertravel)
       B_ARG = "B"+xyzFormat.format(DISTANCE)
 
-      writeBlock(gFormat.format(65), '"PROBEY"', WCS_CODE, B_ARG);
+      writeBlock(gFormat.format(65), '"PROBEY"', WCS_CODE[8], B_ARG);
       break;
     case "probing-z":
       forceXYZ();
@@ -1701,7 +1701,7 @@ function onCyclePoint(x, y, z) {
 
       B_ARG = "B" + xyzFormat.format(-cycle.depth-cycle.probeOvertravel)
 
-      writeBlock(gFormat.format(65), '"PROBEZ"', WCS_CODE, B_ARG);
+      writeBlock(gFormat.format(65), '"PROBEZ"', WCS_CODE[8], B_ARG);
       break;
     case "probing-x-wall":
       forceXYZ();
@@ -1713,7 +1713,7 @@ function onCyclePoint(x, y, z) {
       WEB_WIDTH="B"+xyzFormat.format(cycle.width1)
       Z_DROP = "C"+xyzFormat.format(cycle.depth),
 
-      writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE, WEB_WIDTH, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE[8], WEB_WIDTH, Z_DROP, "Q0");
       break;
     case "probing-y-wall":
       forceXYZ();
@@ -1725,7 +1725,7 @@ function onCyclePoint(x, y, z) {
       WEB_WIDTH="B"+xyzFormat.format(cycle.width1)
       Z_DROP = "C"+xyzFormat.format(cycle.depth),
 
-      writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE, WEB_WIDTH, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE[8], WEB_WIDTH, Z_DROP, "Q0");
       break;
     case "probing-x-channel":
       forceXYZ();
@@ -1736,7 +1736,7 @@ function onCyclePoint(x, y, z) {
 
       SLOT_WIDTH ="B"+xyzFormat.format(cycle.width1);
       
-      writeBlock(gFormat.format(65), '"PROBEXSLOT"', WCS_CODE, SLOT_WIDTH, "Q0");
+      writeBlock(gFormat.format(65), '"PROBEXSLOT"', WCS_CODE[8], SLOT_WIDTH, "Q0");
       break;
     case "probing-x-channel-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1759,7 +1759,7 @@ function onCyclePoint(x, y, z) {
 
       SLOT_WIDTH ="B"+xyzFormat.format(cycle.width1);
 
-      writeBlock(gFormat.format(65), '"PROBEYSLOT"', WCS_CODE, SLOT_WIDTH, "Q0");
+      writeBlock(gFormat.format(65), '"PROBEYSLOT"', WCS_CODE[8], SLOT_WIDTH, "Q0");
       break;
     case "probing-y-channel-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1780,32 +1780,15 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
-      if (currentWorkOffset ==0) {
-       Current_WCS = "B54"
-      } else if (currentWorkOffset ==1) {
-       Current_WCS = "B54"
-      } else if (currentWorkOffset ==2) {
-       Current_WCS = "B55"
-      } else if (currentWorkOffset ==3) {
-       Current_WCS = "B56"
-      } else if (currentWorkOffset ==4) {
-       Current_WCS = "B57"
-      } else if (currentWorkOffset ==5) {
-       Current_WCS = "B58"
-      } else if (currentWorkOffset ==6) {
-       Current_WCS = "B59"
-      } 
-     
-
       BOSS_DIAMETER ="B"+xyzFormat.format(cycle.width1);
       Z_DROP     = "C"+xyzFormat.format(cycle.depth);
       EXPECTED_X = xOutput.format(x);
       EXPECTED_Y = yOutput.format(y);
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock);
 
-      writeBlock(gFormat.format(65), '"PROBECIRCULARBOSS"', WCS_CODE, BOSS_DIAMETER, Z_DROP, "Q0");
-      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE, Current_WCS, EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
-      writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE, Current_WCS, EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"PROBECIRCULARBOSS"', WCS_CODE[8], BOSS_DIAMETER, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       break;
     case "probing-xy-circular-partial-boss":
       error(localize("Unsupported Probing Cycle"));
@@ -1828,32 +1811,15 @@ function onCyclePoint(x, y, z) {
       writeBlock(gFormat.format(65), '"PROTECTEDMOVE"', zOutput.format(z - cycle.depth));
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
-
-
-      if (currentWorkOffset ==0) {
-       Current_WCS = "B54"
-      } else if (currentWorkOffset ==1) {
-       Current_WCS = "B54"
-      } else if (currentWorkOffset ==2) {
-       Current_WCS = "B55"
-      } else if (currentWorkOffset ==3) {
-       Current_WCS = "B56"
-      } else if (currentWorkOffset ==4) {
-       Current_WCS = "B57"
-      } else if (currentWorkOffset ==5) {
-       Current_WCS = "B58"
-      } else if (currentWorkOffset ==6) {
-       Current_WCS = "B59"
-      } 
      
       BORE_DIAMETER ="B"+xyzFormat.format(cycle.width1);
       EXPECTED_X = xOutput.format(x);
       EXPECTED_Y = yOutput.format(y);
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock);
 
-      writeBlock(gFormat.format(65), '"PROBEBORE"', WCS_CODE, BORE_DIAMETER, "Q0");
-      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE, Current_WCS, EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
-      writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE, Current_WCS, EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"PROBEBORE"', WCS_CODE[8], BORE_DIAMETER, "Q0");
+      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       break;
     case "probing-xy-circular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1889,31 +1855,15 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
-      if (currentWorkOffset ==0) {
-       Current_WCS = "B54"
-      } else if (currentWorkOffset ==1) {
-       Current_WCS = "B54"
-      } else if (currentWorkOffset ==2) {
-       Current_WCS = "B55"
-      } else if (currentWorkOffset ==3) {
-       Current_WCS = "B56"
-      } else if (currentWorkOffset ==4) {
-       Current_WCS = "B57"
-      } else if (currentWorkOffset ==5) {
-       Current_WCS = "B58"
-      } else if (currentWorkOffset ==6) {
-       Current_WCS = "B59"
-      } 
-
       XWEB_WIDTH="B"+xyzFormat.format(cycle.width1);
       YWEB_WIDTH="C"+xyzFormat.format(cycle.width2);
       EXPECTED_X = xOutput.format(x);
       EXPECTED_Y = yOutput.format(y);
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock);
 
-      writeBlock(gFormat.format(65), '"PROBEPOCKET"', WCS_CODE, XWEB_WIDTH, YWEB_WIDTH, "Q0");
-      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE, Current_WCS, EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
-      writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE, Current_WCS, EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"PROBEPOCKET"', WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, "Q0");
+      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       break;
     case "probing-xy-rectangular-boss":
       forceXYZ();
@@ -1922,22 +1872,6 @@ function onCyclePoint(x, y, z) {
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
 
-      if (currentWorkOffset ==0) {
-       Current_WCS = "B54"
-      } else if (currentWorkOffset ==1) {
-       Current_WCS = "B54"
-      } else if (currentWorkOffset ==2) {
-       Current_WCS = "B55"
-      } else if (currentWorkOffset ==3) {
-       Current_WCS = "B56"
-      } else if (currentWorkOffset ==4) {
-       Current_WCS = "B57"
-      } else if (currentWorkOffset ==5) {
-       Current_WCS = "B58"
-      } else if (currentWorkOffset ==6) {
-       Current_WCS = "B59"
-      } 
-
       XWEB_WIDTH ="B"+xyzFormat.format(cycle.width1);
       YWEB_WIDTH ="C"+xyzFormat.format(cycle.width2);
       EXPECTED_X = xOutput.format(x);
@@ -1945,10 +1879,9 @@ function onCyclePoint(x, y, z) {
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock);
       Z_DROP     ="D"+xyzFormat.format(cycle.depth);
 
-
-      writeBlock(gFormat.format(65), '"PROBERECTANGULARBOSS"', WCS_CODE, XWEB_WIDTH, YWEB_WIDTH, Z_DROP, "Q0");
-      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE, Current_WCS, EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
-      writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE, Current_WCS, EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"PROBERECTANGULARBOSS"', WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, Z_DROP, "Q0");
+      writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       break;
     case "probing-xy-rectangular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1981,7 +1914,7 @@ function onCyclePoint(x, y, z) {
       CORNER_POSITION ="B"+xyzFormat.format(cycle.width1)
       PROBING_DISTANCE="C"+xyzFormat.format(cycle.width2)
      
-      writeBlock(gFormat.format(65), '"PROBEINSIDECORNER"', WCS_CODE, CORNER_POSITION, PROBING_DISTANCE, "Q0");
+      writeBlock(gFormat.format(65), '"PROBEINSIDECORNER"', WCS_CODE[8], CORNER_POSITION, PROBING_DISTANCE, "Q0");
       break;
     case "probing-xy-outer-corner":
       xdir =  approach(cycle.approach1)
@@ -2003,7 +1936,7 @@ function onCyclePoint(x, y, z) {
       
 
       writeBlock(gFormat.format(65), '"PROBEOUTSIDECORNER"', 
-                 WCS_CODE, 
+                 WCS_CODE[8], 
                  CORNER_POSITION, 
                  TRAVEL_DISTANCE, 
                  PROBING_DISTANCE, "Q0");
@@ -2129,6 +2062,16 @@ function getProbingArguments(cycle, probeWorkOffsetCode) {
     PROBE_ARGS = "A54."+ WCS_NUM;
   }
 
+  var PROBE_OVERRIDE_ARGS = "";
+  if (currentWorkOffset < 7) {
+    var WCS_NUM = 53+currentWorkOffset;
+    PROBE_OVERRIDE_ARGS = "B"+ WCS_NUM;
+  }
+  else{
+    var WCS_NUM = currentWorkOffset-6;
+    PROBE_OVERRIDE_ARGS = "B54."+ WCS_NUM;
+  }
+
   return [
     (cycle.angleAskewAction == "stop-message" ? "B" + xyzFormat.format(cycle.toleranceAngle ? cycle.toleranceAngle : 0) : undefined),
     ((cycle.updateToolWear && cycle.toolWearErrorCorrection < 100) ? "F" + xyzFormat.format(cycle.toolWearErrorCorrection ? cycle.toolWearErrorCorrection / 100 : 100) : undefined),
@@ -2138,7 +2081,8 @@ function getProbingArguments(cycle, probeWorkOffsetCode) {
     ((cycle.updateToolWear && cycleType !== "probing-z") ? "T" + xyzFormat.format(cycle.toolDiameterOffset) : undefined),
     (cycle.updateToolWear ? "V" + xyzFormat.format(cycle.toolWearUpdateThreshold ? cycle.toolWearUpdateThreshold : 0) : undefined),
     (cycle.printResults ? "W" + xyzFormat.format(1 + cycle.incrementComponent) : undefined), // 1 for advance feature, 2 for reset feature count and advance component number. first reported result in a program should use W2.
-    conditional(probeWorkOffsetCode && probeWCS, PROBE_ARGS)
+    conditional(probeWorkOffsetCode && probeWCS, PROBE_ARGS),
+    conditional(probeWorkOffsetCode && probeWCS, PROBE_OVERRIDE_ARGS)
   ];
 }
 
