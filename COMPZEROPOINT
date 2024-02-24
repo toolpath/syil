@@ -45,7 +45,7 @@ G65 "PROBECONFIG"
    #121 =  R_G54EXP_COOR[0,#115,3] (z work zero)
  END_IF
 
-                            (error = probed point - expected point)
+                             (error = probed point - expected point)
   #122 = #116 - [#24 + #119] (x error calculation between selected wcs and expected probe point)
   #123 = #117 - [#25 + #120] (y error calculation between selected wcs and expected probe point)
   #124 = #118 - [#26 + #121] (z error calculation between selected wcs and expected probe point)
@@ -60,9 +60,15 @@ IF [#1 < 53 || #1 == #0 || #1 == #2]
 ELSEIF [#114 < 1]  
   W_G53G59_COOR[0,#1,1,#125]
   W_G53G59_COOR[0,#1,2,#126]
+  (Z should always be the zero point Z)
+  (If not, we couldn't have driven our probe to the probing position)
+  W_G53G59_COOR[0,#1,3,#121]
 ELSE
   W_G54EXP_COOR[0,#114,1,#125]
   W_G54EXP_COOR[0,#114,2,#126]
+  (Z should always be the zero point Z)
+  (If not, we couldn't have driven our probe to the probing position)
+  W_G54EXP_COOR[0,#114,3,#121]
 END_IF
 
 G90
