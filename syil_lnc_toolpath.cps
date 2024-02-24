@@ -1675,8 +1675,18 @@ function onCyclePoint(x, y, z) {
       writeBlock(gFormat.format(65), '"PROTECTEDMOVE"', zOutput.format(z - cycle.depth));
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
-      EXPECTED_X = xOutput.format(x);
-      EXPECTED_Y = yOutput.format(y);
+    
+      if(cycle.approach1== "positive")
+      {
+      EXPECTED_Y = yOutput.format(y + cycle.probeClearance + tool.diameter / 2);
+      EXPECTED_X = xOutput.format(x + cycle.probeClearance + tool.diameter / 2);
+      }
+      else
+      {
+      EXPECTED_Y = yOutput.format(y - cycle.probeClearance - tool.diameter / 2);
+      EXPECTED_X = xOutput.format(x - cycle.probeClearance - tool.diameter / 2);
+      }
+
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock - cycle.depth);
 
       DISTANCE = approach(cycle.approach1)*(cycle.probeClearance + tool.diameter / 2 + cycle.probeOvertravel)
@@ -1691,8 +1701,16 @@ function onCyclePoint(x, y, z) {
       writeBlock(gFormat.format(65), '"PROTECTEDMOVE"', zOutput.format(z - cycle.depth));
 
       WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
-      EXPECTED_X = xOutput.format(x);
-      EXPECTED_Y = yOutput.format(y);
+      if(cycle.approach1== "positive")
+      {
+      EXPECTED_Y = yOutput.format(y + cycle.probeClearance + tool.diameter / 2);
+      EXPECTED_X = xOutput.format(x + cycle.probeClearance + tool.diameter / 2);
+      }
+      else
+      {
+      EXPECTED_Y = yOutput.format(y - cycle.probeClearance - tool.diameter / 2);
+      EXPECTED_X = xOutput.format(x - cycle.probeClearance - tool.diameter / 2);
+      }
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock - cycle.depth);
 
       DISTANCE = approach(cycle.approach1)*(cycle.probeClearance + tool.diameter / 2 + cycle.probeOvertravel)
