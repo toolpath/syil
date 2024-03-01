@@ -7,6 +7,7 @@
 (Simplified WCS extended number math, added probe error checking, added probe inspection report)
 (#1 is the work coordinate system to store offsets in)
 (#2 is the expected width of the web in the Y direction)
+(#9 print results enabled by fusion360)
 (#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
 (#18 oversize tolorance)
 (#19 enable oversize check)
@@ -85,7 +86,7 @@ END_IF
 
 
 (STORE Y OFFSET)
-IF [#1 < 53 || #1 == #0]
+IF [#1 < 53 || #1 == #0 || #9 > 0]
  (DO NOT WRITE ANYTHING TO WCS)
 ELSEIF [#114 < 1]  
   W_G53G59_COOR[0,#1,2,#104]
@@ -99,6 +100,16 @@ IF[#17>0]
  MENU["INSPECTION REPORT","RESULTS","",1];
 END_IF
 
+#150 = TIME[2];
+#151 = TIME[3];
+#152 = TIME[4];
+
+(simple inspection reporting to a file)
+IF[#9 == 1]
+ OPEN[0,1,"Probe_Inspection_Report_#151_#152_#150"];
+ PRINT["Y SLOT MEASURED WIDTH: #107"];
+ CLOSE[];
+END_IF
 
 N1
 

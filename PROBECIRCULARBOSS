@@ -8,17 +8,29 @@
 (#1 is the work coordinate system to store offsets in)
 (#2 is the expected DIAMETER)
 (#3 is the Z drop height)
+(#9 print results enabled by fusion360)
 (#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
 (#18 oversize tolorance)
 (#19 enable oversize check)
 
-(calling our web macros the first time centers us)
-G65 "PROBEXWEB" A#1 B#2 C#3 Q0 R#18 S#19
-G65 "PROBEYWEB" A#1 B#2 C#3 Q0 R#18 S#19
+IF[#9>0]
+ (call with I=2 to stop sub macro file i/o)
+ (calling our web macros the first time centers us)
+ G65 "PROBEXWEB" A#1 B#2 C#3 I2 Q0 R#18 S#19
+ G65 "PROBEYWEB" A#1 B#2 C#3 I2 Q0 R#18 S#19
 
-(calling our web macros the second time gives an accurate center)
-G65 "PROBEXWEB" A#1 B#2 C#3 Q0 R#18 S#19
-G65 "PROBEYWEB" A#1 B#2 C#3 Q0 R#18 S#19
+ (calling our web macros the second time gives an accurate center)
+ G65 "PROBEXWEB" A#1 B#2 C#3 I2 Q0 R#18 S#19
+ G65 "PROBEYWEB" A#1 B#2 C#3 I2 Q0 R#18 S#19
+ELSE
+ (calling our web macros the first time centers us)
+ G65 "PROBEXWEB" A#1 B#2 C#3 I0 Q0 R#18 S#19
+ G65 "PROBEYWEB" A#1 B#2 C#3 I0 Q0 R#18 S#19
+
+ (calling our web macros the second time gives an accurate center)
+ G65 "PROBEXWEB" A#1 B#2 C#3 I0 Q0 R#18 S#19
+ G65 "PROBEYWEB" A#1 B#2 C#3 I0 Q0 R#18 S#19
+END_IF
 
 (simple inspection reporting)
 IF[#17>0]
@@ -33,6 +45,20 @@ IF[#17>0]
  MENU["INSPECTION REPORT","RESULTS","",1];
 
 END_IF
+
+#150 = TIME[2];
+#151 = TIME[3];
+#152 = TIME[4];
+
+(simple inspection reporting to a file)
+IF[#9 == 1]
+ OPEN[0,1,"Probe_Inspection_Report_#151_#152_#150"];
+ PRINT["PROBED CIRCULAR BOSS DIAMETER IN X: @998"];
+ PRINT["PROBED CIRCULAR BOSS DIAMETER IN Y: @999"];
+ PRINT["PROBED CIRCULAR BOSS AVG DIAMETER : #131"];
+ CLOSE[];
+END_IF
+
 
 G90
 
