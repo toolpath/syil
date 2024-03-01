@@ -38,6 +38,11 @@ IF[R_SKIP[0,1] == 1]
  G91 G01 X-[#108]                     (back off 1/4 the probing distance)
  #106 = [#104+[[#2/abs[#2]]*#105]]    (current position +/- probe radius)
 
+ (safety check for inspection variable)
+ IF[#9 == #0]
+  #9 = 0
+ END_IF
+
  (STORE X OFFSET FOR WCS ZERO)
  IF [#1 < 53 || #1 == #0 || #9 > 0]
   (DO NOT SET ANYTHING INTO WCS)

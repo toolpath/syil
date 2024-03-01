@@ -41,6 +41,10 @@ G31 G91 P2 Z[#2] F#111
   G91 G01 Z+[#108]                     (back off 1/4 the probing distance)
   #106 = [#104-#105]                   (current position - probe length)
   
+  (safety check for inspection variable)
+  IF[#9 == #0]
+   #9 = 0
+  END_IF
 
   (STORE Z OFFSET FOR WCS ZERO)
   IF [#1 < 53 || #1 == #0 || #9 > 0]

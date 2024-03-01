@@ -122,6 +122,11 @@ IF[#19!=#0 && #126>#18 ]
  ALARM["ERROR: STOCK OUTSIDE OF TOLORANCE IN Y"]
 END_IF
 
+(safety check for inspection variable)
+IF[#9 == #0]
+ #9 = 0
+END_IF
+
 (STORE Y OFFSET)
 IF [#1 < 53 || #1 == #0 || #9 > 0]
   (DO NOT SET ANYTHING INTO WCS)

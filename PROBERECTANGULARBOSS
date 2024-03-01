@@ -15,6 +15,11 @@
 (#18 oversize tolorance)
 (#19 enable oversize check)
 
+(safety check for inspection variable)
+IF[#9 == #0]
+ #9 = 0
+END_IF
+
 IF[#9>0]
 (call with I=2 to stop sub macro file i/o)
  G65 "PROBEXWEB" A#1 B#2 C#4 I2 Q0 R#18 S#19 
