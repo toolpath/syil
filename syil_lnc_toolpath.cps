@@ -1674,19 +1674,9 @@ function onCyclePoint(x, y, z) {
       // writeBlock(gFormat.format(31), "P2 ", zOutput.format(z - cycle.depth), "F50");  // protected positioning move 
       writeBlock(gFormat.format(65), '"PROTECTEDMOVE"', zOutput.format(z - cycle.depth));
 
-      WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
-    
-      if(approach(cycle.approach1) == 1)
-      {
-       EXPECTED_Y = yOutput.format(y + cycle.probeClearance + tool.diameter / 2);
-       EXPECTED_X = xOutput.format(x + cycle.probeClearance + tool.diameter / 2);
-      }
-      else
-      {
-       EXPECTED_Y = yOutput.format(y - cycle.probeClearance - tool.diameter / 2);
-       EXPECTED_X = xOutput.format(x - cycle.probeClearance - tool.diameter / 2);
-      }
-
+      WCS_CODE   = getProbingArguments(cycle, probeWorkOffsetCode);
+      EXPECTED_Y = yOutput.format(y + approach(cycle.approach1)*(cycle.probeClearance + tool.diameter / 2));
+      EXPECTED_X = xOutput.format(x + approach(cycle.approach1)*(cycle.probeClearance + tool.diameter / 2));
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock - cycle.depth);
       DISTANCE   = approach(cycle.approach1)*(cycle.probeClearance + tool.diameter / 2 + cycle.probeOvertravel)
       B_ARG      = "B"+xyzFormat.format(DISTANCE)
@@ -1699,18 +1689,9 @@ function onCyclePoint(x, y, z) {
       // writeBlock(gFormat.format(31), "P2 ", zOutput.format(z - cycle.depth), "F50");  // protected positioning move 
       writeBlock(gFormat.format(65), '"PROTECTEDMOVE"', zOutput.format(z - cycle.depth));
 
-      WCS_CODE = getProbingArguments(cycle, probeWorkOffsetCode);
-      if(approach(cycle.approach1) == 1)
-      {
-       EXPECTED_Y = yOutput.format(y + cycle.probeClearance + tool.diameter / 2);
-       EXPECTED_X = xOutput.format(x + cycle.probeClearance + tool.diameter / 2);
-      }
-      else
-      {
-       EXPECTED_Y = yOutput.format(y - cycle.probeClearance - tool.diameter / 2);
-       EXPECTED_X = xOutput.format(x - cycle.probeClearance - tool.diameter / 2);
-      }
-
+      WCS_CODE   = getProbingArguments(cycle, probeWorkOffsetCode);
+      EXPECTED_Y = yOutput.format(y + approach(cycle.approach1)*(cycle.probeClearance + tool.diameter / 2));
+      EXPECTED_X = xOutput.format(x + approach(cycle.approach1)*(cycle.probeClearance + tool.diameter / 2));
       EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock - cycle.depth);
       DISTANCE   = approach(cycle.approach1)*(cycle.probeClearance + tool.diameter / 2 + cycle.probeOvertravel)
       B_ARG      = "B"+xyzFormat.format(DISTANCE)
