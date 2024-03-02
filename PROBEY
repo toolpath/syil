@@ -7,6 +7,7 @@
 (Simplified WCS extended number math, added probe error checking, added probe distance argument)
 (Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset(G54.5))
 (Argument B -> #2 is the desired probing distance. Enter a positive value to probe the front and a negative value to probe the back)
+(Argument I -> #9 print results enabled by fusion360)
 
 (load probe config)
 G65 "PROBECONFIG"
@@ -38,14 +39,29 @@ IF[R_SKIP[0,1] == 1]
  G91 G01 Y-[#108]                     (back off 1/4 the probing distance)
  #106 = [#104+[[#2/abs[#2]]*#105]]    (current position +/- probe radius)
  
+ (safety check for inspection variable)
+ IF[#9 == #0]
+  #9 = 0
+ END_IF
 
 (STORE Y OFFSET For WCS Zero)
-IF [#1 < 53 || #1 == #0]
+IF [#1 < 53 || #1 == #0 || #9 > 0]
  (DO NOT WRITE ANYTHING TO WCS)
 ELSEIF [#114 < 1]  
   W_G53G59_COOR[0,#1,2,#106]
 ELSE
   W_G54EXP_COOR[0,#114,2,#106]
+END_IF
+
+#150 = TIME[2];
+#151 = TIME[3];
+#152 = TIME[4];
+
+(simple inspection reporting to a file)
+IF[#9 == 1]
+ OPEN[0,1,"Probe_Inspection_Report_#151_#152_#150"];
+ PRINT["PROBED Y POINT: #106"];
+ CLOSE[];
 END_IF
 
 ELSE

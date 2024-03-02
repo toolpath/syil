@@ -9,6 +9,7 @@
 (#1 is the work coordinate system to store offsets in)
 (#2 is the expected length)
 (#3 is the expected width)
+(#9 print results enabled by fusion360)
 (#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
 (#18 oversize tolorance)
 (#19 enable oversize check)
@@ -16,9 +17,19 @@
 (important local variables)
 #130 = @101             (TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO)
 
-(calling our slot macros the first time centers probe)
-G65 "PROBEXSLOT" A#1 B#2 Q0 R#18 S#19 
-G65 "PROBEYSLOT" A#1 B#3 Q0 R#18 S#19 
+(safety check for inspection variable)
+IF[#9 == #0]
+ #9 = 0
+END_IF
+
+IF[#9>0]
+(call with I=2 to stop sub macro file i/o)
+ G65 "PROBEXSLOT" A#1 B#2 Q0 I2 R#18 S#19 
+ G65 "PROBEYSLOT" A#1 B#3 Q0 I2 R#18 S#19 
+ELSE
+ G65 "PROBEXSLOT" A#1 B#2 Q0 I0 R#18 S#19 
+ G65 "PROBEYSLOT" A#1 B#3 Q0 I0 R#18 S#19 
+END_IF
 
 (simple inspection reporting)
 IF[#17>0]
@@ -33,6 +44,19 @@ IF[#17>0]
  MENU["INSPECTION REPORT","RESULTS","",1];
  
 END_IF
+
+#150 = TIME[2];
+#151 = TIME[3];
+#152 = TIME[4];
+
+(simple inspection reporting to a file)
+IF[#9 == 1]
+ OPEN[0,1,"Probe_Inspection_Report_#151_#152_#150"];
+ PRINT["PROBED POCKET LENGTH IN X: @998"];
+ PRINT["PROBED POCKET WIDTH IN Y: @999"];
+ CLOSE[];
+END_IF
+
 
 G90
 
