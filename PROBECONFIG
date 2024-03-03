@@ -1,38 +1,38 @@
-(Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith)
+// Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
 
-(PROBECONFIG)
-(Description: Probe Configuration File)
-(Initial Coding 1/25/2024: Joshua Smith)
-(macro to setup probe specs and units, called by every macro)
+// PROBECONFIG
+// Description: Probe Configuration File
+// Initial Coding 1/25/2024: Joshua Smith
+// macro to setup probe specs and units, called by every macro
 
-(#20 turns off probe tool number checking : VACANT leaves it on (default); non VACANT turns it off )
+// #20 turns off probe tool number checking : VACANT leaves it on ; non VACANT turns it off 
 
-(important global variables)
-@100 = -1                        (PROBE TOOL NUMBER, EX: 99)
+// important global variables
+@100 = -1                        // PROBE TOOL NUMBER, EX: 99
 
 IF [@100==-1]
 	ALARM["HARD CODE PROBE NUMBER IN PROBECONFIG MACRO"]
 END_IF
 
-@101 = R_TOOL_DATA[0,@100,3]     (TOOL DIAMETER, DO NOT TOUCH!!!)
-@102 = @101/2                    (TOOL RADIUS, DO NOT TOUCH!!!)
-@103 = 50                        (FEED SPEED in/m, change to match your unit of choice, for metric users start at 2540mm)
-@104 = 50                        (FAST PROBE SPEED in/m, change to match your unit of choice, for metric users start at 1270mm)
-@105 = 2.5                       (SLOW PROBE SPEED in/m, change to match your unit of choice, for metric users start at 63mm)
-@106 = .5                        (PROBE CLEARANCE DISTANCE in, change to match your unit of choice, for metric users start at 6mm)
-@107 = [R_TOOL_DATA[0,@100,203]] (TOOL LENGHT OFFSET, DO NOT TOUCH!!!)
-@108 = .125                      (PROBE BACKOFF DISTANCE,change to match your unit of choice, for metric users start at 3mm)
-@109 = 2.9997                    (CALIBRATED LENGTH OF YOUR MASTER GAUGE TOOL)
-@110 = .05                       (DEFAULT PART TOLERANCE)
+@101 = R_TOOL_DATA[0,@100,3]     // TOOL DIAMETER, DO NOT TOUCH!!!
+@102 = @101/2                    // TOOL RADIUS, DO NOT TOUCH!!!
+@103 = 50                        // FEED SPEED in/m, change to match your unit of choice, for metric users start at 2540mm
+@104 = 50                        // FAST PROBE SPEED in/m, change to match your unit of choice, for metric users start at 1270mm
+@105 = 2.5                       // SLOW PROBE SPEED in/m, change to match your unit of choice, for metric users start at 63mm
+@106 = .5                        // PROBE CLEARANCE DISTANCE in, change to match your unit of choice, for metric users start at 6mm
+@107 = [R_TOOL_DATA[0,@100,203]] // TOOL LENGHT OFFSET, DO NOT TOUCH!!!
+@108 = .125                      // PROBE BACKOFF DISTANCE,change to match your unit of choice, for metric users start at 3mm
+@109 = 2.9997                    // CALIBRATED LENGTH OF YOUR MASTER GAUGE TOOL
+@110 = .05                       // DEFAULT PART TOLERANCE
 
-(NOTE: @5109 STORES THE REFERENCE HEIGHT FOR FAST PROBE Z CALIBRATION)
+// NOTE: @5109 STORES THE REFERENCE HEIGHT FOR FAST PROBE Z CALIBRATION
 
-@111 = 99                        (EXTENDED WORKOFFSET TO STORE PROBE Z CALIBRATION LOCATION)
-@112 = 100                       (EXTENDED WORKOFFSET TO STORT TOOLSETTER LOCATION)
-@114 = .05                       (DEFAULT POSITION TOLERANCE)
+@111 = 99                        // EXTENDED WORKOFFSET TO STORE PROBE Z CALIBRATION LOCATION
+@112 = 100                       // EXTENDED WORKOFFSET TO STORT TOOLSETTER LOCATION
+@114 = .05                       // DEFAULT POSITION TOLERANCE
 
-#120=R_SYS_INFO[0,2] (CURRENT TOOL NUMBER)
-IF [@100 != #120 && #20==#0] (THE PROBE IS NOT LOADED)
+#120=R_SYS_INFO[0,2] // CURRENT TOOL NUMBER
+IF [@100 != #120 && #20==#0] // THE PROBE IS NOT LOADED
     ALARM["ERROR:  PROTECTED MOVE WITHOUT PROBE - CHANGE TO T#100 "]
 END_IF
 
