@@ -467,7 +467,12 @@ function onOpen() {
   // Save the G59 Z axis into a variable #199 for use with G10 calls
   writeComment("G59 stores the zero point. #199 can be used with G10 commands to pull G59 into a local WCS");
   writeBlock("#199 = R_G53G59_COOR[0,59,3]");
-
+  writeBlock('@980 = TIME[3]'); //month
+  writeBlock('@981 = TIME[4]'); //day
+  writeBlock('@982 = TIME[2]'); //year
+  writeBlock('@983 = TIME[5]'); //hour
+  writeBlock('@984 = TIME[6]'); //minute
+  writeBlock('@985 = TIME[7]'); //second
 }
 
 function onComment(message) {
@@ -1686,7 +1691,7 @@ function onCyclePoint(x, y, z) {
       
       if(WCS_CODE[7] === "I1." )
       {
-      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
       writeBlock(open_string);
       writeBlock('PRINT["PROBED X POINT: @996"]');
       writeBlock('CLOSE[]');
@@ -1711,7 +1716,7 @@ function onCyclePoint(x, y, z) {
 
       if(WCS_CODE[7] === "I1." )
       {
-      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
       writeBlock(open_string);
       writeBlock('PRINT["PROBED Y POINT: @996"]');
       writeBlock('CLOSE[]');
@@ -1736,7 +1741,7 @@ function onCyclePoint(x, y, z) {
        
       if(WCS_CODE[7] === "I1." )
       {
-      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
       writeBlock(open_string);
       writeBlock('PRINT["PROBED Z POINT: @996"]');
       writeBlock('CLOSE[]');
@@ -1756,7 +1761,7 @@ function onCyclePoint(x, y, z) {
 
             if(WCS_CODE[7] === "I1." )
       {
-      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
       writeBlock(open_string);
       writeBlock('PRINT["MEASURED X WEB WIDTH: @998"]')
       writeBlock('CLOSE[]');
@@ -1776,7 +1781,7 @@ function onCyclePoint(x, y, z) {
 
       if(WCS_CODE[7] === "I1." )
       {
-      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
       writeBlock(open_string);
       writeBlock('PRINT["MEASURED Y WEB WIDTH: @999"]')
       writeBlock('CLOSE[]');
@@ -1795,7 +1800,7 @@ function onCyclePoint(x, y, z) {
 
       if(WCS_CODE[7] === "I1." )
       {
-      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
       writeBlock(open_string);
       writeBlock('PRINT["MEASURED X SLOT WIDTH: @998"]')
       writeBlock('CLOSE[]');
@@ -1826,7 +1831,7 @@ function onCyclePoint(x, y, z) {
 
       if(WCS_CODE[7] === "I1." )
       {
-      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
       writeBlock(open_string);
       writeBlock('PRINT["MEASURED Y SLOT WIDTH: @999"]')
       writeBlock('CLOSE[]');
@@ -1865,7 +1870,7 @@ function onCyclePoint(x, y, z) {
 
       if(WCS_CODE[7] === "I1." )
       {
-      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
       writeBlock(open_string);
       writeBlock('PRINT["MEASURED CIRCULAR BOSS DIAMETER IN X: @998"]')
       writeBlock('PRINT["MEASURED CIRCULAR BOSS DIAMETER IN Y: @999"]')
@@ -1908,7 +1913,7 @@ function onCyclePoint(x, y, z) {
 
             if(WCS_CODE[7] === "I1." )
       {
-      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
       writeBlock(open_string);
       writeBlock('PRINT["MEASURED BORE DIAMETER IN X: @998"]')
       writeBlock('PRINT["MEASURED BORE DIAMETER IN Y: @999"]')
@@ -1964,7 +1969,7 @@ function onCyclePoint(x, y, z) {
 
       if(WCS_CODE[7] === "I1." )
       {
-      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
       writeBlock(open_string);
       writeBlock('PRINT["MEASURED POCKET LENGTH IN X: @998"]')
       writeBlock('PRINT["MEASURED POCKET WIDTH IN Y: @999"]')
@@ -1993,7 +1998,7 @@ function onCyclePoint(x, y, z) {
 
       if(WCS_CODE[7] === "I1." )
       {
-      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
       writeBlock(open_string);
       writeBlock('PRINT["MEASURED RECTANGULAR BOSS LENGTH IN X: @998"]')
       writeBlock('PRINT["MEASURED RECTANGULAR BOSS WIDTH IN Y: @999"]')
