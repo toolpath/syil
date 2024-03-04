@@ -13,55 +13,24 @@
 (#18 oversize tolorance)
 (#19 enable oversize check)
 
-(safety check for inspection variable)
-IF[#9 == #0]
- #9 = 0
-END_IF
-
-IF[#9>0]
- (call with I=2 to stop sub macro file i/o)
  (calling our web macros the first time centers us)
- G65 "PROBEXWEB" A#1 B#2 C#3 I2 Q0 R#18 S#19
- G65 "PROBEYWEB" A#1 B#2 C#3 I2 Q0 R#18 S#19
+ G65 "PROBEXWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
+ G65 "PROBEYWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
 
  (calling our web macros the second time gives an accurate center)
- G65 "PROBEXWEB" A#1 B#2 C#3 I2 Q0 R#18 S#19
- G65 "PROBEYWEB" A#1 B#2 C#3 I2 Q0 R#18 S#19
-ELSE
- (calling our web macros the first time centers us)
- G65 "PROBEXWEB" A#1 B#2 C#3 I0 Q0 R#18 S#19
- G65 "PROBEYWEB" A#1 B#2 C#3 I0 Q0 R#18 S#19
-
- (calling our web macros the second time gives an accurate center)
- G65 "PROBEXWEB" A#1 B#2 C#3 I0 Q0 R#18 S#19
- G65 "PROBEYWEB" A#1 B#2 C#3 I0 Q0 R#18 S#19
-END_IF
-
-(simple inspection reporting)
-IF[#17>0]
+ G65 "PROBEXWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
+ G65 "PROBEYWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
 
 (average Diameter calculation)
 (@999 and @998 are set in the web macros)
-#131 = [@998 + @999]/2
+@997 = [@998 + @999]/2
 
+(simple inspection reporting)
+IF[#17>0]
  MENU_ADD["Part Diameter In X: @998",""]; 
  MENU_ADD["Part Diameter In Y: @999",""];
- MENU_ADD["AVG Diameter: #131",""]; (THE WORD AVERAGE IS TO LONG FOR THE MENU)
+ MENU_ADD["AVG Diameter: @997",""]; (THE WORD AVERAGE IS TO LONG FOR THE MENU)
  MENU["INSPECTION REPORT","RESULTS","",1];
-
-END_IF
-
-#150 = TIME[2];
-#151 = TIME[3];
-#152 = TIME[4];
-
-(simple inspection reporting to a file)
-IF[#9 == 1]
- OPEN[0,1,"Probe_Inspection_Report_#151_#152_#150"];
- PRINT["PROBED CIRCULAR BOSS DIAMETER IN X: @998"];
- PRINT["PROBED CIRCULAR BOSS DIAMETER IN Y: @999"];
- PRINT["PROBED CIRCULAR BOSS AVG DIAMETER : #131"];
- CLOSE[];
 END_IF
 
 

@@ -1683,6 +1683,16 @@ function onCyclePoint(x, y, z) {
 
       writeBlock(gFormat.format(65), '"PROBEX"', WCS_CODE[7], WCS_CODE[8], B_ARG);
       writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], WCS_CODE[3],'V1', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      
+      if(WCS_CODE[7] === "I1." )
+      {
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      writeBlock(open_string);
+      writeBlock('PRINT["PROBED X POINT: @996"]');
+      writeBlock('CLOSE[]');
+      }
+
+
       break;
     case "probing-y":
       forceXYZ();
@@ -1698,6 +1708,15 @@ function onCyclePoint(x, y, z) {
 
       writeBlock(gFormat.format(65), '"PROBEY"', WCS_CODE[7], WCS_CODE[8], B_ARG);
       writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], 'V2', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+
+      if(WCS_CODE[7] === "I1." )
+      {
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      writeBlock(open_string);
+      writeBlock('PRINT["PROBED Y POINT: @996"]');
+      writeBlock('CLOSE[]');
+      }
+
       break;
     case "probing-z":
       forceXYZ();
@@ -1705,14 +1724,24 @@ function onCyclePoint(x, y, z) {
       // writeBlock(gFormat.format(31), "P2 ", zOutput.format(Z_START), "F50");  // protected positioning move 
       writeBlock(gFormat.format(65), '"PROTECTEDMOVE"', zOutput.format(Z_START));
 
-      WCS_CODE   = getProbingArguments(cycle, probeWorkOffsetCode);
-      EXPECTED_X = xOutput.format(x);
-      EXPECTED_Y = yOutput.format(y);
-      EXPECTED_Z = "Z"+xyzFormat.format(cycle.stock - cycle.depth);
-      B_ARG      = "B" + xyzFormat.format(-cycle.depth-cycle.probeOvertravel)
+      WCS_CODE    = getProbingArguments(cycle, probeWorkOffsetCode);
+      EXPECTED_X  = xOutput.format(x);
+      EXPECTED_Y  = yOutput.format(y);
+      EXPECTED_Z  = "Z"+xyzFormat.format(cycle.stock - cycle.depth);
+      B_ARG       = "B" + xyzFormat.format(-cycle.depth-cycle.probeOvertravel);
+      
 
       writeBlock(gFormat.format(65), '"PROBEZ"', WCS_CODE[7], WCS_CODE[8], B_ARG);
       writeBlock(gFormat.format(65), '"CHECKPOSITIONALTOLERANCE"', WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], 'V3', EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+       
+      if(WCS_CODE[7] === "I1." )
+      {
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      writeBlock(open_string);
+      writeBlock('PRINT["PROBED Z POINT: @996"]');
+      writeBlock('CLOSE[]');
+      }
+
       break;
     case "probing-x-wall":
       forceXYZ();
@@ -1724,6 +1753,15 @@ function onCyclePoint(x, y, z) {
       Z_DROP    = "C"+xyzFormat.format(cycle.depth),
 
       writeBlock(gFormat.format(65), '"PROBEXWEB"', WCS_CODE[7], WCS_CODE[8], WEB_WIDTH, Z_DROP, "Q0", WCS_CODE[2]);
+
+            if(WCS_CODE[7] === "I1." )
+      {
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      writeBlock(open_string);
+      writeBlock('PRINT["MEASURED X WEB WIDTH: @998"]')
+      writeBlock('CLOSE[]');
+      }
+
       break;
     case "probing-y-wall":
       forceXYZ();
@@ -1735,6 +1773,15 @@ function onCyclePoint(x, y, z) {
       Z_DROP    = "C"+xyzFormat.format(cycle.depth),
 
       writeBlock(gFormat.format(65), '"PROBEYWEB"', WCS_CODE[7], WCS_CODE[8], WEB_WIDTH, Z_DROP, "Q0", WCS_CODE[2]);
+
+      if(WCS_CODE[7] === "I1." )
+      {
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      writeBlock(open_string);
+      writeBlock('PRINT["MEASURED Y WEB WIDTH: @999"]')
+      writeBlock('CLOSE[]');
+      }
+
       break;
     case "probing-x-channel":
       forceXYZ();
@@ -1745,6 +1792,15 @@ function onCyclePoint(x, y, z) {
       SLOT_WIDTH ="B"+xyzFormat.format(cycle.width1);
       
       writeBlock(gFormat.format(65), '"PROBEXSLOT"', WCS_CODE[7], WCS_CODE[8], SLOT_WIDTH, "Q0", WCS_CODE[2]);
+
+      if(WCS_CODE[7] === "I1." )
+      {
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      writeBlock(open_string);
+      writeBlock('PRINT["MEASURED X SLOT WIDTH: @998"]')
+      writeBlock('CLOSE[]');
+      }
+
       break;
     case "probing-x-channel-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1767,6 +1823,15 @@ function onCyclePoint(x, y, z) {
       SLOT_WIDTH ="B"+xyzFormat.format(cycle.width1);
 
       writeBlock(gFormat.format(65), '"PROBEYSLOT"', WCS_CODE[7], WCS_CODE[8], SLOT_WIDTH, "Q0", WCS_CODE[2]);
+
+      if(WCS_CODE[7] === "I1." )
+      {
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      writeBlock(open_string);
+      writeBlock('PRINT["MEASURED Y SLOT WIDTH: @999"]')
+      writeBlock('CLOSE[]');
+      }
+
       break;
     case "probing-y-channel-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1797,6 +1862,17 @@ function onCyclePoint(x, y, z) {
       if(properties.EnableZeroPointCompensation == true && WCS_CODE[7] == null){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       }
+
+      if(WCS_CODE[7] === "I1." )
+      {
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      writeBlock(open_string);
+      writeBlock('PRINT["MEASURED CIRCULAR BOSS DIAMETER IN X: @998"]')
+      writeBlock('PRINT["MEASURED CIRCULAR BOSS DIAMETER IN Y: @999"]')
+      writeBlock('PRINT["MEASURED CIRCULAR BOSS AVG DIAMETER : @997"]')
+      writeBlock('CLOSE[]');
+      }
+
       break;
     case "probing-xy-circular-partial-boss":
       error(localize("Unsupported Probing Cycle"));
@@ -1829,6 +1905,17 @@ function onCyclePoint(x, y, z) {
       if(properties.EnableZeroPointCompensation == true && WCS_CODE[7] == null){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       }
+
+            if(WCS_CODE[7] === "I1." )
+      {
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      writeBlock(open_string);
+      writeBlock('PRINT["MEASURED BORE DIAMETER IN X: @998"]')
+      writeBlock('PRINT["MEASURED BORE DIAMETER IN Y: @999"]')
+      writeBlock('PRINT["MEASURED BORE AVG DIAMETER : @997"]')
+      writeBlock('CLOSE[]');
+      }
+
       break;
     case "probing-xy-circular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));
@@ -1874,6 +1961,16 @@ function onCyclePoint(x, y, z) {
       if(properties.EnableZeroPointCompensation == true && WCS_CODE[7] == null){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       }
+
+      if(WCS_CODE[7] === "I1." )
+      {
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      writeBlock(open_string);
+      writeBlock('PRINT["MEASURED POCKET LENGTH IN X: @998"]')
+      writeBlock('PRINT["MEASURED POCKET WIDTH IN Y: @999"]')
+      writeBlock('CLOSE[]');
+      }
+
       break;
     case "probing-xy-rectangular-boss":
       forceXYZ();
@@ -1893,6 +1990,16 @@ function onCyclePoint(x, y, z) {
       if(properties.EnableZeroPointCompensation == true && WCS_CODE[7] == null){
       writeBlock(gFormat.format(65), '"COMPZEROPOINT"', WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
       }
+
+      if(WCS_CODE[7] === "I1." )
+      {
+      open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "\"]";
+      writeBlock(open_string);
+      writeBlock('PRINT["MEASURED RECTANGULAR BOSS LENGTH IN X: @998"]')
+      writeBlock('PRINT["MEASURED RECTANGULAR BOSS WIDTH IN Y: @999"]')
+      writeBlock('CLOSE[]');
+      }
+
       break;
     case "probing-xy-rectangular-hole-with-island":
       error(localize("Unsupported Probing Cycle"));

@@ -40,7 +40,8 @@ G31 G91 P2 Z[#2] F#111
   #104=R_SKIP[0,203]                   (GET MACHINE Z COORDINATE)
   G91 G01 Z+[#108]                     (back off 1/4 the probing distance)
   #106 = [#104-#105]                   (current position - probe length)
-  
+  @996 = #106
+
   (safety check for inspection variable)
   IF[#9 == #0]
    #9 = 0
@@ -54,17 +55,6 @@ G31 G91 P2 Z[#2] F#111
   ELSE
     W_G54EXP_COOR[0,#114,3,#106]
   END_IF
-
-#150 = TIME[2];
-#151 = TIME[3];
-#152 = TIME[4];
-
-(simple inspection reporting to a file)
-IF[#9 == 1]
- OPEN[0,1,"Probe_Inspection_Report_#151_#152_#150"];
- PRINT["PROBED Z POINT: #106"];
- CLOSE[];
-END_IF
 
  ELSE
   ALARM["ERROR: FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]

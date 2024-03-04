@@ -15,19 +15,10 @@
 (#18 oversize tolorance)
 (#19 enable oversize check)
 
-(safety check for inspection variable)
-IF[#9 == #0]
- #9 = 0
-END_IF
 
-IF[#9>0]
-(call with I=2 to stop sub macro file i/o)
- G65 "PROBEXWEB" A#1 B#2 C#4 I2 Q0 R#18 S#19 
- G65 "PROBEYWEB" A#1 B#3 C#4 I2 Q0 R#18 S#19 
-ELSE
- G65 "PROBEXWEB" A#1 B#2 C#4 I0 Q0 R#18 S#19 
- G65 "PROBEYWEB" A#1 B#3 C#4 I0 Q0 R#18 S#19 
-END_IF
+ G65 "PROBEXWEB" A#1 B#2 C#4 I#9 Q0 R#18 S#19 
+ G65 "PROBEYWEB" A#1 B#3 C#4 I#9 Q0 R#18 S#19 
+
 
 (simple inspection reporting)
 (@999 and @998 are set in the web macros)
@@ -37,17 +28,6 @@ IF[#17>0]
  MENU["INSPECTION REPORT","RESULTS","",1];
 END_IF
 
-#150 = TIME[2];
-#151 = TIME[3];
-#152 = TIME[4];
-
-(simple inspection reporting to a file)
-IF[#9 == 1]
- OPEN[0,1,"Probe_Inspection_Report_#151_#152_#150"];
- PRINT["PROBED RECTANGULAR BOSS LENGTH IN X: @998"];
- PRINT["PROBED RECTANGULAR BOSS WIDTH IN Y: @999"];
- CLOSE[];
-END_IF
 
 G90
 

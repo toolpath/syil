@@ -37,6 +37,7 @@ IF[R_SKIP[0,1] == 1]
  #104=R_SKIP[0,201]                   (GET MACHINE X COORDINATE)
  G91 G01 X-[#108]                     (back off 1/4 the probing distance)
  #106 = [#104+[[#2/abs[#2]]*#105]]    (current position +/- probe radius)
+ @996 = #106
 
  (safety check for inspection variable)
  IF[#9 == #0]
@@ -50,17 +51,6 @@ IF[R_SKIP[0,1] == 1]
    W_G53G59_COOR[0,#1,1,#106]
  ELSE
    W_G54EXP_COOR[0,#114,1,#106]
- END_IF
-
-#150 = TIME[2];
-#151 = TIME[3];
-#152 = TIME[4];
-
- (simple inspection reporting to a file)
- IF[#9 == 1]
-  OPEN[0,1,"Probe_Inspection_Report_#151_#152_#150"];
-  PRINT["PROBED X POINT: #106"];
-  CLOSE[];
  END_IF
 
 ELSE

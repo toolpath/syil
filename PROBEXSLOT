@@ -104,17 +104,6 @@ IF[#17>0]
  MENU["INSPECTION REPORT","RESULTS","",1];
 END_IF
 
-#150 = TIME[2];
-#151 = TIME[3];
-#152 = TIME[4];
-
-(simple inspection reporting to a file)
-IF[#9 == 1]
- OPEN[0,1,"Probe_Inspection_Report_#151_#152_#150"];
- PRINT["X SLOT MEASURED LENGTH: #107"];
- CLOSE[];
-END_IF
-
 N1
 
 G90
