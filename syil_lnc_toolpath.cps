@@ -60,7 +60,7 @@ properties = {
   useSubroutineCycles: false, // generates subroutines for cycle operations on same holes
   useRigidTapping: "yes", // output rigid tapping block
   multiaxislocking: false, // Use M11 Lock and M10 Unlock
-  useAAxis: true, // Output code with A Axis included
+  useAAxis: false, // Output code with A Axis included
   useInverseTime: false, // Use inverse time on multi axis moves
   useG53saferetract: false, // Uses G53 for safe retract instead of G28
   g53homeX: 0, // G53 Safe retract for X plane
@@ -70,7 +70,13 @@ properties = {
   TCposX: 0, // Toolchange Position On X Axis
   TCposY: 0, // Toolchange Position On Y Axis
   EnableZeroPointCompensation: false,
-};
+  Ra: 0,// allows an angle to be input on the post page JT 04/mar/2024
+  ProbeIgnoreg68: false, //Allows the probe to ignore a G68 command JT 04/mar/2024
+  CORX: 0,// allows an angle to be input on the post page JT 04/mar/2024
+  CORY: 0,// allows an angle to be input on the post page JT 04/mar/2024
+  Coordinaterotation: true //G68 sets a radio button state JT 04/mar/2024
+  
+  };
 
 // user-defined property definitions
 propertyDefinitions = {
@@ -106,6 +112,11 @@ propertyDefinitions = {
     ]
   },
   multiaxislocking: {title:"Use M10/M11 Rotational Axis Lock", description:"Unlock and Lock A, B and C Axis using M10/M11 Command.", group:2, type:"boolean"},
+  Coordinaterotation: { title: "Use G68", description: "Turns on G68 to out put roatation.", group: 6, type: "boolean" }, //JT4/mar/2024
+  ProbeIgnoreg68: {title:"Probe to ignore G68 rotation commands", description:"Makes the probe use a normal coordinate system. So you can probe then use the probes output to G68 shift.", group:6, type:"boolean"},//JT 4/mar/24
+  Ra: { title: "Angle to rotate", description: "Angle to rotate using G68", group: 6, type: "number" },//JT 4/mar/24
+  CORX: { title: "X Center of rotation", description: "X Coordinate to rotate around using G68", group: 6, type: "number" },//JT 4/mar/24
+  CORY: {title:"Y center of rotation", description:"Y Coordinate to rotate using G68", group:6, type:"number"},//JT 4/mar/24
   useAAxis: {title:"Output A Axis", description:"Select 'No' for 3 axis machining only, without A00.", group:2, type:"boolean"},
   useInverseTime: {title:"Use Inverse Time Feedrate", description:"Use Inverse Time Feed On Multi Axis Moves. Select 'No' for FPM/DPM Feedrates.", group:2, type:"boolean"},
   useG53saferetract: {title:"Use G53 for Retract and Home", description:"Use G53 machine coordinates instead of G28 for retraction and homing.", group:3, type:"boolean"},
@@ -1161,9 +1172,11 @@ function onSection() {
     }
     forceWorkPlane();
   }
-     
+  var wcsCall = false; //JT adding variable for conditional statement
+  
   if (workOffset != currentWorkOffset) {
     writeBlock(currentSection.wcs);
+    wcsCall = true;  //JT above statement makes this true
     currentWorkOffset = workOffset;
   }
 
@@ -1174,6 +1187,31 @@ function onSection() {
   if (g68RotationMode != 0 && (insertToolCall || gRotationModal.getCurrent() == 69)) {
     setProbingAngle();
   }
+  
+  if (properties.Coordinaterotation && wcsCall && properties.ProbeIgnoreg68) {
+    if (tool.number == 30) {
+        // Do not write the block
+        //console.log("Conditions met, but currentTool is 30. Not writing the block.");
+    } else {
+        // Write the block
+        //console.log("Conditions met, currentTool is not 30. Writing the block...");
+        writeBlock(gFormat.format(68), xOutput.format(properties.CORX), yOutput.format(properties.CORY), ('R')+(properties.Ra))
+    }
+  } else if (properties.Coordinaterotation && wcsCall) {
+    // Write the block
+    //console.log("g68 and wcs conditions met. Writing the block...");
+    writeBlock(gFormat.format(68), xOutput.format(properties.CORX), yOutput.format(properties.CORY), ('R')+(properties.Ra))
+  } else {
+    // Conditions not met
+    //console.log("Conditions not met. Not writing the block.");
+  }
+  //JT 4/mar/2024 conditional logic to ignore probe
+
+
+  //if (properties.Coordinaterotation && wcsCall) {
+  //  writeBlock(gFormat.format(68), xOutput.format(properties.CORX), yOutput.format(properties.CORY), ('R')(properties.Ra))
+ // }
+      //JT
 
   // set coolant after we have positioned at Z
   setCoolant(tool.coolant);
@@ -2832,7 +2870,13 @@ function onClose() {
   setSmoothing(false);
   zOutput.reset();
 
-  setWorkPlane(new Vector(0, 0, 0)); // reset working plane
+  if (properties.useAAxis) {
+    writeBlock(mFormat.format(11)); //JT
+    writeBlock('A0'); //JT
+    //setWorkPlane(new Vector(0, 0, 0)); // reset working plane
+    writeBlock(mFormat.format(10)); //JT commented out line above and used fixed calls with an if statement as the old one worked counter to what was selected.
+  }
+
   
   if (isG54x4Used) {
     writeBlock(gFormat.format(54.4), "P0");
