@@ -24,8 +24,8 @@ W_TOOL_DATA[0,#100,3,0]    // store tool diameter
 G65 "PROBEXWEB" A0 B#1 C#3 Q0 
 G65 "PROBEYWEB" A0 B#2 C#3 Q0 
 
-#131 = @998 (stored value of the measured X distance
-#132 = @999 (stored valued of the measured Y distance
+#131 = @998 // stored value of the measured X distance
+#132 = @999 // stored valued of the measured Y distance
 
 #133 = #1-#131                // error in x
 #134 = #2-#132                // error in y
