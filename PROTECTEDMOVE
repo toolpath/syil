@@ -1,42 +1,42 @@
-(Copyright 2024 Toolpath Labs Inc., Justin Gray)
+// Copyright 2024 Toolpath Labs Inc., Justin Gray
 
-(PROTECTED ABSOLUTE MOVE)
+// PROTECTED ABSOLUTE MOVE
 
 
-(X #24-> ABSOLUTE X POSITION TO MOVE TO)
-(Y #25-> ABSOLUTE X POSITION TO MOVE TO)
-(Z #26-> ABSOLUTE X POSITION TO MOVE TO)
+// X #24-> ABSOLUTE X POSITION TO MOVE TO
+// Y #25-> ABSOLUTE X POSITION TO MOVE TO
+// Z #26-> ABSOLUTE X POSITION TO MOVE TO
 
-(load probe config)
+// load probe config
 G65 "PROBECONFIG"
 
 
-#100 = @100               (TOOL NUMBER PROVIDED BY PROBECONFIG MACRO)
-#103 = @103               (FEED SPEED PROVIDED BY PROBECONFIG MACRO)
+#100 = @100               // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
+#103 = @103               // FEED SPEED PROVIDED BY PROBECONFIG MACRO
 
 
-#120=R_SYS_INFO[0,2] (CURRENT TOOL NUMBER)
+#120=R_SYS_INFO[0,2] // CURRENT TOOL NUMBER
 
-(NOTE: #0 IS ALWAYS VACANT, SO YOU CAN CHECK AGAINST IT TO SEE IF AN ARGUMENT WAS PASSED)
+// NOTE: #0 IS ALWAYS VACANT, SO YOU CAN CHECK AGAINST IT TO SEE IF AN ARGUMENT WAS PASSED
 
 G90
-IF[#24==#0 && #25==#0 && #26!=#0] (Z ONLY)
+IF[#24==#0 && #25==#0 && #26!=#0] // Z ONLY
     G31 P2 Z[#26] F#103  
-ELSEIF[#24!=#0 && #25==#0 && #26==#0] (X ONLY)
+ELSEIF[#24!=#0 && #25==#0 && #26==#0] // X ONLY
     G31 P2 X[#24] F#103  
-ELSEIF[#24==#0 && #25!=#0 && #26==#0] (Y ONLY)
+ELSEIF[#24==#0 && #25!=#0 && #26==#0] // Y ONLY
     G31 P2 Y[#25] F#103  
-ELSEIF[#24!=#0 && #25==#0 && #26!=#0] (X + Z)
+ELSEIF[#24!=#0 && #25==#0 && #26!=#0] // X + Z
     G31 P2 X[#24] Z[#26] F#103  
-ELSEIF[#24==#0 && #25!=#0 && #26!=#0] (Y + Z)
+ELSEIF[#24==#0 && #25!=#0 && #26!=#0] // Y + Z
     G31 P2 Y[#25] Z[#26] F#103  
-ELSEIF[#24!=#0 && #25!=#0 && #26==#0] (X + Y)
+ELSEIF[#24!=#0 && #25!=#0 && #26==#0] // X + Y
     G31 P2 X[#24] Y[#25] F#103  
-ELSEIF[#24!=#0 && #25!=#0 && #26!=#0] (X+ Y + Z)
+ELSEIF[#24!=#0 && #25!=#0 && #26!=#0] // X+ Y + Z
     G31 P2 X[#24] Y[#25] Z[#26] F#103  
 END_IF
 
-(Error Checking)
+// Error Checking
 IF[R_SKIP[0,1] == 1]
     ALARM["ERROR:  PROTECTED MOVE TRIGGERED PROBE - UNEXPECTED OBSTACLE "]
 END_IF

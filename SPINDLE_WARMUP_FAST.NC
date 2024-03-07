@@ -1,4 +1,4 @@
-(Copyright 2024 Toolpath Labs Inc., Justin Gray)
+// Copyright 2024 Toolpath Labs Inc., Justin Gray
 
 T99 M6;
 

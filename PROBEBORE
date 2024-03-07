@@ -1,57 +1,57 @@
-(Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith)
+// Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
 
-(PROBEBORE)
-(Description: Probe a bore in X and Y)
-(Initial Coding: Justin Gray)
-(Modified 1/14/2024: Joshua Smith)
-(Simplified WCS extended number math, added probe error checking, added probe inspection report)
-(#1 is the work coordinate system to store offsets in)
-(#2 is the expected DIAMETER)
-(#9 print results enabled by fusion360)
-(#17 turns on inspection report on/off: 0 leaves it off (default); 1 turns it on )
-(#19 oversize tolorance)
-(#20 enable oversize check)
+// PROBEBORE
+// Description: Probe a bore in X and Y
+// Initial Coding: Justin Gray
+// Modified 1/14/2024: Joshua Smith
+// Simplified WCS extended number math, added probe error checking, added probe inspection report
+// #1 is the work coordinate system to store offsets in
+// #2 is the expected DIAMETER
+// #9 print results enabled by fusion360
+// #17 turns on inspection report on/off: 0 leaves it off ; 1 turns it on ; it is off by default
+// #19 oversize tolorance
+// #20 enable oversize check
 
-(important local variables)
-#130 = @101             (TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO)
+// important local variables
+#130 = @101             // TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO
 
-(safety check for inspection variable)
+// safety check for inspection variable
 IF[#9 == #0]
  #9 = 0
 END_IF
 
 IF[#9>0]
- (call with I=2 to stop sub macro file i/o)
- (calling our slot macros the first time centers probe)
+ // call with I=2 to stop sub macro file i/o
+ // calling our slot macros the first time centers probe
  G65 "PROBEXSLOT" A#1 B#2 I2 Q0 R#18 S#19
  G65 "PROBEYSLOT" A#1 B#2 I2 Q0 R#18 S#19
 
- (calling our slot macros a second time gives an accurate inspection)
+ // calling our slot macros a second time gives an accurate inspection
  G65 "PROBEXSLOT" A#1 B#2 I2 Q0 R#18 S#19
  G65 "PROBEYSLOT" A#1 B#2 I2 Q0 R#18 S#19
 ELSE
- (calling our slot macros the first time centers probe)
+ // calling our slot macros the first time centers probe
  G65 "PROBEXSLOT" A#1 B#2 I0 Q0 R#18 S#19
  G65 "PROBEYSLOT" A#1 B#2 I0 Q0 R#18 S#19
 
- (calling our slot macros a second time gives an accurate inspection)
+ // calling our slot macros a second time gives an accurate inspection
  G65 "PROBEXSLOT" A#1 B#2 I0 Q0 R#18 S#19
  G65 "PROBEYSLOT" A#1 B#2 I0 Q0 R#18 S#19
 END_IF
 
 
-(simple inspection reporting)
+// simple inspection reporting
 IF[#17>0]
 
-(average Diameter calculation)
-(@999 and @998 are set in the web macros)
+// average Diameter calculation
+// @999 and @998 are set in the web macros
 #131 = @998
 #132 = @999
 #133 = [#131 + #132]/2
 
  MENU_ADD["Part Diameter In X: #131",""]; 
  MENU_ADD["Part Diameter In Y: #132",""];
- MENU_ADD["AVG Diameter: #133",""];  (THE WORD AVERAGE IS TO LONG FOR THE MENU)
+ MENU_ADD["AVG Diameter: #133",""];  // THE WORD AVERAGE IS TO LONG FOR THE MENU
  MENU["INSPECTION REPORT","RESULTS","",1];
  
 END_IF
@@ -60,7 +60,7 @@ END_IF
 #151 = TIME[3];
 #152 = TIME[4];
 
-(simple inspection reporting to a file)
+// simple inspection reporting to a file
 IF[#9 == 1]
  OPEN[0,1,"Probe_Inspection_Report_#151_#152_#150"];
  PRINT["PROBED CIRCULAR BORE DIAMETER IN X: @998"];
