@@ -520,27 +520,27 @@ Example MDI Command: G65 "PROBEINSIDECORNER" A54 B1 C.5
 
 WCS override provides a known coordinate system for the probe to safely drive to a desired probing location. The override offset specifies which work offset should be used to drive the probe. In the below example, the value 6 corresponds to G59. WCS override must be enabled when using out of postion checks or zero point compensation.
 
-![WcsOverRide](images/WCS_OVERRIDE.png)
+![WcsOverRide](images/WCS_OVERRIDE.PNG)
 
 Out of postion checks are supported with all probing routines except for inside/outside corners. WCS override must be enabled when using them to provide an expected position. The expected position will be in reference to the chosen override offset and to your fusion360 model. The delta between the expected position and the probe postion is compared to the tolerance specified in the geometry tab. The program will alarm out if the tolerance is not within spec. 
 
-![OutOfPosition](images/out_of_position.png)
+![OutOfPosition](images/out_of_position.PNG)
 
 Wrong size checks are supported for PROBERECTANGULARBOSS, PROBEPOCKET, PROBECIRCULARBOSS, PROBEBORE, PROBEXWEB, PROBEYWEB, PROBEXSLOT and PROBEYSLOT. The tolerance is once again chosen in the geometry tab of the probing routine in fusion360. The measured length, width or diameter is compared to the user specifed tolerance. If the tolerance is out spec, the program will alarm out. 
 
-![WrongSize](images/wrong_size.png)
+![WrongSize](images/wrong_size.PNG)
 
 As mentioned above, the tolerances are specifed in the probing routine geometry tab. The below example is provided to make it clear.  
 
-![Tolerance](images/position_tolerance.png)
+![Tolerance](images/position_tolerance.PNG)
 
 Print results is used to support basic inspection. When enabled, the probing routines WILL NOT ZERO THE WCS. They will instead save the probed measurements to a Probe_Inspection_report file. The file is date coded and all probing routines will open and append to that file. If you run a program 100 times in a day with the feature enabled, you'll get a file with 100 measurements in it. The file can also be deleted or renamed after each run if you wish to keep measurements seperate. Unfortunately, the LNC macros don't support passing in a string as an argument, so this is our approach for now. It could become more robust in the future. Print results is very useful for taking measurements after machining. The inside and outside corner routines are not supported, but all the other routines are. Increment component is not supported as well.
 
-![PrintResults](images/print_results.png)
+![PrintResults](images/print_results.PNG)
 
 Zero point compensation is supported and enabled via the post as shown below. Zero point compensation makes probing in fusion easier by allowing you to use a fixed zero point as the work WCS in every setup. When we say zero point, we're reffering to a fixed point on vise or zero point fixture that never moves. All of our operations are in reference to that zero point. The compensation functions by calculating the XY delta between where your workpiece is and where it's expected to be in reference to the zero point. After probing, the work WCS becomes the zero point offset plus the calculated delta. For example if your work WCS is G54, G54 becomes G59 plus the probed XY deltas. Z doesn't change and is always equal to the zero point Z. WCS override must be enabled when using zero point compensation. PROBERECTANGULARBOSS, PROBEPOCKET, PROBECIRCULARBOSS and PROBEBORE all support zero point compensation.  
 
-![ZeroPointCompensation](images/zero_point_comp.png)
+![ZeroPointCompensation](images/zero_point_comp.PNG)
 
 ## SAFESPIN macro 
 

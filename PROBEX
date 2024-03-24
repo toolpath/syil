@@ -1,64 +1,55 @@
-// Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
+//Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
 
+//PROBEX
+//Description: Probe in X from the left or right side
+//Initial Coding: Justin Gray
+//Modified 1/14/2024: Joshua Smith
+//Simplified WCS extended number math, added probe error checking, added probe distance argument
+//Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset G54.5
+//Argument B -> #2 is the desired probing distance. Enter a positive value to probe on the left side and a negative value to probe on the right side
+//Argument I -> #9 print results enabled by fusion360
 
-// PROBEX
-// Description: Probe in X from the left or right side
-// Simplified WCS extended number math, added probe error checking, added probe distance argument
-// Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset// G54.5
-// Argument B -> #2 is the desired probing distance. Enter a positive value to probe on the left side and a negative value to probe on the right side
-// Argument I -> #9 print results enabled by fusion360
-
-// load probe config
+//load probe config
 G65 "PROBECONFIG"
 
-// important local variables
-#111 = @104               // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
-#112 = @105               // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
-#105 = @102               // TOOL RADIUS PROVIDED BY PROBECONFIG MACRO
-#108 = @108*[#2/ABS[#2]]  // PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO * the sign -- +1 or -1 -- of probe distance
+//important local variables
+#111 = @104               //FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#112 = @105               //SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#105 = @102               //TOOL RADIUS PROVIDED BY PROBECONFIG MACRO
+#108 = @108*[#2/ABS[#2]]  //PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO * the sign +1 or -1 of probe distance
 
 
-// CALCULATE EXTENDED WCS NUMBER
-// FIX is a round down function and MOD is modulo
+//CALCULATE EXTENDED WCS NUMBER
+//FIX is a round down function and MOD is modulo
 #114 = MOD[#1,FIX[#1]]*10 
 
-// Probe X the desired distance and at fast feed
+//Probe X the desired distance and at fast feed
 G31 G91 P2 X[#2] F#111        
 
-// Check that the probe has triggered
+//Check that the probe has triggered
 IF[R_SKIP[0,1] == 1] 
 
- G91 G01 X-[#108]                     // back off 1/4 the probing distance
+ G91 G01 X-[#108]                     //back off 1/4 the probing distance
  FIX_CUT_OR_ON
- G31 G91 P2 X[#2] F#112               // Probe X the desired distance at slow feed
+ G31 G91 P2 X[#2] F#112               //Probe X the desired distance at slow feed
  FIX_CUT_OR_OFF
- #104=R_SKIP[0,201]                   // GET MACHINE X COORDINATE
- G91 G01 X-[#108]                     // back off 1/4 the probing distance
- #106 = [#104+[[#2/abs[#2]]*#105]]    // current position +/- probe radius
+ #104=R_SKIP[0,201]                   //GET MACHINE X COORDINATE
+ G91 G01 X-[#108]                     //back off 1/4 the probing distance
+ #106 = [#104+[[#2/abs[#2]]*#105]]    //current position +/- probe radius
+ @996 = #106
 
- // safety check for inspection variable
+ //safety check for inspection variable
  IF[#9 == #0]
   #9 = 0
  END_IF
 
- // STORE X OFFSET FOR WCS ZERO
+ //STORE X OFFSET FOR WCS ZERO
  IF [#1 < 53 || #1 == #0 || #9 > 0]
-  // DO NOT SET ANYTHING INTO WCS
+  //DO NOT SET ANYTHING INTO WCS
  ELSEIF [#114 < 1]  
    W_G53G59_COOR[0,#1,1,#106]
  ELSE
    W_G54EXP_COOR[0,#114,1,#106]
- END_IF
-
-#150 = TIME[2];
-#151 = TIME[3];
-#152 = TIME[4];
-
- // simple inspection reporting to a file
- IF[#9 == 1]
-  OPEN[0,1,"Probe_Inspection_Report_#151_#152_#150"];
-  PRINT["PROBED X POINT: #106"];
-  CLOSE[];
  END_IF
 
 ELSE
