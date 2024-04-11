@@ -406,10 +406,8 @@ function onRotateAxes(x,y,z,a,b,c){}  //  THIS IS A NULL OP
 function defineMachine() {
   var useTCP = true;
   if (false) { // note: setup your machine here
-    var aAxis = createAxis({coordinate:0, table:true, axis:[1, 0, 0], range:[-120, 120], preference:1, tcp:useTCP});
-    var cAxis = createAxis({coordinate:2, table:true, axis:[0, 0, 1], range:[-360, 360], preference:0, tcp:useTCP});
-    machineConfiguration = new MachineConfiguration(aAxis, cAxis);
-
+    var aAxis = createAxis({coordinate:0, table:true, axis:[1, 0, 0], cyclic:true, preference:1, tcp:useTCP});
+    machineConfiguration = new MachineConfiguration(aAxis);
     setMachineConfiguration(machineConfiguration);
     if (receivedMachineConfiguration) {
       warning(localize("The provided CAM machine configuration is overwritten by the postprocessor."));
