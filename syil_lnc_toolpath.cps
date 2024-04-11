@@ -398,6 +398,11 @@ function getBodyLength(tool) {
   return tool.bodyLength + tool.holderLength;
 }
 
+// REWIND NOT NEEDED
+function onMoveToSafeRetractPosition(){}  // THIS IS A NULL OP
+function onReturnFromSafeRetractPosition(x,y,z){}  // THIS IS A NULL OP
+function onRotateAxes(x,y,z,a,b,c){}  //  THIS IS A NULL OP
+
 function defineMachine() {
   var useTCP = true;
   if (false) { // note: setup your machine here
@@ -432,6 +437,9 @@ function defineMachine() {
       machineConfiguration.setRewindStockExpansion(stockExpansion);
     }
 
+
+
+  
     // multi-axis feedrates
     if (machineConfiguration.isMultiAxisConfiguration()) {
       machineConfiguration.setMultiAxisFeedrate(
