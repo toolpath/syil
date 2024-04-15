@@ -93,6 +93,10 @@ _Figure 2. Indicating Probe_
 ### Probe Length Calibration
 
 Length calibration is done with the `CALIBRATEPROBEZ` macro. 
+
+To use this macro, you need to first toolchange to your probe tool (i.e. the tool number you set as your probe in the `PROBECONFIG` file.). 
+The macro assumes you are on that tool number, even if you are using your gauge tool. 
+
 The first time you use this macro, you will start by setting the calibration height of your reference artifact. 
 The artifact can be nearly anything for this, as it's precise dimensions don't matter. 
 Its common to choose either a 123 block or a gauge ring. 
