@@ -71,7 +71,7 @@ Example MDI Command: G65 "PROBEX" A54. B2.
 
 Example MDI Command: G65 "PROBEX" A54.5 B2.
 
-![macro_argument_to_local_variables](images/macro_argument_to_local_variables.png)
+![lnc_macro_variables](images/lnc_macro_variables.png)
 
 _Figure 1. Macro Argument to local variable mapping_
 
