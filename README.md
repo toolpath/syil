@@ -67,9 +67,9 @@ Macros are called with G65 as opposed to M codes to speed up execution. G65 is f
 
 _Table 1: Macro Syntax and Example_
 
-Example MDI Command: G65 "PROBEX" A54 B2
+Example MDI Command: G65 "PROBEX" A54. B2.
 
-Example MDI Command: G65 "PROBEX" A54.5 B2
+Example MDI Command: G65 "PROBEX" A54.5 B2.
 
 ![lnc_macro_variables](images/lnc_macro_variables.png)
 
@@ -242,9 +242,9 @@ _Figure 4. Probe X Routine_
 
 _Table 5. Probe X Syntax_
 
-Example MDI Command To Probe Right Side: G65 "PROBEX" A54 B-1
+Example MDI Command To Probe Right Side: G65 "PROBEX" A54. B-1
 
-Example MDI Command To Probe Left Side: G65 "PROBEX" A54 B1
+Example MDI Command To Probe Left Side: G65 "PROBEX" A54. B1
 
 ### PROBEY
 
@@ -264,9 +264,9 @@ _Figure 5. Probe Y Routine_
 
 _Table 6. Probe Y Syntax_
 
-Example MDI Command To Probe the Front : G65 "PROBEY" A54.2 B1
+Example MDI Command To Probe the Front : G65 "PROBEY" A54.2 B1.
 
-Example MDI Command To Probe the Back  : G65 "PROBEY" A54.2 B-1
+Example MDI Command To Probe the Back  : G65 "PROBEY" A54.2 B-1.
 
 
 ### PROBEZ
@@ -286,7 +286,7 @@ _Figure 6. Probe Z Routine_
 
 _Table 7. Probe Z Syntax_
 
-Example MDI Command: G65 "PROBEZ" A54 B-.5
+Example MDI Command: G65 "PROBEZ" A54. B-.5
 
 
 ### PROBEXWEB
@@ -308,9 +308,9 @@ _Figure 7. Probe X Web Routine_
 
 _Table 8. Probe X Web Syntax_
 
-Example MDI Command Without Inspection Report: G65 "PROBEXWEB" A54 B3 C-.5 Q0
+Example MDI Command Without Inspection Report: G65 "PROBEXWEB" A54. B3. C-.5 Q0.
 
-Example MDI Command With Inspection Report: G65 "PROBEXWEB" A54 B3 C-.5 Q1
+Example MDI Command With Inspection Report: G65 "PROBEXWEB" A54. B3. C-.5 Q1.
   
 ### PROBEYWEB
 
@@ -331,9 +331,9 @@ _Figure 8. Probe Y Web Routine_
 
 _Table 9. Probe Y Web Syntax_
 
-Example MDI Command Without Inspection Report: G65 "PROBEYWEB" A54 B2 C-.5 Q0
+Example MDI Command Without Inspection Report: G65 "PROBEYWEB" A54. B2. C-.5 Q0.
 
-Example MDI Command With Inspection Report: G65 "PROBEYWEB" A54 B2 C-.5 Q1
+Example MDI Command With Inspection Report: G65 "PROBEYWEB" A54. B2. C-.5 Q1.
 
 
 ### PROBECIRCULARBOSS
@@ -355,9 +355,9 @@ _Figure 9. Probe Circular Boss Routine_
 
 _Table 10. Probe Circular Boss Syntax_
 
-Example MDI Command Without Inspection Report: G65 "PROBECIRCULARBOSS" A54 B2 C-.5 Q0
+Example MDI Command Without Inspection Report: G65 "PROBECIRCULARBOSS" A54. B2. C-.5 Q0.
 
-Example MDI Command With Inspection Report: G65 "PROBECIRCULARBOSS" A54 B2 C-.5 Q1
+Example MDI Command With Inspection Report: G65 "PROBECIRCULARBOSS" A54. B2. C-.5 Q1.
   
 ### PROBEBORE
 
@@ -377,9 +377,9 @@ _Figure 10. Probe Bore Routine_
 
 _Table 11. Probe Bore Syntax_
 
-Example MDI Command Without Inspection Reporting: G65 "PROBEBORE" A54 B1 Q0
+Example MDI Command Without Inspection Reporting: G65 "PROBEBORE" A54. B1. Q0.
 
-Example MDI Command With Inspection Reporting: G65 "PROBEBORE" A54 B1 Q1
+Example MDI Command With Inspection Reporting: G65 "PROBEBORE" A54. B1. Q1.
 
   
 ### PROBERECTANGULARBOSS
@@ -403,9 +403,9 @@ _Figure 11. Probe Rectangular Boss Routine_
 
 _Table 12. Probe Rectangular Boss Syntax_
 
-Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54 B3 C2 D-.5 Q0
+Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54. B3. C2. D-.5 Q0.
 
-Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54 B3 C2 D-.5 Q1
+Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54. B3. C2. D-.5 Q1.
 
 
 ### PROBEPOCKET
@@ -428,9 +428,9 @@ _Figure 12. Probe Pocket Routine_
 
 _Table 13. Probe Rectangular Pocket Syntax_
 
-Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54 B2 C3 Q0
+Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54. B2. C3. Q0.
 
-Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54 B2 C3 Q1
+Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54. B2. C3. Q1.
 
   
 ### PROBEXSLOT
@@ -451,9 +451,9 @@ _Figure 13. Probe Slot Routine_
 
 _Table 14. Probe Slot Syntax_
 
-Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 Q0
+Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54. B3. Q0.
 
-Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54 B3 Q1
+Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54. B3. Q1.
   
 ### PROBEYSLOT
 
@@ -473,9 +473,9 @@ _Figure 14. Probe Slot Routine_
 
 _Table 15. Probe Slot Syntax_
 
-Example MDI Command Without Inspection Reporting: G65 "PROBESLOTY" A54 B3 Q0
+Example MDI Command Without Inspection Reporting: G65 "PROBESLOTY" A54. B3. Q0.
 
-Example MDI Command With Inspection Reporting: G65 "PROBESLOTY" A54 B3 Q1
+Example MDI Command With Inspection Reporting: G65 "PROBESLOTY" A54. B3. Q1.
 
   
 ### PROBEOUTSIDECORNER
@@ -497,7 +497,7 @@ _Figure 15. Probe Outside Corner Routine_
 
 _Table 16. Probe Outer Corner Syntax_
 
-Example MDI Command: G65 "PROBEOUTSIDECORNER" A54 B1 C1 D.5
+Example MDI Command: G65 "PROBEOUTSIDECORNER" A54. B1. C1 D.5
 
   
 ### PROBEINSIDECORNER
@@ -518,7 +518,7 @@ _Figure 16. Probe Inside Corner Routine_
 
 _Table 17. Probe Inner Corner Syntax_
 
-Example MDI Command: G65 "PROBEINSIDECORNER" A54 B1 C.5
+Example MDI Command: G65 "PROBEINSIDECORNER" A54. B1. C.5
 
 ### SUPPORTED FUSION 360 PROBING FEATURES
 
