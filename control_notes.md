@@ -9,8 +9,11 @@
 - password: 123456
 - Port: 2100
 
+# Parameters 
 
-# 4th Axis Drive Parameters
+- 7000 - 7011: Tool Table
+
+# Silver CNC 4th Axis Drive Parameters
 
 To save a parameter you need to hold down the far left button, then it will say DONE
 
