@@ -222,6 +222,24 @@ The toolsetter trigger height will be saved to the tool height offset of tool 19
 
 Example MDI Command: G65 "CALIBRATETOOLSET"
 
+### FINDCOR
+
+This macro uses probing with a 4th axis and a reference artifact to compute the center of rotation (COR). 
+It has two run modes: one where you set the probing location, and once where the location is already known and you're just recalibrating the COR. 
+
+| G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
+| --- | --- | --- | --- | --- |
+| G65 | "FINDCOR" | A | W | S |
+
+The `A` argument lists the WCS to save the COR into. 
+The `W` argument is optional, but sets the width of the reference artifact. The default value is 1.0. 
+The `S` argument is optional, and determines which mode the macro runs in. 
+If not provided, then the macro uses the saved probing location to re-find the COR regardless of where the A axis or probe is located when starting the macro. 
+If provided, then the probe's initial location is saved before running the macro. 
+
+Example MDI Command to run in saving mode: G65 "FINDCOR" A58. S1.0
+Example MDI Command to run in re-find mode with a larger artifact: G65 "FINDCOR" A58. W2.0
+
 ## Probing Routines
 
 ### PROBEX
