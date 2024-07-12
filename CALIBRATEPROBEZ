@@ -5,7 +5,7 @@
 //   AND MANUALLY JOGGED UP TILL YOUR REFERENCE ARTIFACT CAN JUST BARELY SLIDE UNDER THE TOOL.
 //   THE MACRO WILL SAVE THE XY LOCATION FOR FUTURE USE AND STORE THE REFERENCE HEIGHT OFFSET
 
-// Argument A -> turns on/off full calibration: default is full calibration
+// Argument A -> turns on/off full calibration: default is quick calibration
 
 // load probe config
 G65 "PROBECONFIG"
