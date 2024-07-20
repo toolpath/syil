@@ -24,7 +24,7 @@ G65 "PROBECONFIG"
 
 // CALCULATE EXTENDED WCS NUMBER
 // FIX removes any decimal value
-#114 = [[#1 - FIX[#1]] * 10]
+#114 = ROUND[[#1 - FIX[#1]] * 10] 
 
 
 IF[#4== 1]
