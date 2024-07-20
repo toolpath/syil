@@ -21,7 +21,7 @@ G65 "PROBECONFIG"
 
 //CALCULATE EXTENDED WCS NUMBER
 //FIX is a round down function and MOD is modulo
-#114 = MOD[#1,FIX[#1]]*10 
+#114 = ROUND[[#1 - FIX[#1]] * 10] 
 
 //Probe X the desired distance and at fast feed
 G31 G91 P2 X[#2] F#111        

@@ -10,8 +10,8 @@ G65 "PROBECONFIG"
 
 // CALCULATE EXTENDED WCS NUMBER
 // FIX is a round down function and MOD is modulo
-#114 = [[#1 - FIX[#1]] * 10]
-#115 = [[#2 - FIX[#2]] * 10]
+#114 = ROUND[[#1 - FIX[#1]] * 10] 
+#115 = ROUND[[#2 - FIX[#2]] * 10]
 
   // Get Argument B WCS
  IF [ #2 < 53 || #2 == #0]
