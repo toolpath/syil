@@ -224,6 +224,28 @@ The toolsetter trigger height will be saved to the tool height offset of tool 19
 
 Example MDI Command: G65 "CALIBRATETOOLSET"
 
+### FINDCOR 
+
+This macro probes a 123 block held in a vise (or other rectangular prismatic artifact) to find the center of rotation of a 4th axis. 
+
+This macro assumes that the A0 of your 4th axis is already calibrated. 
+You do not need to have the 4th axis set at A0 when you call the macro, 
+but it is important that the artifact is square to the X, Y, and Z axes. 
+
+If its not aligned in X, you  need to re tram your 4th axis. 
+If its not aligned in Y/Z when at A0, then you need to re zero your rotational axis so it is. 
+The artifact does not need to be perfectly centered around the COR, though close helps. 
+
+There are two required arguments for this macro. 
+`A` is the WCS to save the COR into. 
+`W` is the approximate width of the artifact along the Y direction. 
+
+| G Code | "Macro Name" | 
+| --- | --- | --- | --- |
+| G65 | "FINDCOR" | A | W |
+
+Example MDI Command: G65 "FINDCOR" A54.4 W1.0
+
 ## Probing Routines
 
 ### PROBEX
