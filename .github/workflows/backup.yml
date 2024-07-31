@@ -1,0 +1,34 @@
+name: Backup repo to an S3 bucket
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      # AWS
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::813973446730:role/gh-backup
+          aws-region: us-east-1
+      - id: install-aws-cli
+        uses: unfor19/install-aws-cli-action@v1
+        with:
+          version: 2                         # default
+          verbose: false                     # default
+          arch: amd64                        # allowed values: amd64, arm64
+      # Project
+      - uses: actions/checkout@v4
+        with: 
+          fetch-depth: 0
+      - name: backup
+        run: |
+            cd .. 
+            tar -czvf syil.tar syil
+            aws s3 cp syil.tar s3://toolpath-gh-repo-backup --acl bucket-owner-full-control
+
+      
