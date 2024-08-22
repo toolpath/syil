@@ -70,6 +70,8 @@ properties = {
   TCposX: 0, // Toolchange Position On X Axis
   TCposY: 0, // Toolchange Position On Y Axis
   EnableZeroPointCompensation: false,
+  CustomOnOpenGcode: "",
+  CustomOnCloseGcode: "",
 };
 
 // user-defined property definitions
@@ -116,6 +118,8 @@ propertyDefinitions = {
   TCposX: {title:"Toolchange Position X Axis - Machine Coordinate", description:"Machine Coordinate for toolchange on X Axis.", group:4, type:"number"},
   TCposY: {title:"Toolchange Position Y Axis - Machine Coordinate", description:"Machine Coordinate for toolchange on Y Axis.", group:4, type:"number"},
   EnableZeroPointCompensation: {title:"Enable Zero Point Compensation", description:"Allows probing cycles to compensate for deltas bewteen a probed part and it's expected postition. The WCS after probing becomes the override origin translated by the computed deltas.", group:5, type:"boolean"},
+  CustomOnOpenGcode: {title:"Custom on open G-code", description:"Inserts custom G-code at the beginning of the program", group:6, type:"string"},
+  CustomOnCloseGcode: {title:"Custom on close G-code", description:"Inserts custom G-code at the end of the program", group:7, type:"string"},
 };
 
 // wcs definiton
@@ -473,6 +477,7 @@ function onOpen() {
   writeBlock('@983 = TIME[5]'); //hour
   writeBlock('@984 = TIME[6]'); //minute
   writeBlock('@985 = TIME[7]'); //second
+  writeBlock(properties.CustomOnOpenGcode);
 }
 
 function onComment(message) {
@@ -2960,4 +2965,5 @@ function onClose() {
     write(subprograms);
   }
   writeln("%");
+  writeBlock(properties.CustomOnCloseGcode);
 }
