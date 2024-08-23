@@ -31,6 +31,9 @@ END_IF
 @112 = 100                       // EXTENDED WORKOFFSET TO STORT TOOLSETTER LOCATION
 @114 = .05                       // DEFAULT POSITION TOLERANCE
 
+@115 = 10                       // FAST Tool Probe SPEED in/m, change to match your unit of choice, for metric users start at 254mm
+@116 = 1.5                      // SLOW Tool Probe SPEED in/m, change to match your unit of choice, for metric users start at 38mm
+
 #120=R_SYS_INFO[0,2] // CURRENT TOOL NUMBER
 IF [@100 != #120 && #20==#0] // THE PROBE IS NOT LOADED
     ALARM["ERROR:  PROTECTED MOVE WITHOUT PROBE - CHANGE TO T#100 "]
