@@ -21,7 +21,7 @@ M19                             // ORIENT SPINDLE
 M20
 
 G91
-G31 Z-20 F#101                  // FEED UNTIL INPUT SIGNAL AKA SKIP
+G31 Z-20 F#102                  // FEED UNTIL INPUT SIGNAL AKA SKIP
 G91 G0 Z0.2                     // MOVE UP
 FIX_CUT_OR_ON
 G31 Z-.21 F#103                 // FEED UNTIL SKIP SLOWER
