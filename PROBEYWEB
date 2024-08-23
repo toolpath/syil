@@ -29,7 +29,7 @@ G65 "PROBECONFIG"
 
 //CALCULATE EXTENDED WCS NUMBER
 //FIX removes any decimal value
-#114 = [[#1 - FIX[#1]] * 10] 
+#114 = ROUND[[#1 - FIX[#1]] * 10] 
 
 //probe Y starting from a negative offset and probing in the positive direction
 //MOVE TO -Y SIDE OF THE PART, BEFORE STARTING TO PROBE

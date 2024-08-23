@@ -107,11 +107,13 @@ The important thing is that this reference artifact doesn't change (or you redo 
 | G65 | "CALIBRATEPROBEZ" | A | 
 
 This macro has an optional argument `A`. 
-By default you can call the macro without any arguments, which does a full calibration starting with setting the reference height. 
+By default you can call the macro without any arguments, which does a quick calibration using an stored location/height for the artifact. 
+
+The first time you call it make sure to include the `A` argument and run the full calibration procedure. 
 
 ### Full Probe Z Height Calibration
 
-Example MDI Command: G65 "CALIBRATEPROBEZ"
+Example MDI Command: G65 "CALIBRATEPROBEZ" A1
 
 ![calibrateProbeZ](images/calibrateprobez.png)
 
@@ -133,7 +135,7 @@ Finally it will do a protected move down toward the artifact to calibrate the pr
 
 ### Quick Probe Z Height Calibration
 
-Example MDI Command: G65 "CALIBRATEPROBEZ" A1
+Example MDI Command: G65 "CALIBRATEPROBEZ"
 
 Once you have done the full calibration one time, 
 you can use a quick version of the macro to recalibrate the probe offset without the need to use the master tool. 

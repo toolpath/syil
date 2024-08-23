@@ -4,7 +4,6 @@
 
 // #1 is the tool diameter
 // #2 is the tool angle
-// #3 is one less than number of test locations
 
 #100=R_SYS_INFO[0,2]            // SAVE CURRENT TOOL NUMBER TO #100
 
@@ -13,8 +12,8 @@
 G65 "PROBECONFIG" T#100
 
 
-#104 = @104                     // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
-#105 = @105                     // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#104 = @115                     // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#105 = @116                     // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
 #110=R_TOOL_DATA[0,199,203]     // TOOLSETTER - T199 - REFERENCE HEIGHT
 #112=@112                       // TOOLSETTER EXTENDED WORKOFFSET NUMBER
 
@@ -26,17 +25,14 @@ G54P#112                        // LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100
 
 G90 G0 X[0+#1/2] Y0             // MOVE TO TOOLSETTER + TOOL RADIUS OFFSET
 
-M19 R#2                         // ORIENT SPINDLE TO THE GIVEN ANGLE
+M19 P#2                         // ORIENT SPINDLE TO THE GIVEN ANGLE
 
 G31 Z-20 F#104                  // FEED UNTIL INPUT SIGNAL AKA SKIP
 G91 G0 Z0.2                     // MOVE UP
-M7                              // TURN ON AIR BLAST
-G04 P250                        // WAIT 1/4 SECOND
-M9                              // TURN OFF AIR BLAST
 FIX_CUT_OR_ON
 G31 Z-.21 F#105                 // FEED UNTIL SKIP SLOWER
 FIX_CUT_OR_OFF
-#120=R_MACH_COOR[0,3]           // GET MACHINE Z COORDINATE
+#120= R_SKIP[0,103]           // GET MACHINE Z COORDINATE
 
 // NOTE: LENGTH OF MASTER GAUGE TOOL IS ACOUNTED FOR IN CALIBRATION
 //       MAKE SURE THE CORRECT VALUE IS SET IN PROBECONFIG

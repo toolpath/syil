@@ -18,7 +18,7 @@
 
 //CALCULATE EXTENDED WCS NUMBER
 //FIX removes any decimal value
-#114 = [[#1 - FIX[#1]] * 10]
+#114 = ROUND[[#1 - FIX[#1]] * 10] 
 
 IF[#23==#0] // null check 
     #23 = 1.0 // assume the narrow side of a 123 block
