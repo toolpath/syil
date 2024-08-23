@@ -13,7 +13,7 @@ G65 "PROBECONFIG" T#100
 #109 = @109               // TOOLSETTER - T199 - LENGTH OFFSET
 
 G20                             // INCH
-
+G53 G90 G00 Z0                  // Move the spindle all the way up before xy movement for safety
 G54P100                         // LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100
 G90 X0 Y0                       // MOVE TO TOOLSETTER
 

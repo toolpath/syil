@@ -4,7 +4,6 @@
 
 // #1 is the tool diameter
 // #2 is the tool angle
-// #3 is one less than number of test locations
 
 #100=R_SYS_INFO[0,2]            // SAVE CURRENT TOOL NUMBER TO #100
 
