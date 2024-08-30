@@ -35,6 +35,6 @@ W_TOOL_DATA[0,#100,3,#135]    // store tool diameter
 MENU_ADD["Ruby Diameter Set To: #135",""];  
 MENU["CALIBRATION REPORT","RESULTS","",1];
 
+M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
 G90
-
 M99

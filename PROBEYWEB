@@ -145,6 +145,6 @@ END_IF
 
 N1
 
+M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
 G90
-
 M99
