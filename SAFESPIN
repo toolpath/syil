@@ -17,6 +17,6 @@ IF [#100 == #110] // THE PROBE IS LOADED
 ELSE 
 	S#1 M3
 END_IF
-
+M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
 N1 
 M99

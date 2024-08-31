@@ -24,7 +24,7 @@ G28 G91 Z0.
 G54P#112                        // LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100
 
 G90 G0 X[0+#1/2] Y0             // MOVE TO TOOLSETTER + TOOL RADIUS OFFSET
-
+M20                             // UNLOCK SPINDLE ORIENT
 M19 P#2                         // ORIENT SPINDLE TO THE GIVEN ANGLE
 
 G31 Z-20 F#104                  // FEED UNTIL INPUT SIGNAL AKA SKIP
@@ -50,4 +50,5 @@ W_TOOL_DATA[0,#100,202,0]
 W_TOOL_DATA[0,#100,201,0]
 
 G28 G91 Z0.
+M20                             // UNLOCK SPINDLE ORIENT
 M99
