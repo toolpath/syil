@@ -224,27 +224,23 @@ The toolsetter trigger height will be saved to the tool height offset of tool 19
 
 Example MDI Command: G65 "CALIBRATETOOLSET"
 
-### FINDCOR 
+### FINDCOR
 
-This macro probes a 123 block held in a vise (or other rectangular prismatic artifact) to find the center of rotation of a 4th axis. 
+This macro uses probing with a 4th axis and a reference artifact to compute the center of rotation (COR). 
+It has two run modes: one where you set the probing location, and once where the location is already known and you're just recalibrating the COR. 
 
-This macro assumes that the A0 of your 4th axis is already calibrated. 
-You do not need to have the 4th axis set at A0 when you call the macro, 
-but it is important that the artifact is square to the X, Y, and Z axes. 
+| G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
+| --- | --- | --- | --- | --- |
+| G65 | "FINDCOR" | A | W | S |
 
-If its not aligned in X, you  need to re tram your 4th axis. 
-If its not aligned in Y/Z when at A0, then you need to re zero your rotational axis so it is. 
-The artifact does not need to be perfectly centered around the COR, though close helps. 
+The `A` argument lists the WCS to save the COR into. 
+The `W` argument is optional, but sets the width of the reference artifact. The default value is 1.0. 
+The `S` argument is optional, and determines which mode the macro runs in. 
+If not provided, then the macro uses the saved probing location to re-find the COR regardless of where the A axis or probe is located when starting the macro. 
+If provided, then the probe's initial location is saved before running the macro. 
 
-There are two required arguments for this macro. 
-`A` is the WCS to save the COR into. 
-`W` is the approximate width of the artifact along the Y direction. 
-
-| G Code | "Macro Name" | 
-| --- | --- | --- | --- |
-| G65 | "FINDCOR" | A | W |
-
-Example MDI Command: G65 "FINDCOR" A54.4 W1.0
+Example MDI Command to run in saving mode: G65 "FINDCOR" A58. S1.0
+Example MDI Command to run in re-find mode with a larger artifact: G65 "FINDCOR" A58. W2.0
 
 ## Probing Routines
 
