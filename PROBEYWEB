@@ -42,7 +42,7 @@ IF[R_SKIP[0,1] == 1]
 END_IF
 
 M20                              // UNLOCK SPINDLE ORIENT
-M19 P270                         // ORIENT SPINDLE 270 DEGREES TO KEEP THE POBING POINT THE SAME
+M19 P90                         // ORIENT SPINDLE 90 DEGREES TO KEEP THE POBING POINT THE SAME
 
 //DROP TO PROBING HEIGHT
 G31 G91 P2 Z-#3 F#110
@@ -82,7 +82,7 @@ IF[R_SKIP[0,1] == 1]
 END_IF
 
 M20                              // UNLOCK SPINDLE ORIENT
-M19 P90                          // ORIENT SPINDLE 90 DEGREES TO KEEP THE POBING POINT THE SAME
+M19 P270                         // ORIENT SPINDLE 270 DEGREES TO KEEP THE POBING POINT THE SAME
 
 //Move Z down to probe hight
 G31 G91 P2 Z-#3 F#110             //move back down to probe height
