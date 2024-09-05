@@ -8,6 +8,8 @@ G94 G17 G49 G40 G80
 // load probe config
 G65 "PROBECONFIG" T#100
 
+M19                             // ORIENT SPINDLE
+
 #102 = @115             // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
 #103 = @116             // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
 #109 = @109               // TOOLSETTER - T199 - LENGTH OFFSET
@@ -16,9 +18,6 @@ G20                             // INCH
 G53 G90 G00 Z0                  // Move the spindle all the way up before xy movement for safety
 G54P100                         // LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100
 G90 X0 Y0                       // MOVE TO TOOLSETTER
-
-M19                             // ORIENT SPINDLE
-M20
 
 G91
 G31 Z-20 F#102                  // FEED UNTIL INPUT SIGNAL AKA SKIP
@@ -32,5 +31,5 @@ FIX_CUT_OR_OFF
 W_TOOL_DATA[0,199,203,#120]
 
 G28 G91 Z0.
-
+M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
 M99
