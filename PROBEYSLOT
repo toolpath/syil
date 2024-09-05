@@ -15,6 +15,9 @@
 //load probe config
 G65 "PROBECONFIG"
 
+M20                             // UNLOCK SPINDLE ORIENT
+M19 P90                         // ORIENT SPINDLE 90 DEGREES TO KEEP THE POBING POINT THE SAME
+
 //important local variables
 #100 = @100             //TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
 #110 = @103             //FEED SPEED PROVIDED BY PROBECONFIG MACRO
@@ -48,7 +51,8 @@ FIX_CUT_OR_OFF
 #104=R_SKIP[0,202]                 //GET FIRST MACHINE Y COORDINATE
 G91 G01 Y[#108]                    //back off
 
-
+M20                              // UNLOCK SPINDLE ORIENT
+M19 P270                         // ORIENT SPINDLE 270 DEGREES TO KEEP THE POBING POINT THE SAME
 
 //move to the opposite side of the part
 G31 G91 P2 Y[#2+#122-#108] F#111  //move to other side of the part,pobe distance  away
