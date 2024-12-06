@@ -10,6 +10,8 @@
 // load probe config
 G65 "PROBECONFIG"
 
+M19 // ORIENT SPINDLE
+
 // important local variables
 #100 = @100             // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
 

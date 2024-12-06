@@ -14,6 +14,8 @@
 // load probe config 
 G65 "PROBECONFIG"
 
+M19 // ORIENT SPINDLE
+
 // CALCULATE EXTENDED WCS NUMBER 
 // FIX is a round down function and MOD is modulo 
 #114 = ROUND[[#1 - FIX[#1]] * 10]

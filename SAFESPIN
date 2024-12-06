@@ -6,6 +6,7 @@
 
 // load probe config
 G65 "PROBECONFIG"
+M19 // ORIENT SPINDLE
 
 #110 = @100 // PROBE TOOL NUMBER
 
