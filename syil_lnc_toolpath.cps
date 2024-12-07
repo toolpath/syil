@@ -17,7 +17,7 @@ legal = "Copyright (C) 2012-2024 by Autodesk, Inc.";
 certificationLevel = 2;
 minimumRevision = 45917;
 
-longDescription = "Syil LNC 6800 Post Processor with A-axis and machine simulation";
+longDescription = "Syil LNC 6800 Post Processor with A-axis and machine simulation. Written by Scott Moyse";
 
 extension = "nc";
 programNameIsInteger = true;
