@@ -10,9 +10,9 @@
   FORKID {78441FCF-1C1F-4D81-BFA8-AAF6F30E1F3B}
 */
 
-description = "SYIL";
-vendor = "Syil";
-vendorUrl = "http://www.syil.com";
+description = "SYIL LNC 6800";
+vendor = "Scott Moyse";
+vendorUrl = "Toolpath.com";
 legal = "Copyright (C) 2012-2024 by Autodesk, Inc.";
 certificationLevel = 2;
 minimumRevision = 45917;
@@ -37,14 +37,7 @@ highFeedrate = (unit == MM) ? 5000 : 200;
 
 // user-defined properties
 properties = {
-  preloadTool: {
-    title      : "Preload tool",
-    description: "Preloads the next tool at a tool change (if any).",
-    group      : "preferences",
-    type       : "boolean",
-    value      : true,
-    scope      : "post"
-  },
+
   showSequenceNumbers: {
     title      : "Use sequence numbers",
     description: "'Yes' outputs sequence numbers on each block, 'Only on tool change' outputs sequence numbers on tool change blocks only, and 'No' disables the output of sequence numbers.",
@@ -353,7 +346,7 @@ var settings = {
     options        : ENABLE_ALL
   },
   workPlaneMethod: {
-    useTiltedWorkplane    : true, // specifies that tilted workplanes should be used (ie. G68.2, G254, PLANE SPATIAL, CYCLE800), can be overwritten by property
+    useTiltedWorkplane    : false, // specifies that tilted workplanes should be used (ie. G68.2, G254, PLANE SPATIAL, CYCLE800), can be overwritten by property
     eulerConvention       : EULER_ZXZ_R, // specifies the euler convention (ie EULER_XYZ_R), set to undefined to use machine angles for TWP commands ('undefined' requires machine configuration)
     eulerCalculationMethod: "standard", // ('standard' / 'machine') 'machine' adjusts euler angles to match the machines ABC orientation, machine configuration required
     cancelTiltFirst       : true, // cancel tilted workplane prior to WCS (G54-G59) blocks
@@ -433,7 +426,7 @@ function onOpen() {
 
   // absolute coordinates and feed per min
   writeBlock(gAbsIncModal.format(90), gFeedModeModal.format(getProperty("useG95") ? 95 : 94), gPlaneModal.format(17), toolLengthCompOutput.format(49), gFormat.format(40), gFormat.format(80));
-  writeBlock(gUnitModal.format(unit == MM ? 71 : 70));
+  writeBlock(gUnitModal.format(unit == MM ? 21 : 20));
   validateCommonParameters();
 
   // Save the G59 Z axis into a variable #199 for use with G10 calls
@@ -623,10 +616,11 @@ function onCommand(command) {
     writeToolBlock("T" + toolFormat.format(tool.number), mFormat.format(6));
     writeComment(tool.comment);
 
-    var preloadTool = getNextTool(tool.number != getFirstTool().number);
-    if (getProperty("preloadTool") && preloadTool) {
-      writeBlock("T" + toolFormat.format(preloadTool.number)); // preload next/first tool
-    }
+    // preload tools not supported on umbrella changer machines
+    //var preloadTool = getNextTool(tool.number != getFirstTool().number);
+    //if (getProperty("preloadTool") && preloadTool) {
+    //  writeBlock("T" + toolFormat.format(preloadTool.number)); // preload next/first tool
+    //}
     return;
   case COMMAND_LOCK_MULTI_AXIS:
     var outputClampCodes = getProperty("useClampCodes") || currentSection.isMultiAxis();
