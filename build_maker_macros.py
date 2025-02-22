@@ -13,7 +13,7 @@ MACRO_FILES_NAME_MAP = {
     'COPYWCS':807,
     'FINDCOR':808,
     'LOADTOOL':809,
-    'PROBEBORE':210,
+    'PROBEBORE':810,
     'PROBECIRCULARBOSS':811, 
     'PROBECONFIG':812,
     'PROBEINSIDECORNER':813,
@@ -35,11 +35,20 @@ MACRO_FILES_NAME_MAP = {
 }
 
 
+MAKER_MACRO_FOLDER = 'maker_macros'
+
+
 ########################################################
-# Helper functions and testing
+# Helper functions 
 ########################################################
 
+# we'll use these regex's a lot, so we want to precompile them 
+# instead of building them on the fly each time
 def build_regexs(name_map): 
+    """
+    make a precompiled regex for each macro file 
+    and store it with the macro name and new number. 
+    """
     regex_map = []
     for name, number in name_map.items(): 
         pattern = re.compile(r'(G65\s+")' + re.escape(name) + r'(")')
@@ -69,8 +78,17 @@ def find_all_caps_no_ext(directory="."):
 
 
 ########################################################
-# Replacement Logic
+# Build the make_macro_m## files
 ########################################################
+
+#empty out the maker_macro folder of any existing file
+
+# Loop through all entries in the folder
+for filename in os.listdir(MAKER_MACRO_FOLDER):
+    file_path = os.path.join(MAKER_MACRO_FOLDER, filename)
+    # Check if it is a file (ignoring directories)
+    if os.path.isfile(file_path):
+        os.remove(file_path)
 
 MACRO_TO_MAKER_MACRO_LIST = build_regexs(MACRO_FILES_NAME_MAP)
 
@@ -86,11 +104,15 @@ for (file_name, file_m_number, _) in MACRO_TO_MAKER_MACRO_LIST:
         content = pattern.sub(f'M{m_number}', content)
 
     # write the new maker macro file
-    file_path = os.path.join('maker_macros', f'maker_macro_m{file_m_number}')
+    file_path = os.path.join(MAKER_MACRO_FOLDER, f'maker_macro_m{file_m_number}')
     with open(file_path, "w") as file:
         # print("writing ", file_path)
         file.write(content)
 
+
+###################################################################
+# Testing to make sure we didn't miss any files, or add extra ones
+###################################################################
 
 # Compare computed file list to the dictionary keys by converting both to sets.
 computed_files_set = set(find_all_caps_no_ext())

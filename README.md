@@ -624,7 +624,18 @@ After you have loaded the tool, the macro will automatically run the `TOOLSET` m
 
 Example MDI Command: G65 "UNLOAD" T10
 
+## Maker Macro Usage 
 
+These macros, in their base form with human readable file names, must be put in the top level of whatever program you want to run. 
+Typically this means leaving them in the root folder of the machine and running all programs from there. 
+Though you could keep copies of these macros in sub-folders to run from them if you want. 
+
+Some users may want to use the `maker_macro_m##` feature of the control. 
+This lets you put files with that naming convention into the `maker_macros` folder on the control, 
+and then call those macros via an Mcode from any folder. 
+
+If you do this, then instead of calling --- for example -- `G65 "PROBEBORE"` you instead call `M810`. 
+So its up to you to remember the mapping somehow. 
 
 ## TODO
 
@@ -634,7 +645,6 @@ Example MDI Command: G65 "UNLOAD" T10
 	- Add a macro to check min/max values against soft-limits (would also like to add this to my post processor) 
 	- Add probe runout compensation into the calibration: Rotate the spindle 180 degrees with M19P180. Then re-do calibration and compare results to compute runout. Need to figure out the math for how to compensate for it during probing. 
 	- Add probe Angle routines (i.e. probe a wall and compute its angle, so you can rotate the X/Y axes)
-	- Add 4th Axis probing routines
 	- Add wear comp macros or wear comp to existing macros 
 
 
