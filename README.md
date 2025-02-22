@@ -637,6 +637,45 @@ and then call those macros via an Mcode from any folder.
 If you do this, then instead of calling --- for example -- `G65 "PROBEBORE"` you instead call `M810`. 
 So its up to you to remember the mapping somehow. 
 
+We've provided a python script that converts all the named files into the maker macro format for you. 
+That file, `build_maker_macros.py` can be run to convert all macros into the maker_macro format. 
+The script places all the new files inside the `maker_macro` folder. 
+Note that the script first DELETES EVERYTHING inside that folder, so do not make any manual edits to those files. 
+They will be lost. 
+Any edits need to be made in the top level macro files, and then propagated to the `maker_macro_m##` files via the 
+build script. 
+
+The mapping of file name to maker_macro is: 
+
+    'CALIBRATEPROBEBLOCK':801, 
+    'CALIBRATEPROBERING':802, 
+    'CALIBRATEPROBEZ':803, 
+    'CALIBRATETOOLSET':804, 
+    'CHECKPOSITIONALTOLERANCE':805, 
+    'COMPZEROPOINT':806, 
+    'COPYWCS':807,
+    'FINDCOR':808,
+    'LOADTOOL':809,
+    'PROBEBORE':810,
+    'PROBECIRCULARBOSS':811, 
+    'PROBECONFIG':812,
+    'PROBEINSIDECORNER':813,
+    'PROBERECTANGULARBOSS':814,
+    'PROBEY':815,
+    'PROBEYWEB':816,
+    'PROBEXSLOT':817,
+    'PROBEPOCKET':818,
+    'UNLOADTOOL':819,
+    'PROBEXYANGLE':820,
+    'PROBEOUTSIDECORNER':821,
+    'PROBEXWEB':822,
+    'PROBEYSLOT':823,
+    'PROBEX':824,
+    'TOOLSET':825,
+    'PROTECTEDMOVE':826,
+    'SAFESPIN':827,
+    'PROBEZ':828
+
 ## TODO
 
 ** Contributions Welcome! ** 
