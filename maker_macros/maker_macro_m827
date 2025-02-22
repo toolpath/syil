@@ -1,0 +1,23 @@
+// Copyright 2024 Toolpath Labs Inc., Justin Gray
+
+// TURN ON SPINDLE AFTER SAFTEY CHECK
+
+// #1 is the commanded RPM
+
+// load probe config
+M812
+M19 // ORIENT SPINDLE
+
+#110 = @100 // PROBE TOOL NUMBER
+
+#100=R_SYS_INFO[0,2] // CURRENT TOOL NUMBER
+
+IF [#100 == #110] // THE PROBE IS LOADED
+	#101 = INPUT["CHANGE TO ANOTHER TOOL","Tool number?","",1,97,4];
+	T#101 M6;
+ELSE 
+	S#1 M3
+END_IF
+M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+N1 
+M99

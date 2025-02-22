@@ -1,0 +1,66 @@
+// Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
+
+// PROBEINSIDECORNER
+// Description: Probe ONE OF 4 INSIDE CORNERS
+// Simplified WCS extended number math, added probe error checking, added probe distance argument
+// Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset// G54.5
+// Argument B -> #2 defines which corner
+// 1 2
+// 3 4
+// Argument C -> #3 is the desired distance to probe part
+
+// load probe config
+M812
+
+M19 // ORIENT SPINDLE
+
+// important local variables
+#100 = @100               // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
+#110 = @103               // FEED SPEED PROVIDED BY PROBECONFIG MACRO
+#111 = @104               // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#112 = @105               // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#105 = @102               // TOOL RADIUS PROVIDED BY PROBECONFIG MACRO
+#108 = @108*[#2/ABS[#2]]  // PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO * the sign// +1 or -1 of probe distance
+
+
+// #120 is X APPROACH DIRECTION
+// #121 is Y APPROACH DIRECTION
+IF[#2==1]
+  #120 = -1
+  #121 = 1
+ELSEIF[#2==2]
+  #120 = 1
+  #121 = 1
+ELSEIF[#2==3]
+  #120 = -1
+  #121 = -1
+ELSEIF[#2==4]
+  #120 = 1
+  #121 = -1
+END_IF
+
+// RECORD INITIAL POSITION SO WE CAN TOGGLE BACK TO IT
+#122 = R_MACH_COOR[0,1]    // MACHINE X COORDINATE
+#123 = R_MACH_COOR[0,2]    // MACHINE Y COORDINATE
+
+// PROBE PART IN X
+M824 A#1 B#120*#3
+
+// MOVE BACK TO ORIGINAL XY LOCATION
+#126 = [#122-R_MACH_COOR[0,1]]
+#127 = [#123-R_MACH_COOR[0,2]]
+G31 G91 P2 X[#126] F#111 // PROTECTED MOVE
+G31 G91 P2 Y[#127] F#111 // PROTECTED MOVE
+
+// PROBE PART IN Y
+M815 A#1 B#121*#3
+
+// MOVE BACK TO ORIGINAL XY LOCATION
+#126 = [#122-R_MACH_COOR[0,1]]
+#127 = [#123-R_MACH_COOR[0,2]]
+G31 G91 P2 Y[#127] F#111 // PROTECTED MOVE
+G31 G91 P2 X[#126] F#111 // PROTECTED MOVE
+
+M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+G90
+M99
