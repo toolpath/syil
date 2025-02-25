@@ -27,7 +27,7 @@ FOR #100=7000 TO 7011
 END_FOR
 
 // IF NOT ALREADY THERE, THEN FIND AN OPEN POCKET
-IF[#120 == 0]
+IF[#120 == 0 && #15 == #0]
 	// FIND THE FIRST EMPTY POCKET
 	FOR #100=7000 TO 7011
 		IF[R_REG[#100]==199]
@@ -45,7 +45,7 @@ END_IF
 // AND WE WILL SWAP WITH A DIFFERENT TOOL NUMBER
 IF[#120 == 0]
 	#121 = #15 // pull in O argument
-	IF[#121 <= 0]
+	IF[#121 == #0]
 		#121 = INPUT["Choose a tool to swap","Choose a tool in the carousel to swap out?","",1,196,13];
 	END_IF
 
@@ -53,7 +53,7 @@ IF[#120 == 0]
 	FOR #100=7000 TO 7011
 		IF[R_REG[#100]==#121]
 			IF[#121 == R_REG[7813]] // check if tool to swap is tool in spindle	
-				W_REG[7813, #20]	// push new tool to tool in spindle to skip tool drop in below M6
+				W_REG[7813, #20] // push new tool to tool in spindle to skip tool drop in below M6
 			END_IF
 			// PUSH THE NEW TOOL NUMBER INTO THE TOOL TABLE
 			#120 = #121
@@ -69,7 +69,7 @@ IF[#120 == 0]
 END_IF
 
 
-// NOW WERE SURE THAT THE NEW TOOL HAS BEEN PUSHED INTO THE TOOL TABLE
+// NOW WE ARE SURE THAT THE NEW TOOL HAS BEEN PUSHED INTO THE TOOL TABLE
 
 // COMMAND A TOOL CHANGE
 T#20 M6
@@ -77,7 +77,7 @@ T#20 M6
 // TELL THE PERSON TO PUT THE TOOL INTO THE SPINDLE	
 SELECT[#119]
 	CASE 0:
-		; no message reqired
+		; no message is required
 	CASE 1:
 		MSG_OK["Install Tool", "Switch to MPG mode and install T#20 in pocket #101",""]
 	CASE 2 :
