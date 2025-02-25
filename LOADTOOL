@@ -4,7 +4,7 @@
 
 // #20 IS THE TOOL NUMBER TO LOAD
 
-// #13 Flag to reset tool offsets then call TOOLSET (defaults off)
+// #13 Flag to reset tool offsets then call TOOLSET (not required and defaults on)
 
 // #15 tool number in carousel to swap out (not required) 
 
@@ -58,7 +58,7 @@ IF[#120 == 0]
 			// PUSH THE NEW TOOL NUMBER INTO THE TOOL TABLE
 			#120 = #121
 			W_REG[#100, #20]
-			#119 = 2 // Swap tool message flag swap old tool with new
+			#119 = 2 // Swap tool message flag
 			EXIT_FOR
 		END_IF
 	END_FOR
