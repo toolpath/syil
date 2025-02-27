@@ -1,3 +1,6 @@
+# V1.2.1
+- Updated LOADTOOL to with the ability to skip resetting tool offsets and a few minor UI changes
+
 # V1.2.0
 - Added M20 at the end of all probe routines, to unlock spindle so following M19 will actually do something 
 - Improved/corrected COR macro 
