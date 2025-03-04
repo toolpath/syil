@@ -174,6 +174,7 @@ properties = {
     type       : "enum",
     values     : [
       {title:"G28", id:"G28"},
+      {title:"G30", id:"G30"},
       {title:"G53", id:"G53"}
     ],
     value: "G28",
@@ -182,6 +183,7 @@ properties = {
   breakControlError: {
     title      : "Max. Break Control Error",
     description: "Maximum Allowable Error for Break Control.",
+    group      : "toolChange",
     type       : "number",
     value      : 0.05,
     scope      : "post"
@@ -189,7 +191,7 @@ properties = {
   ForceTCPosition: {
     title      : "Change Position Before Toolchange",
     description: "Change the machine position before executing a toolchange.",
-    group      : 4,
+    group      : "toolChange",
     type       : "boolean",
     value      : false,
     scope      : "post"
@@ -197,7 +199,7 @@ properties = {
   TCposX: {
     title      : "Toolchange Position X Axis - Machine Coordinate",
     description: "Machine Coordinate for toolchange on X Axis.",
-    group      : 4,
+    group      : "toolChange",
     type       : "number",
     value      : 0,
     scope      : "post"
@@ -205,7 +207,7 @@ properties = {
   TCposY: {
     title      : "Toolchange Position Y Axis - Machine Coordinate",
     description: "Machine Coordinate for toolchange on Y Axis.",
-    group      : 4,
+    group      : "toolChange",
     type       : "number",
     value      : 0,
     scope      : "post"
@@ -213,27 +215,32 @@ properties = {
   EnableZeroPointCompensation: {
     title      : "Enable Zero Point Compensation",
     description: "Allows probing cycles to compensate for deltas bewteen a probed part and it's expected postition. The WCS after probing becomes the override origin translated by the computed deltas.",
-    group      : 5,
+    group      : "preferences",
     type       : "boolean",
     value      : false,
     scope      : "post"
   },
-  CustomOnOpenGcode: {
-    title      : "Custom on open G-code",
+  _0CustomOnOpenGcode: {
+    title      : "on open G-code",
     description: "Inserts custom G-code at the beginning of the program",
-    group      : 6,
+    group      : "CustomGcode",
     type       : "string",
     value      : "",
     scope      : "post"
   },
-  CustomOnCloseGcode: {
-    title      : "Custom on close G-code",
+  _1CustomOnCloseGcode: {
+    title      : "on close G-code",
     description: "Inserts custom G-code at the end of the program",
-    group      : 7,
+    group      : "CustomGcode",
     type       : "string",
     value      : "",
     scope      : "post"
   }
+};
+
+groupDefinitions = {
+  toolChange        : {title:"Tool change", description: "Setting related to toolchanges", collapsed: true, order: 31},
+  CustomGcode       : {title:"Custom G-code", description: "G-code to add to the start of the program", collapsed: true, order: 33},
 };
 
 // wcs definiton
@@ -438,7 +445,7 @@ function onOpen() {
   writeBlock("@983 = TIME[5]"); //hour
   writeBlock("@984 = TIME[6]"); //minute
   writeBlock("@985 = TIME[7]"); //second
-  writeBlock(getProperty("CustomOnOpenGcode"));
+  writeBlock(getProperty("_0CustomOnOpenGcode"));
 }
 
 function setSmoothing(mode) {
@@ -754,7 +761,7 @@ function onClose() {
     writeSubprograms();
   }
   writeln("%");
-  writeBlock(getProperty("CustomOnCloseGcode"));
+  writeBlock(getProperty("_1CustomOnCloseGcode"));
 }
 
 // >>>>> INCLUDED FROM include_files/commonFunctions.cpi
@@ -1088,10 +1095,12 @@ function onComment(text) {
 */
 function writeToolBlock() {
   var show = getProperty("showSequenceNumbers");
+  var TCposX = getProperty("TCposX");
+  var TCposY = getProperty("TCposY");
   setProperty("showSequenceNumbers", (show == "true" || show == "toolChange") ? "true" : "false");
   writeBlock(arguments);
   setProperty("showSequenceNumbers", show);
-  machineSimulation({/*x:toPreciseUnit(200, MM), y:toPreciseUnit(200, MM), coordinates:MACHINE,*/ mode:TOOLCHANGE}); // move machineSimulation to a tool change position
+  machineSimulation({x:toPreciseUnit(TCposX, MM), y:toPreciseUnit(TCposY, MM), coordinates:MACHINE, mode:TOOLCHANGE}); // move machineSimulation to a tool change position
 }
 
 var skipBlocks = false;
