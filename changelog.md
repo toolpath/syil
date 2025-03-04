@@ -1,3 +1,8 @@
+# V1.2.2
+- Post properties table renamed and reordered
+- G30 option added to safePositionMethod()
+- Tool change position added to writeToolBlock() and machine simulation details updated to allow simulation of tool change connection moves
+
 # V1.2.1
 - Updated LOADTOOL to with the ability to skip resetting tool offsets and a few minor UI changes
 
