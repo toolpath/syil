@@ -337,10 +337,10 @@ var settings = {
   },
   retract: {
     cancelRotationOnRetracting: false, // specifies that rotations (G68) need to be canceled prior to retracting
-    methodXY                  : undefined, // special condition, overwrite retract behavior per axis
+    methodXY                  : "G30", // special condition, overwrite retract behavior per axis
     methodZ                   : undefined, // special condition, overwrite retract behavior per axis
-    useZeroValues             : ["G28", "G30"], // enter property value id(s) for using "0" value instead of machineConfiguration axes home position values (ie G30 Z0)
-    homeXY                    : {onIndexing:false, onToolChange:false, onProgramEnd:{axes:[X, Y]}} // Specifies when the machine should be homed in X/Y. Sample: onIndexing:{axes:[X, Y], singleLine:false}
+    useZeroValues             : ["G28"], // enter property value id(s) for using "0" value instead of machineConfiguration axes home position values (ie G30 Z0)
+    homeXY                    : {onIndexing:false, onToolChange:{axes:[X, Y]}, onProgramEnd:{axes:[X, Y]}} // Specifies when the machine should be homed in X/Y. Sample: onIndexing:{axes:[X, Y], singleLine:false}
   },
   parametricFeeds: {
     firstFeedParameter    : 500, // specifies the initial parameter number to be used for parametric feedrate output
@@ -475,7 +475,33 @@ function onSection() {
   operationNeedsSafeStart = getProperty("safeStartAllOperations") && !isFirstSection();
   initializeSmoothing(); // initialize smoothing mode
 
+  // Manual Tool Change Tool Removal
+  // place in own function or COMMAND_MANUAL_LOAD + COMMAND_MANUAL_UNLOAD
+  if (insertToolCall && !isFirstSection()) {
+    if(getPreviousSection().getTool().manualToolChange == true) {
+      setCoolant(COOLANT_OFF);
+      onCommand(COMMAND_STOP_SPINDLE);
+      writeRetract(Z); 
+      writeRetract(settings.retract.homeXY.onToolChange);
+      onCommand(COMMAND_STOP);
+      machineSimulation({x:getProperty("TCposX"), y: getProperty("TCposY"), coordinates:MACHINE, mode:TOOLCHANGE}); // move machineSimulation to a tool change position
+      //writeComment("Flip to Manual, Swap tools then cycle start to resume"); KC need to test
+      writeComment("");
+      previousSection = getPreviousSection();
+      if (previousSection) {
+        previousToolNumber = previousSection.getTool().number;
+        writeComment("Flip to manual, remove T" + previousToolNumber + " and replace with T" + tool.number + " then cycle start to resume" );
+      } else {
+        writeComment("No previous tool (first tool in program).");
+      }
+    }
+  }
+
   if (insertToolCall || newWorkOffset || newWorkPlane || smoothing.cancel || state.tcpIsActive) {
+    // stop coolant before retract during manual tool change 
+    if (!isLastSection() && tool.manualToolChange == true && getNextSection().getTool().manualToolChange == true) {
+      onCommand(COMMAND_COOLANT_OFF)
+    }
 
     // stop spindle before retract during tool change
     if (insertToolCall && !isFirstSection()) {
@@ -622,7 +648,10 @@ function onCommand(command) {
   case COMMAND_LOAD_TOOL:
     writeToolBlock("T" + toolFormat.format(tool.number), mFormat.format(6));
     writeComment(tool.comment);
-
+    if (tool.manualToolChange != true){
+      writeComment(tool.description);
+      writeComment(tool.bodyLength + "mm Stick out below " + tool.holderDescription + " holder");
+    }
     // preload tools not supported on umbrella changer machines
     //var preloadTool = getNextTool(tool.number != getFirstTool().number);
     //if (getProperty("preloadTool") && preloadTool) {
@@ -646,6 +675,13 @@ function onCommand(command) {
   case COMMAND_STOP_CHIP_TRANSPORT:
     return;
   case COMMAND_BREAK_CONTROL:
+    onCommand(COMMAND_STOP_SPINDLE);
+    setCoolant(COOLANT_OFF)
+    writeRetract(Z);
+    // add tool change position move?
+    writeBlock(mFormat.format(106) + " T" + toolFormat.format(tool.number)+ " D" + xyzFormat.format(tool.diameter) + " E"+ getProperty("breakControlError"));
+    machineSimulation({x:getProperty("TCposX"), y: getProperty("TCposY"), coordinates:MACHINE, mode:TOOLCHANGE}); // move machineSimulation to a tool change position
+    // add second retract post tool measure?
     return;
   case COMMAND_TOOL_MEASURE:
     return;
@@ -1095,12 +1131,10 @@ function onComment(text) {
 */
 function writeToolBlock() {
   var show = getProperty("showSequenceNumbers");
-  var TCposX = getProperty("TCposX");
-  var TCposY = getProperty("TCposY");
   setProperty("showSequenceNumbers", (show == "true" || show == "toolChange") ? "true" : "false");
   writeBlock(arguments);
   setProperty("showSequenceNumbers", show);
-  machineSimulation({x:toPreciseUnit(TCposX, MM), y:toPreciseUnit(TCposY, MM), coordinates:MACHINE, mode:TOOLCHANGE}); // move machineSimulation to a tool change position
+  machineSimulation({x:getProperty("TCposX"), y: getProperty("TCposY"), coordinates:MACHINE, mode:TOOLCHANGE}); // move machineSimulation to a tool change position
 }
 
 var skipBlocks = false;
@@ -1616,8 +1650,13 @@ function writeToolCall(tool, insertToolCall) {
     }
 
     if (tool.manualToolChange) {
+      onCommand(COMMAND_LOAD_TOOL); //KC calls tool change to swap out old tool for manual tool pocket
       onCommand(COMMAND_STOP);
-      writeComment("MANUAL TOOL CHANGE TO T" + toolFormat.format(tool.number));
+      //writeComment("MANUAL TOOL CHANGE TO T" + toolFormat.format(tool.number));
+      writeComment("Flip to Manual, Swap tool to T" + toolFormat.format(tool.number));
+      writeComment("H" + tool.lengthOffset + " - " + tool.description);
+      writeComment(tool.bodyLength + "mm Stick out below " + tool.holderDescription + " holder");
+      machineSimulation({x:toPreciseUnit(getProperty("TCposX"), MM), y:toPreciseUnit( getProperty("TCposY") , MM), coordinates:MACHINE, mode:TOOLCHANGE}); // move machineSimulation to a tool change position
     } else {
       if (!isFirstSection() && getProperty("optionalStop") && insertToolCall) {
         onCommand(COMMAND_OPTIONAL_STOP);
