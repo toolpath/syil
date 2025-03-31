@@ -1,14 +1,15 @@
-// Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
 
-// CALIBRATE PROBE TIP DIAMETER
+//CALIBRATEPROBEBLOCK
+//CALIBRATE PROBE TIP DIAMETER using a rectanglar object 
 
-// #1 is the expected X length of the artifact
-// #2 is the expected Y length of the artifact
-// #3 is the Z drop height
+// Argument A -> #1 is the expected X length of the artifact
+// Argument B -> #2 is the expected Y length of the artifact
+// Argument C -> #3 is the Z drop height
 
+// Initial Coding: Justin Gray
 
 G90 G94 G17 G49 G40 G80
-G20                               // inch
 
 // load probe config
 G65 "PROBECONFIG"
@@ -20,7 +21,6 @@ M19 // ORIENT SPINDLE
 
 // Make sure diameter is zero when calibrating
 W_TOOL_DATA[0,#100,3,0]    // store tool diameter
-
 
 // calling web probe macros macros to measure the rectangle
 G65 "PROBEXWEB" A0 B#1 C#3 Q0 
@@ -35,8 +35,8 @@ G65 "PROBEYWEB" A0 B#2 C#3 Q0
 W_TOOL_DATA[0,#100,3,#135]    // store tool diameter
 
 MENU_ADD["Ruby Diameter Set To: #135",""];  
-MENU["CALIBRATION REPORT","RESULTS","",1];
+MENU["Calibration report", "Results", "", 1];
 
-M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+M20                       // UNLOCK SPINDLE ORIENTATION FOR SAFETY
 G90
 M99

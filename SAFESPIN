@@ -1,12 +1,20 @@
 // Copyright 2024 Toolpath Labs Inc., Justin Gray
 
+// SAFESPIN
 // TURN ON SPINDLE AFTER SAFTEY CHECK
 
-// #1 is the commanded RPM
+// Argument A -> #1 is the commanded RPM
+
+// Initial Coding: Justin Gray
+// Modified 31/03/2025: Robot Oblivion
 
 // load probe config
 G65 "PROBECONFIG"
-M19 // ORIENT SPINDLE
+
+#128 = @128             // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+IF[#128 == 1]
+    M19 // ORIENT SPINDLE
+END_IF
 
 #110 = @100 // PROBE TOOL NUMBER
 
@@ -18,6 +26,11 @@ IF [#100 == #110] // THE PROBE IS LOADED
 ELSE 
 	S#1 M3
 END_IF
-M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
-N1 
+
+IF[#128 == 1]
+    M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+END_IF
+
+N1
+
 M99

@@ -1,3 +1,6 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+//FINDCOR
 // Process is based on a rectangular artifact 
 // mounted to the 4th axis 
 // STEPS
@@ -10,22 +13,19 @@
 // 7) Reposition to Y=COR, then probe Z. 
 // 8) With diameter + Z probe point compute the Z-COR
 
+// Argument A -> #1 is the WCS to store the COR into
+// Argument S -> #19 tuns on saving of the starting probe location
+// Argument W -> #23 is the approximate width of the reference artifact 
 
-// #1  is the WCS to store the COR into
-// #19 tuns on saving of the starting probe location
-// #23 is the approximate width of the reference artifact 
-
-
-//CALCULATE EXTENDED WCS NUMBER
-//FIX removes any decimal value
-#114 = ROUND[[#1 - FIX[#1]] * 10] 
+// Initial Coding: Justin Gray, Josh Smith
 
 IF[#23==#0] // null check 
     #23 = 1.0 // assume the narrow side of a 123 block
 END_IF
 
-//load probe config
-G65 "PROBECONFIG"
+// load probe config
+G65 "PROBECONFIG" A#1
+#114 = @114         // processed extended WCS number provided by ProbeConfig macro
 
 M19 // ORIENT SPINDLE
 
@@ -39,7 +39,7 @@ M19 // ORIENT SPINDLE
 
 // CONVINIENT TO WORK IN PROBE 0 WCS
 
-G54P#109 
+G54 P#109 
 
 // store current X,Y,Z
 // ASSUME THE PROBE IS AT -Y
@@ -76,8 +76,7 @@ IF[#19 != #0] // null check
 
 ELSE
   // RETRACT TO SAFE Z 
-  G28 G91 Z0
-  G90
+G53 G90 G00 Z0  
   // POSITION THE ROTATRY AXIS AT A0
   M10 
   G0 A0.
@@ -145,7 +144,7 @@ G65 "PROBEZ" B-[10*#131]
 
 
 //STORE COR OFFSET FOR WCS ZERO
-IF [#1 < 53 || #1 == #0]
+IF [#1 == #0]
   //DO NOT SET ANYTHING INTO WCS
 ELSEIF [#114 < 1]  
   W_G53G59_COOR[0,#1,2,#132]
@@ -157,9 +156,5 @@ END_IF
 
 M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
 
-
-G28 G91 Z0
-G90
-
+G53 G90 G00 Z0  
 M99
-

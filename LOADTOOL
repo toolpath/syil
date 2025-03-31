@@ -1,14 +1,15 @@
-// Copyright 2024 Toolpath Labs Inc., Justin Gray
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
 
+// LOADTOOL
 // LOAD A NEW TOOL INTO THE CAROUSEL
 
-// #20 IS THE TOOL NUMBER TO LOAD
-
-// #13 Flag to reset tool offsets then call TOOLSET (not required and defaults on)
-
-// #15 tool number in carousel to swap out (not required) 
-
+// Argument T -> #20 IS THE TOOL NUMBER TO LOAD
+// Argument M -> #13 Flag to reset tool offsets then call TOOLSET (not required and defaults on)
+// Argument O -> #15 tool number in carousel to swap out (not required) 
 // THE TOOL TABLE IS VARIABLES 7000-7011
+
+// Initial Coding: Justin Gray
+// Modified 31/03/2025: Robot Oblivion
 
 #120 = 0 // STORES THE OLD TOOL NUMBER
 

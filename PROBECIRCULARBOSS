@@ -1,39 +1,49 @@
-//Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
 
-//PROBECIRCULARBOSS
-//Description: Probe a circular boss in X and Y
-//Initial Coding: Justin Gray
-//Modified 1/14/2024: Joshua Smith
-//Simplified WCS extended number math, added probe error checking, added probe inspection report
-//#1 is the work coordinate system to store offsets in
-//#2 is the expected DIAMETER
-//#3 is the Z drop height
-//#9 print results enabled by fusion360
-//#17 turns on inspection report on/off: 0 leaves it off default; 1 turns it on 
-//#18 oversize tolorance
-//#19 enable oversize check
+// PROBECIRCULARBOSS
+// Probe a circular boss in X and Y
 
- //calling our web macros the first time centers us
- G65 "PROBEXWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
- G65 "PROBEYWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
+// Argument A -> #1 is the work coordinate system to store offsets in
+// Argument B -> #2 is the expected DIAMETER
+// Argument C -> #3 is the Z drop height
+// Argument I -> #9 print results enabled by fusion360
+// Argument Q -> #17 turns on inspection report on/off: 0 leaves it off default; 1 turns it on 
+// Argument R -> #18 oversize tolorance
+// Argument S -> #19 enable oversize check
 
- //calling our web macros the second time gives an accurate center
- G65 "PROBEXWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
- G65 "PROBEYWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
+// Initial Coding: Justin Gray
+// Modified 1/14/2024: Joshua Smith
+// Simplified WCS extended number math, added probe error checking, added probe inspection report
+// Modified 31/03/2025: Robot Oblivion
+
+//calling our web macros the first time centers us
+G65 "PROBEXWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
+G65 "PROBEYWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
+
+//calling our web macros the second time gives an accurate center
+G65 "PROBEXWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
+G65 "PROBEYWEB" A#1 B#2 C#3 I#9 Q0 R#18 S#19
 
 //average Diameter calculation
 //@999 and @998 are set in the web macros
 @997 = [@998 + @999]/2
 
 //simple inspection reporting
-IF[#17>0]
- MENU_ADD["Part Diameter In X: @998",""]; 
- MENU_ADD["Part Diameter In Y: @999",""];
- MENU_ADD["AVG Diameter: @997",""]; //THE WORD AVERAGE IS TO LONG FOR THE MENU
- MENU["INSPECTION REPORT","RESULTS","",1];
+IF [#17 > 0]
+  #97 = ROUND[@997 * @11] / @11  // Round to 3/4 decimal places
+  #98 = ROUND[@998 * @11] / @11  // Round to 3/4 decimal places
+  #99 = ROUND[@999 * @11] / @11  // Round to 3/4 decimal places
+  IF[@10 == 21]
+    MENU_ADD["Part Diameter mm X: #98",""]; 
+    MENU_ADD["Part Diameter mm Y: #99",""];
+    MENU_ADD["AVG Diameter mm: #97",""];  //THE WORD AVERAGE IS TO LONG FOR THE MENU
+  ELSE
+    MENU_ADD["Part Diameter In X: #98",""]; 
+    MENU_ADD["Part Diameter In Y: #99",""];
+    MENU_ADD["AVG Diameter In: #97",""];  //THE WORD AVERAGE IS TO LONG FOR THE MENU
+  END_IF
+  MENU["INSPECTION REPORT","RESULTS","",1];
 END_IF
 
-
 G90
-
 M99

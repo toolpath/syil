@@ -1,44 +1,56 @@
 // Copyright 2024 Toolpath Labs Inc., Justin Gray
 
-// AUTO TOOL SET
+// TOOLSET
+// measure the tool length offset using the tool setter
 
-// #1 is the tool diameter
-// #2 is the tool angle
+// Argument A -> #1 is the tool diameter
+// Argument B -> #2 is the tool angle
+
+// Initial Coding: Justin Gray
 
 #100=R_SYS_INFO[0,2]            // SAVE CURRENT TOOL NUMBER TO #100
-
+@10 = R_G_GROUP[0,6]            // pull in metric or freedom units 
 
 // load probe config
 G65 "PROBECONFIG" T#100
 
 
-#104 = @115                     // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#104 = @117                     // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
 #105 = @116                     // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
-#110=R_TOOL_DATA[0,199,203]     // TOOLSETTER - T199 - REFERENCE HEIGHT
-#112=@112                       // TOOLSETTER EXTENDED WORKOFFSET NUMBER
+#110 = R_TOOL_DATA[0,199,203]   // TOOLSETTER - T199 - REFERENCE HEIGHT
+#112 = @112                     // TOOLSETTER EXTENDED WORKOFFSET NUMBER
 
 
 G90 G94 G17 G49 G40 G80
-G20                             // INCH
-G28 G91 Z0.
+G53 G90 G00 Z0                  // Move the spindle all the way up before xy movement for safety
 G54P#112                        // LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100
-
 G90 G0 X[0+#1/2] Y0             // MOVE TO TOOLSETTER + TOOL RADIUS OFFSET
+
 M20                             // UNLOCK SPINDLE ORIENT
 M19 P#2                         // ORIENT SPINDLE TO THE GIVEN ANGLE
 
-G31 Z-20 F#104                  // FEED UNTIL INPUT SIGNAL AKA SKIP
-G91 G0 Z0.2                     // MOVE UP
-FIX_CUT_OR_ON
-G31 Z-.21 F#105                 // FEED UNTIL SKIP SLOWER
+G91                             // RELATIVE MODE
+
+IF[@10 == 21]
+  G21                     // Metric
+  G31 Z-400.0 F#104       // FEED UNTIL INPUT SIGNAL AKA SKIP
+  G91 G0 Z5.0             // MOVE UP
+  FIX_CUT_OR_ON
+  G31 Z-5.5 F#105         // FEED UNTIL SKIP SLOWER
+ELSEIF[@10 == 20]
+  G20                     // fREEDOM UNITS (INCH)
+  G31 Z-20 F#104          // FEED UNTIL INPUT SIGNAL AKA SKIP
+  G91 G0 Z0.2             // MOVE UP
+  FIX_CUT_OR_ON
+  G31 Z-.21 F#105         // FEED UNTIL SKIP SLOWER
+END_IF
 FIX_CUT_OR_OFF
-#120= R_SKIP[0,103]           // GET MACHINE Z COORDINATE
+
+#120= R_SKIP[0,103]       // GET MACHINE Z COORDINATE
 
 // NOTE: LENGTH OF MASTER GAUGE TOOL IS ACOUNTED FOR IN CALIBRATION
 //       MAKE SURE THE CORRECT VALUE IS SET IN PROBECONFIG
 #121 = [#120 - #110]           // COMPUTE TOOL LENGTH
-
-
 
 W_TOOL_DATA[0,#100,203,#121]    // WRITE TOOL Z LENGTH
 W_TOOL_DATA[0,#100,101,0]       // SET TOOL RADIUS AND ALL WEAR OFFSETS TO 0
@@ -49,6 +61,6 @@ W_TOOL_DATA[0,#100,3,0]
 W_TOOL_DATA[0,#100,202,0]
 W_TOOL_DATA[0,#100,201,0]
 
-G28 G91 Z0.
-M20                             // UNLOCK SPINDLE ORIENT
+G53 G90 G00 Z0                  // Move the spindle all the way up before xy movement for safety
+M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
 M99

@@ -1,46 +1,106 @@
-// Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
 
 // PROBECONFIG
-// Description: Probe Configuration File
-// Initial Coding 1/25/2024: Joshua Smith
-// macro to setup probe specs and units, called by every macro
+// Probe Configuration file to setup probe specs and units, called by every macro
 
-// #20 turns off probe tool number checking : VACANT leaves it on ; non VACANT turns it off 
+// Argument T -> #20 turns off probe tool number checking : VACANT leaves it on ; non VACANT turns it off 
+// NOTE: @5109 STORES THE REFERENCE HEIGHT FOR FAST PROBE Z CALIBRATION
+
+// Initial Coding 1/25/2024: Joshua Smith
+// Modified 31/03/2025: Robot Oblivion
 
 // important global variables
 @100 = -1                        // PROBE TOOL NUMBER, EX: 99
 
 IF [@100==-1]
-	ALARM["HARD CODE PROBE NUMBER IN PROBECONFIG MACRO"]
+	ALARM["Hard code probe number in PROBECONFIG macro"]
 END_IF
 
+@10 = R_G_GROUP[0,6]             // Metric or freedom units check, DO NOT TOUCH!!! 
 @101 = R_TOOL_DATA[0,@100,3]     // TOOL DIAMETER, DO NOT TOUCH!!!
 @102 = @101/2                    // TOOL RADIUS, DO NOT TOUCH!!!
-@103 = 50                        // FEED SPEED in/m, change to match your unit of choice, for metric users start at 2540mm
-@104 = 50                        // FAST PROBE SPEED in/m, change to match your unit of choice, for metric users start at 1270mm
-@105 = 2.5                       // SLOW PROBE SPEED in/m, change to match your unit of choice, for metric users start at 63mm
-@106 = .5                        // PROBE CLEARANCE DISTANCE in, change to match your unit of choice, for metric users start at 6mm
 @107 = [R_TOOL_DATA[0,@100,203]] // TOOL LENGHT OFFSET, DO NOT TOUCH!!!
-@108 = .125                      // PROBE BACKOFF DISTANCE,change to match your unit of choice, for metric users start at 3mm
-@109 = 2.9997                    // CALIBRATED LENGTH OF YOUR MASTER GAUGE TOOL
-@110 = .05                       // DEFAULT PART TOLERANCE
 
-// NOTE: @5109 STORES THE REFERENCE HEIGHT FOR FAST PROBE Z CALIBRATION
+@111 = 21        // EXTENDED WORKOFFSET TO STORE PROBE Z CALIBRATION LOCATION
+@112 = 22        // EXTENDED WORKOFFSET TO STORE TOOLSETTER LOCATION
+@113 = 23        // EXTENDED WORKOFFSET TO STORE THE 4TH COR PROBING START POINT
+@110 = 1.0       // DEFAULT POSITION TOLERANCE
+@128 = 0         // ORIENT SPINDLE SWITCH 0=OFF 1=ON
+#137 = 95        // The highest WCS that can be used. Any above are protected from changes via these macros
 
-@111 = 99                        // EXTENDED WORKOFFSET TO STORE PROBE Z CALIBRATION LOCATION
-@112 = 100                       // EXTENDED WORKOFFSET TO STORE TOOLSETTER LOCATION
-@113 = 98                        // EXTENDED WORKOFFSET TO STORE THE 4TH COR PROBING START POINT
-@114 = .05                       // DEFAULT POSITION TOLERANCE
+// metric settings
+IF[@10 == 21]
+    @103 = 2500         // FEED SPEED mm/m,
+    @104 = 1250         // FAST PROBE SPEED mm/m,
+    @105 = 60           // SLOW PROBE SPEED mm/m,
+    @106 = 10            // PROBE CLEARANCE DISTANCE mm,
+    @108 = 2            // PROBE BACKOFF DISTANCE mm,
 
-@115 = 30                       // FAST Tool Probe SPEED in/m, change to match your unit of choice, for metric users start at 762mm
-@116 = 1.5                      // SLOW Tool Probe SPEED in/m, change to match your unit of choice, for metric users start at 38mm
+    @109 = 93.896       // CALIBRATED LENGTH OF YOUR MASTER GAUGE TOOL
+    @129 = 24.998       // Calibrated diameter of the master ring gauge tool
+    @110 = 1.0          // DEFAULT PART TOLERANCE
+    
+    @117 = 750          // FAST Tool Probe SPEED mm/m,
+    @116 = 40           // SLOW Tool Probe SPEED mm/m,
+    @11  = 1000         // rounding multiplier for 3 decimal places
+END_IF;
+
+// Freedom unit settings
+IF[@10 == 20]
+    @103 = 50         // FEED SPEED in/m,
+    @104 = 50         // FAST PROBE SPEED in/m,
+    @105 = 2.5        // SLOW PROBE SPEED in/m,
+    @106 = 0.5        // PROBE CLEARANCE DISTANCE in,
+    @108 = 0.125      // PROBE BACKOFF DISTANCE,
+
+    @109 = 2.9997     // CALIBRATED LENGTH OF YOUR MASTER GAUGE TOOL
+    @129 = 0.9999     // Calibrated diameter of the master ring gauge tool
+    @110 = 0.05       // DEFAULT PART TOLERANCE
+
+    @117 = 30         // FAST Tool Probe SPEED in/m,
+    @116 = 1.5        // SLOW Tool Probe SPEED in/m,
+    @11  = 10000         // rounding multiplier for 4 decimal places
+END_IF;
 
 #120=R_SYS_INFO[0,2] // CURRENT TOOL NUMBER
 IF [@100 != #120 && #20==#0] // THE PROBE IS NOT LOADED
-    ALARM["ERROR:  PROTECTED MOVE WITHOUT PROBE - CHANGE TO T#100 "]
+    ALARM["Error: Protected move without probe - change to T#100 "]  
 END_IF
 
-
 G90
+
+IF [#1 != #0]
+    IF [ROUND[MOD[#1,1] * 100] > 0]  
+        @114 = ROUND[MOD[#1,1] * 100]  // Extract the decimal part and multiply by 100
+        IF [@114 < 1 || @114 >= #137]
+            ALARM["ERROR: Probe WCS G54 P@114 protected via ProbeConfig Macro"]
+        END_IF
+        IF [FIX[#1] != 54]
+            ALARM["ERROR: G54 must be used when calling extended work offsets"]
+        END_IF
+    ELSE
+        @114 = #1
+        IF [@114 < 54 || @114 > 59]
+            ALARM["ERROR: Probe WCS G@114 out of range"]
+        END_IF
+    END_IF
+END_IF
+
+IF [#2 != #0]
+    IF [ROUND[MOD[#2,1] * 100] > 0]
+        @115 = ROUND[MOD[#2,1] * 100]  // Extract the decimal part and multiply by 100
+        IF [@115 < 1 || @115 >= #137]
+            ALARM["ERROR: Override WCS G54 P@115 protected via ProbeConfig Macro"]
+        END_IF
+        IF [FIX[#2] != 54]
+            ALARM["ERROR: G54 must be used when calling extended work offsets"]
+        END_IF
+    ELSE
+        @115 = #2
+        IF [@115 < 54 || @115 > 59]
+            ALARM["ERROR: Override WCS G@115 out of range"]
+        END_IF
+    END_IF
+END_IF
 
 M99

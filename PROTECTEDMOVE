@@ -1,21 +1,25 @@
 // Copyright 2024 Toolpath Labs Inc., Justin Gray
 
-// PROTECTED ABSOLUTE MOVE
+// PROTECTEDMOVE
+// Move to target position using G31 to stop should an unexpected collision occurs 
 
+// Argument X -> #24 ABSOLUTE X POSITION TO MOVE TO
+// Argument Y -> #25 ABSOLUTE X POSITION TO MOVE TO
+// Argument Z -> #26 ABSOLUTE X POSITION TO MOVE TO
 
-// X #24-> ABSOLUTE X POSITION TO MOVE TO
-// Y #25-> ABSOLUTE X POSITION TO MOVE TO
-// Z #26-> ABSOLUTE X POSITION TO MOVE TO
+// Initial Coding: Justin Gray
+// Modified 31/03/2025: Robot Oblivion
 
 // load probe config
 G65 "PROBECONFIG"
 
-M19 // ORIENT SPINDLE
-
-
 #100 = @100               // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
 #103 = @103               // FEED SPEED PROVIDED BY PROBECONFIG MACRO
 
+#128 = @128             // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+IF[#128 == 1]
+    M19 // ORIENT SPINDLE
+END_IF
 
 #120=R_SYS_INFO[0,2] // CURRENT TOOL NUMBER
 
@@ -40,7 +44,11 @@ END_IF
 
 // Error Checking
 IF[R_SKIP[0,1] == 1]
-    ALARM["ERROR:  PROTECTED MOVE TRIGGERED PROBE - UNEXPECTED OBSTACLE "]
+    ALARM["ERROR: Protected move triggered probe - unexpected obstacle"]
 END_IF
-M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+
+IF[#128 == 1]
+    M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+END_IF
+
 M99

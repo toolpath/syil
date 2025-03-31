@@ -1,9 +1,8 @@
-// Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
-
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
 
 // PROBEOUTSIDECORNER
-// Description: Probe ONE OF 4 OUTSIDE CORNERS
-// Simplified WCS extended number math, added probe error checking, added probe distance argument
+// Probe ONE OF 4 OUTSIDE CORNERS
+
 // Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset -- G54.5
 // Argument B -> #2 defines which corner
 // 1 2
@@ -11,10 +10,16 @@
 // Argument C -> #3 is the desired probing distance from the corner
 // Argument D -> #4 is the desired distance to probe part
 
+// Simplified WCS extended number math, added probe error checking, added probe distance argument
+// Modified 31/03/2025: Robot Oblivion
+
 // load probe config
 G65 "PROBECONFIG"
 
-M19 // ORIENT SPINDLE
+#128 = @128             // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+IF[#128 == 1]
+    M19 // ORIENT SPINDLE
+END_IF
 
 // important local variables
 #100 = @100               // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
@@ -84,6 +89,11 @@ G31 G91 P2 Y[#127] F#111 // PROTECTED MOVE
 G31 G91 P2 X[#126] F#111 // PROTECTED MOVE
 
 N1
-M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+
+IF[#128 == 1]
+    M20                // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+END_IF
+
 G90
+G00                    // return to rapid speed
 M99

@@ -1,17 +1,20 @@
-// Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
 // COMPZEROPOINT
-// Description: copy wcs B into A
-// Modified 2/10/2024: Joshua Smith
+// copy wcs B into A
+
 // Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset// G54.5
 // Argument B -> #2 is the override coordinate system. The format for extended G54 offsets would be a period followed by the offset// G54.5
 
-// CALCULATE EXTENDED WCS NUMBER
-// FIX is a round down function and MOD is modulo
-#114 = ROUND[[#1 - FIX[#1]] * 10] 
-#115 = ROUND[[#2 - FIX[#2]] * 10]
+// Modified 2/10/2024: Joshua Smith
+// Modified 31/03/2025: Robot Oblivion
+
+G65 "PROBECONFIG" A#1 B#2
+#114 = @114         // processed extended WCS number provided by ProbeConfig macro
+#115 = @115         // processed extended WCS number provided by ProbeConfig macro
 
   // Get Argument B WCS
- IF [ #2 < 53 || #2 == #0]
+ IF [#2 == #0]
   ALARM["ERROR: OVERRIDE WCS NOT PROVIDED"]
  ELSEIF [#115 < 1]  
    #119 =  R_G53G59_COOR[0,#2,1] // x override zero
@@ -24,7 +27,7 @@
  END_IF
 
 // Copy one wcs into another
-IF [#1 < 53 || #1 == #0 || #1 == #2]
+IF [#1 == #0 || #1 == #2]
  // DO NOT SET ANYTHING INTO WCS
 ELSEIF [#114 < 1]  
   W_G53G59_COOR[0,#1,1,#119]
@@ -37,5 +40,4 @@ ELSE
 END_IF
 
 G90
-
 M99
