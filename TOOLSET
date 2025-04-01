@@ -23,7 +23,7 @@ G65 "PROBECONFIG" T#100
 
 G90 G94 G17 G49 G40 G80
 G53 G90 G00 Z0                  // Move the spindle all the way up before xy movement for safety
-G54P#112                        // LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100
+G54 P#112                        // LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100
 G90 G0 X[0+#1/2] Y0             // MOVE TO TOOLSETTER + TOOL RADIUS OFFSET
 
 M20                             // UNLOCK SPINDLE ORIENT

@@ -2,7 +2,7 @@
 
 // CALIBRATEZ
 // THIS MACRO ASSUMES THAT YOU HAVE PUT YOUR GAUGE TOOL IN THE SPINDLE
-// AND MANUALLY JOGGED UP TILL YOUR REFERENCE ARTIFACT CAN JUST BARELY SLIDE UNDER THE TOOL.
+// AND positioned slightly above your REFERENCE ARTIFACT.
 // THE MACRO WILL SAVE THE XY LOCATION FOR FUTURE USE AND STORE THE REFERENCE HEIGHT OFFSET
 
 // Argument A -> #1 turns on/off full calibration: default is quick calibration
@@ -26,7 +26,7 @@ G65 "PROBECONFIG"
 M19 // ORIENT SPINDLE
 
 IF [#1!=#0]
-  MSG_OK["Calibrate probe", "Zero master gauge tool on calibration artifact and leave it there", ""]
+  MSG_OK["Calibrate probe", "Switch to MPG mode and zero the master gauge tool on the calibration artifact. Only press Cycle Start when ready to proceed. The measured value will be stored in G@111", ""]
 
   @5109 = R_MACH_COOR[0,3]  // GET MACHINE Z COORDINATE WHICH SHOULD BE THE TOP OF A 123 BLOCK
   #140 = @5109
@@ -48,7 +48,7 @@ G53 G90 G00 Z0          // BRING THE MACHINE UP TO TOOL CHANGE HEIGHT
 
 IF [#1!=#0]
   // TELL THE PERSON TO PUT THE PROBE INTO THE SPINDLE
-  MSG_OK["Install probe", "Switch to MPG mode and install the probe then switch back and hit cycle start; T#100", ""]
+  MSG_OK["Install probe", "Switch to MPG mode and install the probe (T@100). Then, switch back before pressing Cycle Start.", ""]
 END_IF
 
 G54 P#111                              // LOCATION OF PROBE CALIBARTION IS X0 Y0 ON G54P#111
