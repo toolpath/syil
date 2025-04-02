@@ -224,7 +224,7 @@ properties = {
     scope      : "post"
   },
   probeScreenPrint: {
-    title      : "Display probed report",
+    title      : "Display probed results",
     description: "Enable inspection reporting in compatible cycles to pause after probing and display the results at the control",
     group      : "multiAxis",
     type       : "boolean",

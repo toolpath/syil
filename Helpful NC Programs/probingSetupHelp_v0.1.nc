@@ -5,14 +5,14 @@
 ; Initial Coding: Robot Oblivion
 
 ; Before running, ensure the following:  
-;   - backup your tool table, offset table and @1-200 variables in case of wanting to revert 
-;   - Clear as many items as possible from the table to prevent collisions with stock, jigs, fixtures, or vices.  
-;   - Ensure the table zero point is empty, lightly stoned, and free of coolant.  
-;   - Have your master tool, probe, and ring gauge ready.  
+;   - backup your tool table, offset table and @10, @11, @100-@117, @127-@133, @980-@987 and @1508 variables in case of wanting to revert
 ;   - Set all user inputs in the ProbeConfig file.
 ;   - copy all macro files CNC control 
+;   - Clear as many items as possible from the table to prevent collisions with stock, jigs, fixtures, or vices.  
+;   - Ensure the table zero point is empty, lightly stoned, and free of coolant.  
+;   - Find the tool setter's centre and store this location to the extended work offset chosen in @111 PROBECONFIG.
 ;   - Copy the table zero point (XYZ) offsets to the extended work offsets that will store the calibration artifact location.  
-;   - Find the tool setter's centre  and zero out the extended work offsets that will store this location.
+;   - Have your master tool, probe, and ring gauge ready.  
 
 G65 "PROBECONFIG" T1 
 

@@ -9,39 +9,33 @@
 // Initial Coding 1/25/2024: Joshua Smith
 // Modified 31/03/2025: Robot Oblivion
 
-// important global variables
-@100 = -1                        // PROBE TOOL NUMBER, EX: 99
+// DO NOT TOUCH!!! Metric or freedom units check 
+@10 = R_G_GROUP[0,6] 
 
-IF [@100==-1]
-	ALARM["Hard code probe number in PROBECONFIG macro"]
-END_IF
-
-@10 = R_G_GROUP[0,6]             // Metric or freedom units check, DO NOT TOUCH!!! 
-@101 = R_TOOL_DATA[0,@100,3]     // TOOL DIAMETER, DO NOT TOUCH!!!
-@102 = @101/2                    // TOOL RADIUS, DO NOT TOUCH!!!
-@107 = [R_TOOL_DATA[0,@100,203]] // TOOL LENGHT OFFSET, DO NOT TOUCH!!!
-
+// important global variables to update below:
+@100 = -1        // PROBE TOOL NUMBER, EX: 99
 @111 = 97        // EXTENDED WORKOFFSET TO STORE PROBE Z CALIBRATION LOCATION 
 @112 = 98        // EXTENDED WORKOFFSET TO STORE TOOLSETTER LOCATION
 @113 = 99        // EXTENDED WORKOFFSET TO STORE THE 4TH COR PROBING START POINT
-@110 = 1.0       // DEFAULT POSITION TOLERANCE
-@128 = 0         // ORIENT SPINDLE SWITCH 0=OFF 1=ON
 #137 = 95        // The highest WCS that can be used. Any above are protected from changes via these macros
+@128 = 0         // ORIENT SPINDLE SWITCH 0=OFF 1=ON
+@109 = 93.896    // CALIBRATED LENGTH OF YOUR MASTER GAUGE TOOL
+@129 = 24.998    // Calibrated diameter of the master ring gauge tool
+// @130 = 50.000    // Calibrated X size of gauge block 
+// @131 = 25.000    // Calibrated Y size of gauge block
 
 // metric settings
 IF[@10 == 21]
     @103 = 2500         // FEED SPEED mm/m,
     @104 = 1250         // FAST PROBE SPEED mm/m,
     @105 = 60           // SLOW PROBE SPEED mm/m,
-    @106 = 10            // PROBE CLEARANCE DISTANCE mm,
+    @106 = 10           // PROBE CLEARANCE DISTANCE mm,
     @108 = 2            // PROBE BACKOFF DISTANCE mm,
-
-    @109 = 93.896       // CALIBRATED LENGTH OF YOUR MASTER GAUGE TOOL
-    @129 = 24.998       // Calibrated diameter of the master ring gauge tool
     @110 = 1.0          // DEFAULT PART TOLERANCE
-    
+
     @117 = 750          // FAST Tool Probe SPEED mm/m,
     @116 = 40           // SLOW Tool Probe SPEED mm/m,
+
     @11  = 1000         // rounding multiplier for 3 decimal places
 END_IF;
 
@@ -53,14 +47,21 @@ IF[@10 == 20]
     @106 = 0.5        // PROBE CLEARANCE DISTANCE in,
     @108 = 0.125      // PROBE BACKOFF DISTANCE,
 
-    @109 = 2.9997     // CALIBRATED LENGTH OF YOUR MASTER GAUGE TOOL
-    @129 = 0.9999     // Calibrated diameter of the master ring gauge tool
     @110 = 0.05       // DEFAULT PART TOLERANCE
 
     @117 = 30         // FAST Tool Probe SPEED in/m,
     @116 = 1.5        // SLOW Tool Probe SPEED in/m,
-    @11  = 10000         // rounding multiplier for 4 decimal places
+
+    @11  = 10000      // rounding multiplier for 4 decimal places
 END_IF;
+
+@101 = R_TOOL_DATA[0,@100,3]     // TOOL DIAMETER, DO NOT TOUCH!!!
+@102 = @101/2                    // TOOL RADIUS, DO NOT TOUCH!!!
+@107 = [R_TOOL_DATA[0,@100,203]] // TOOL LENGHT OFFSET, DO NOT TOUCH!!!
+
+IF [@100==-1]
+	ALARM["Hard code probe number in PROBECONFIG macro"]
+END_IF
 
 #120=R_SYS_INFO[0,2] // CURRENT TOOL NUMBER
 IF [@100 != #120 && #20==#0] // THE PROBE IS NOT LOADED

@@ -5,6 +5,8 @@
 // Your probe must be concentric and you must use a ring guage!!!!!!!!!!
 // **Ring gauge ID set in ProbeConfig file
 
+// Argument A -> #1 is optional and the expected inside diameter of the ring guage. Will over ride value in ProbeConfig if called
+
 // Initial coding 1/14/2024: Joshua Smith
 // Modified 31/03/2025: Robot Oblivion
 
@@ -15,8 +17,13 @@ M19 // ORIENT SPINDLE
 
 // important local variables
 #100 = @100             // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
-#129 = @129             // Calibrated ring gauge diameter provided by PROBECONFIG MACRO 
+#129 = @129             // Calibrated ring gauge diameter provided by PROBECONFIG MACRO
 
+// Over ride probeConfig gauge ID A argument used
+IF [#1 != #0]
+  #129 = #1
+END_IF
+  
 // Make sure diameter is zero when calibrating
 W_TOOL_DATA[0,#100,3,0]    // store tool diameter
 
