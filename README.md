@@ -669,7 +669,7 @@ Example MDI Command: G65 "LOADTOOL" T10 O12
 ### Zero point compensation   ( M808 )
 is supported and enabled via the post as shown below. Zero point compensation makes probing in fusion easier by allowing you to use a fixed zero point as the work WCS in every setup. When we say zero point, we're reffering to a fixed point on vise or zero point fixture that never moves. All of our operations are in reference to that zero point. The compensation functions by calculating the XY delta between where your workpiece is and where it's expected to be in reference to the zero point. After probing, the work WCS becomes the zero point offset plus the calculated delta. For example if your work WCS is G54, G54 becomes G59 plus the probed XY deltas. Z doesn't change and is always equal to the zero point Z. WCS override must be enabled when using zero point compensation. PROBERECTANGULARBOSS, PROBEPOCKET, PROBECIRCULARBOSS and PROBEBORE all support zero point compensation.  
 
-![ZeroPointCompensation](images/zero_point_comp_RO_post.PNG)
+![ZeroPointCompensation](images/zero_point_comp_RO_post.png)  
 
 ---
 ## SAFESPIN macro  ( M813 )
