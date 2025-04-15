@@ -4,7 +4,7 @@
 // Probe in Y from the front or back
 
 // Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset G54.5
-// Argument B -> #2 is the desired probing distance. Enter a positive value to probe the front and a negative value to probe the back
+// Argument Y -> #25 is the desired probing distance. Enter a positive value to probe the front and a negative value to probe the back
 // Argument I -> #9 print results enabled by fusion360
 
 // Initial Coding: Justin Gray
@@ -18,30 +18,30 @@ G65 "PROBECONFIG" A#1
 // important local variables
 #111 = @104               // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
 #112 = @105               // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
-#105 = @102               // TOOL RADIUS PROVIDED BY PROBECONFIG MACRO
-#108 = @108*[#2/ABS[#2]]  // PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO * the sign +1 or -1 of probe distance
-#114 = @114               // processed extended WCS number provided by ProbeConfig macro
-#128 = @128               // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+#105 = @131               // TOOL RADIUS PROVIDED BY PROBECONFIG MACRO
+#108 = @107*[#25/ABS[#25]]  // PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO * the sign +1 or -1 of probe distance
+#114 = @121               // processed extended WCS number provided by ProbeConfig macro
+#128 = @96               // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
 
 M20                   // UNLOCK SPINDLE ORIENT
-IF[#2 < 0]
+IF[#25 < 0]
   M19 P270            // ORIENT SPINDLE 270 DEGREES
 ELSE
   M19 P90             // ORIENT SPINDLE 0 DEGREES
 END_IF
 
 //Probe X the desired distance and at fast feed
-G31 G91 P2 Y[#2] F#111                //FEED UNTIL SKIP FAST
+G31 G91 P2 Y[#25] F#111                //FEED UNTIL SKIP FAST
 
 //Check that the probe has triggered
 IF[R_SKIP[0,1] == 1]
  G91 G01 Y-[#108]                     //back off distance provided by ProbeConfig macro
  FIX_CUT_OR_ON
- G31 G91 P2 Y[#2] F#112               //Probe Y the desired distance at slow feed
+ G31 G91 P2 Y[#25] F#112               //Probe Y the desired distance at slow feed
  FIX_CUT_OR_OFF
  #104=R_SKIP[0,202]                   //GET MACHINE Y COORDINATE
  G91 G01 Y-[#108]                     //back off distance provided by ProbeConfig macro
- #106 = [#104+[[#2/abs[#2]]*#105]]    //current position +/- probe radius
+ #106 = [#104+[[#25/abs[#25]]*#105]]    //current position +/- probe radius
  @996 = #106
 
  //safety check for inspection variable

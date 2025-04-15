@@ -4,7 +4,7 @@
 // Probe in Z from the above stock
 
 // Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset  G54.5
-// Argument B -> #2 is the desired probing distance and should be negative
+// Argument Z -> #26 is the desired probing distance and should be negative
 // Argument I -> #9 print results enabled by fusion360
 
 // Initial Coding: Justin Gray
@@ -18,26 +18,26 @@ G65 "PROBECONFIG" A#1
 // important local variables
 #104 = @104              // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
 #105 = @105              // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
-#107 = @107              // TOOL LENGTH PROVIDED BY PROBECONFIG MACRO
-#108 = @108              // PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO
-#114 = @114              // processed extended WCS number provided by ProbeConfig macro
-#128 = @128              // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+#107 = @133              // TOOL LENGTH PROVIDED BY PROBECONFIG MACRO
+#108 = @107              // PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO
+#114 = @121              // processed extended WCS number provided by ProbeConfig macro
+#128 = @96              // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
 
 IF[#128 == 1]
   M19 // ORIENT SPINDLE
 END_IF
 
 //Check that the probe distance is negative
-IF[#2<0]
+IF[#26<0]
 
 //Probe Z the desired distance and at fast feed
-G31 G91 P2 Z[#2] F#104
+G31 G91 P2 Z[#26] F#104
 
 //Check that the probe has triggered
 IF[R_SKIP[0,1] == 1]
  G91 G01 Z+[#108]                     //back off distance provided by ProbeConfig macro
  FIX_CUT_OR_ON
- G31 G91 P2 Z[#2] F#105               //Probe X the desired distance at slow feed
+ G31 G91 P2 Z[#26] F#105               //Probe Z the desired distance at slow feed
  FIX_CUT_OR_OFF
  #142=R_SKIP[0,203]                   //GET MACHINE Z COORDINATE
  G91 G01 Z+[#108]                     //back off distance provided by ProbeConfig macro

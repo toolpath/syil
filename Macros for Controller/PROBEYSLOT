@@ -4,7 +4,7 @@
 // Probe a web in X from left to right
 
 // Argument A -> #1 is the work coordinate system to store offsets in
-// Argument B -> #2 is the expected length of the web in the Y direction
+// Argument Y -> #25 is the expected length of the web in the Y direction
 // Argument I -> #9 print results enabled by fusion360
 // Argument Q -> #17 turns on inspection report on/off: 0 leaves it off default; 1 turns it on 
 // Argument R -> #18 oversize tolorance
@@ -26,15 +26,15 @@ M19 P270                         // ORIENT SPINDLE 270 DEGREES TO KEEP THE POBIN
 #110 = @103             //FEED SPEED PROVIDED BY PROBECONFIG MACRO
 #111 = @104             //FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
 #112 = @105             //SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
-#121 = @101             //TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO
-#122 = @106             //WEB PROBE DISTANCE PROVIDED BY PROBECONFIG MACRO
-#108 = @108             //PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO
-#2   = ABS[#2]
-#114 = @114         // processed extended WCS number provided by ProbeConfig macro
+#101 = @130             //TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO
+#102 = @106             //WEB PROBE DISTANCE PROVIDED BY PROBECONFIG MACRO
+#108 = @107             //PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO
+#25   = ABS[#25]
+#114 = @121         // processed extended WCS number provided by ProbeConfig macro
 
 //probe Y starting from a negative offset and probing in the positive direction
 //MOVE TO -Y SIDE OF THE PART, BEFORE STARTING TO PROBE
-G31 G91 P2 Y-[#2/2+#122] F#111
+G31 G91 P2 Y-[#25/2+#102] F#111
 
 //Error Checking
 IF[R_SKIP[0,1] == 0]
@@ -53,7 +53,7 @@ M20                              // UNLOCK SPINDLE ORIENT
 M19 P90                          // ORIENT SPINDLE 90 DEGREES TO KEEP THE POBING POINT THE SAME
 
 //move to the opposite side of the part
-G31 G91 P2 Y[#2+#122-#108] F#111  //move to other side of the part,pobe distance  away
+G31 G91 P2 Y[#25+#102-#108] F#111  //move to other side of the part,pobe distance  away
 
 //Error Checking
 IF[R_SKIP[0,1] == 0]
@@ -70,27 +70,29 @@ G91 G01 Y[-#108] F#110                //back off
 
 //COMPUTE RELATIVE DISTANCE TO CENTER OF THE PART
 #106 = [[#105-#104]/2]                //calculate center
-#107 = ABS[#105-#104]+#121            //calculate distance: distance - diameter
+#107 = ABS[#105-#104]+#101            //calculate distance: distance - diameter
 @999 = #107                           //save distance to a global variable for use with other macros
 G91 G01 Y[-#106 + #108]               //MOVE TO CENTER OF THE PART
 #104=R_MACH_COOR[0,2]                 //GET MACHINE Y COORDINATE
-#126=ABS[#107-#2]                    //expected stock error
+#126=ABS[#107-#25]                    //expected stock error
 
 //if the tolorance is null, default it to global variable from the probe config
 IF[#18==#0]
- #18 = @110
+ #18 = @108
 END_IF
 
 //oversized stock alarm if stock error is greater than tolorance
 IF[#19!=#0 && #126>#18 ]
- #136 = ROUND[[#107-#2] * @11] / @11  // Round to 3/4 decimal places
- #107 = ROUND[#107 * @11] / @11  // Round to 3/4 decimal places
- MENU_ADD["Expected size: #2",""];
+ #136 = ROUND[[#107-#25] * @91] / @91  // Round to 3/4 decimal places
+ #107 = ROUND[#107 * @91] / @91  // Round to 3/4 decimal places
+ MENU_ADD["Expected size: #25",""];
  MENU_ADD["Probed size:   #107",""];
  MENU_ADD["Tolerance: #18",""];
  MENU_ADD["Off-target: #136",""];
  MENU["Error","Stock outside of tolerance in Y","",1];
- ALARM["Error: Stock outside of tolerance in Y"]
+ IF[@97 == 1]
+  ALARM["Error: Stock outside of tolerance in Y"]
+ END_IF
 END_IF
 
 //safety check for inspection variable
@@ -109,7 +111,7 @@ END_IF
 
 //simple inspection reporting
 IF [#17 > 0]
-  #99 = ROUND[@999 * @11] / @11  // Round to 3/4 decimal places
+  #99 = ROUND[@999 * @91] / @91  // Round to 3/4 decimal places
   IF[@10 == 21]
     MENU_ADD["Part Length mm Y: #99",""]; 
   ELSE

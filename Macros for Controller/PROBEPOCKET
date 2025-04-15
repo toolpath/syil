@@ -1,11 +1,11 @@
 // Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
 
-// PROBEBORE
+// PROBEPOCKET
 // Probe a bore in X and Y
 
 // Argument A -> #1 is the work coordinate system to store offsets in
-// Argument B -> #2 is the expected length
-// Argument C -> #3 is the expected width
+// Argument X -> #24 is the expected width
+// Argument Y -> #25 is the expected length
 // Argument I -> #9 print results enabled by fusion360
 // Argument Q -> #17 turns on inspection report on/off: 0 leaves it off default; 1 turns it on 
 // Argument R -> #18 oversize tolorance
@@ -18,13 +18,13 @@
 
 @10 = R_G_GROUP[0,6]      // pull in metric or freedom units 
 
- G65 "PROBEXSLOT" A#1 B#2 Q0 I#9 R#18 S#19 
- G65 "PROBEYSLOT" A#1 B#3 Q0 I#9 R#18 S#19 
+ G65 "PROBEXSLOT" A#1 X#24 Q0 I#9 R#18 S#19 
+ G65 "PROBEYSLOT" A#1 Y#25 Q0 I#9 R#18 S#19 
 
 //simple inspection reporting
 IF [#17 > 0]
-  #98 = ROUND[@998 * @11] / @11  // Round to 3/4 decimal places
-  #99 = ROUND[@999 * @11] / @11  // Round to 3/4 decimal places
+  #98 = ROUND[@998 * @91] / @91  // Round to 3/4 decimal places
+  #99 = ROUND[@999 * @91] / @91  // Round to 3/4 decimal places
   IF[@10 == 21]
     MENU_ADD["Part Width mm X: #98",""]; 
     MENU_ADD["Part Length mm Y: #99",""]; 

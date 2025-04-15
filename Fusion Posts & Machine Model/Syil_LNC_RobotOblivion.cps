@@ -25,6 +25,7 @@ Post setup
       --This position becomes the default toolchange location if the force toolchange position flags are turned off
   - Link this post to a machine and then in the machine setup Multi-axis tab choose the feedrate method to Inverse time (minutes) drop down
   - Debug markers can be turned on and changed @ line 55
+  - Swap between macros posting as M codes or G65 "string" @ line 56
 ----------------------------------------------------------------------------------------------------------*/
 
 description = "SYIL LNC 6800";
@@ -52,7 +53,8 @@ allowHelicalMoves = true;
 allowedCircularPlanes = undefined; // allow any circular motion
 highFeedrate = (unit == MM) ? 5000 : 200;
 
-var debugByCarnie = 0;  // 0 = off, 1 = section markers, 2 = section and sim, 3 = sim debug only // go to line 55 to set debug level
+var debugByCarnie = 0;    // 0 = off, 1 = section markers, 2 = section and sim, 3 = sim debug only // go to line 55 to set debug level
+var macroAreWords = true // switch between macros being word or number
 
 // user-defined properties
 properties = {
@@ -230,8 +232,8 @@ properties = {
     type       : "boolean",
     value      : false,
     scope      : "operation",
-    enable     : "probing",
-    disabled   : "milling"
+    enable     : "probe",
+    disabled   : ["milling", "turning", "drilling", "additive"]
   },
   safePositionMethod: {
     title      : "Safe Retracts",
@@ -801,8 +803,8 @@ function onSectionEnd() {
   
   var nextSection = getNextSection();
   //---- reworked onSectionEnd below --v
-  var forceSectionRestartNext = currentSection.isOptional() && !nextSection.isOptional();
-  optionalSection = forceSectionRestartNext && !getNextSection().isOptional || forceSectionRestartNext ? false : optionalSection ; 
+  var forceSectionRestartNext =  isLastSection() ||currentSection.isOptional() && !nextSection.isOptional();
+  optionalSection = isLastSection() || forceSectionRestartNext && !getNextSection().isOptional || forceSectionRestartNext ? false : optionalSection ; 
   var insertToolCallNext = isLastSection() || isToolChangeNeeded(nextSection,"number","description") || forceSectionRestartNext;
   var newWorkOffsetNext = isLastSection() || isNewWorkOffset(nextSection) || forceSectionRestartNext;
   var newWorkPlaneNext = isLastSection() || isNewWorkPlane(nextSection) || forceSectionRestartNext;
@@ -832,7 +834,7 @@ function onSectionEnd() {
       onCommand(COMMAND_STOP_SPINDLE);
       writeRetract(Z);
       if (getSetting("retract.homeXY.onToolChange", false)) {
-      writeRetract(settings.retract.homeXY.onToolChange);  // KC needs switch to turn off 
+      writeRetract(settings.retract.homeXY.onToolChange);
       }
       machineSimulation({x:toPreciseUnit(getProperty("_2TCposX"), MM), y:toPreciseUnit(getProperty("_2TCposY"), MM), coordinates:MACHINE}); // simulate manual tool change position
       onCommand(COMMAND_BREAK_CONTROL);
@@ -841,7 +843,7 @@ function onSectionEnd() {
     if (tool.manualToolChange && isToolChangeNeeded(nextSection, getProperty("toolAsName") ? "description" : "number")) { 
         setCoolant(COOLANT_OFF);
         onCommand(COMMAND_STOP_SPINDLE);
-        writeRetract(Z);                                                                 
+        writeRetract(Z);
         if (getProperty("_3forceManualTCPosition")) {
           forceModals(gMotionModal);
           writeBlock(gAbsIncModal.format(90), gFormat.format(53), gMotionModal.format(0), xOutput.format(getProperty("_4manual_TCposX")), yOutput.format(getProperty("_4manual_TCposY")));
@@ -3227,14 +3229,16 @@ function writeInitialPositioning(position, isRequired, codes1, codes2) {
       // Probe to be sent to initial position using protected moves
       !isProbeOperation() ? 
         writeBlock(modalCodes, gMotionModal.format(motionCode.single), zOutput.format(position.z), feed)
-        : writeBlock(macroCall, "\"PROTECTEDMOVE\"",  zOutput.format(position.z), feed) ; //, additionalCodes
+        : macroAreWords ? writeBlock(macroCall, "\"PROTECTEDMOVE\"",  zOutput.format(position.z), feed): 
+            writeBlock( mFormat.format(810), zOutput.format(position.z), feed, additionalCodes, "; PROTECTED MOVE"); ;
         writeln(feed)
         machineSimulation({z:position.z});
     }
     !isProbeOperation() ? 
       writeBlock(modalCodes, gMotionModal.format(motionCode.multi), xOutput.format(position.x), yOutput.format(position.y), feed, additionalCodes)
-      : writeBlock(macroCall, "\"PROTECTEDMOVE\"",  xOutput.format(position.x), yOutput.format(position.y), feed, additionalCodes) ;
-    machineSimulation({x:position.x, y:position.y});
+      : macroAreWords ? writeBlock(macroCall, "\"PROTECTEDMOVE\"",  xOutput.format(position.x), yOutput.format(position.y), feed, additionalCodes): 
+          writeBlock(mFormat.format(810),  xOutput.format(position.x), yOutput.format(position.y), feed, additionalCodes, "; PROTECTED MOVE" ) ;  ;
+      machineSimulation({x:position.x, y:position.y});
   }
 }
 
@@ -3853,10 +3857,12 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     //EXPECTED_X = "X" + xyzFormat.format(x + approach(cycle.approach1) * (cycle.probeClearance + tool.diameter / 2));
     EXPECTED_Z = "Z" + xyzFormat.format(cycle.stock - cycle.depth);
     DISTANCE   = approach(cycle.approach1) * (cycle.probeClearance + tool.diameter / 2 + cycle.probeOvertravel);
-    B_ARG      = "B" + xyzFormat.format(DISTANCE);
+    B_ARG      = "X" + xyzFormat.format(DISTANCE);
 
-    writeBlock(macroCall, "\"PROBEX\"", WCS_CODE[7], WCS_CODE[8], B_ARG);
-    writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V1", EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+    macroAreWords ? writeBlock(macroCall, "\"PROBEX\"", WCS_CODE[7], WCS_CODE[8], B_ARG):
+      writeBlock(mFormat.format(814), WCS_CODE[7], WCS_CODE[8], B_ARG, "; PROBE X");
+    macroAreWords ? writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V1", EXPECTED_X, EXPECTED_Y, EXPECTED_Z):
+      writeBlock(mFormat.format(811), WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V1", EXPECTED_X, EXPECTED_Y, EXPECTED_Z, "; CHECKPOSITIONAL TOLERANCE");
 
     if (WCS_CODE[7] === "I1.") {
       writeBlock(openString);
@@ -3873,10 +3879,12 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     EXPECTED_X = "X" + xyzFormat.format(x + approach(cycle.approach1) * (cycle.probeClearance + tool.diameter / 2)); // xOutput.format
     EXPECTED_Z = "Z" + xyzFormat.format(cycle.stock - cycle.depth);
     DISTANCE   = approach(cycle.approach1) * (cycle.probeClearance + tool.diameter / 2 + cycle.probeOvertravel);
-    B_ARG      = "B" + xyzFormat.format(DISTANCE);
+    B_ARG      = "Y" + xyzFormat.format(DISTANCE);
 
-    writeBlock(macroCall, "\"PROBEY\"", WCS_CODE[7], WCS_CODE[8], B_ARG);
-    writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V2", EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+    macroAreWords ? writeBlock(macroCall, "\"PROBEY\"", WCS_CODE[7], WCS_CODE[8], B_ARG):
+      writeBlock(mFormat.format(815), WCS_CODE[7], WCS_CODE[8], B_ARG, "; PROBE Y");
+    macroAreWords ? writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V2", EXPECTED_X, EXPECTED_Y, EXPECTED_Z):
+      writeBlock(mFormat.format(811), WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V2", EXPECTED_X, EXPECTED_Y, EXPECTED_Z), "; CHECKPOSITIONAL TOLERANCE";
 
     if (WCS_CODE[7] === "I1.") {
       writeBlock(openString);
@@ -3892,10 +3900,12 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     EXPECTED_X  = "X" + xyzFormat.format(x); // xOutput.format(x);
     EXPECTED_Y  = "Y" + xyzFormat.format(y); // yOutput.format(y); 
     EXPECTED_Z  = "Z" + xyzFormat.format(cycle.stock - cycle.depth);
-    B_ARG       = "B" + xyzFormat.format(-cycle.depth - cycle.probeOvertravel);
+    B_ARG       = "Z" + xyzFormat.format(-cycle.depth - cycle.probeOvertravel);
     
-    writeBlock(macroCall, "\"PROBEZ\"", WCS_CODE[7], WCS_CODE[8], B_ARG);
-    writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V3", EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+    macroAreWords ? writeBlock(macroCall, "\"PROBEZ\"", WCS_CODE[7], WCS_CODE[8], B_ARG):
+      writeBlock(mFormat.format(816), WCS_CODE[7], WCS_CODE[8], B_ARG, "; PROBE Z");
+    macroAreWords ? writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V3", EXPECTED_X, EXPECTED_Y, EXPECTED_Z):
+      writeBlock(mFormat.format(811), WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V3", EXPECTED_X, EXPECTED_Y, EXPECTED_Z, "; CHECKPOSITIONAL TOLERANCE");
 
     if (WCS_CODE[7] === "I1.") {
       open_string = "OPEN[0,1,\"" + programName + "_inspection_report" + "_@980" + "_@981" + "_@982" + "_@983" + "_@984" + "_@985" +"\"]";
@@ -3910,10 +3920,11 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     //forceXYZ();
     protectedProbeMove(cycle, x, y, z);
     WCS_CODE  = getProbingArguments(cycle, probeWorkOffsetCode);
-    WEB_WIDTH = "B" + xyzFormat.format(cycle.width1);
-    Z_DROP    = "C" + xyzFormat.format(cycle.depth);
+    WEB_WIDTH = "X" + xyzFormat.format(cycle.width1);
+    Z_DROP    = "Z" + xyzFormat.format(cycle.depth);
 
-    writeBlock(macroCall, "\"PROBEXWEB\"", WCS_CODE[7], WCS_CODE[8], WEB_WIDTH, Z_DROP, WCS_CODE[10], WCS_CODE[2]);
+    macroAreWords ? writeBlock(macroCall, "\"PROBEXWEB\"", WCS_CODE[7], WCS_CODE[8], WEB_WIDTH, Z_DROP, WCS_CODE[10], WCS_CODE[2]):
+      writeBlock(mFormat.format(824), WCS_CODE[7], WCS_CODE[8], WEB_WIDTH, Z_DROP, WCS_CODE[10], WCS_CODE[2], "; PROBE X WEB");
 
     if (WCS_CODE[7] === "I1.") {
       writeBlock(openString);
@@ -3926,10 +3937,11 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     protectedProbeMove(cycle, x, y, z);
 
     WCS_CODE  = getProbingArguments(cycle, probeWorkOffsetCode);
-    WEB_WIDTH = "B" + xyzFormat.format(cycle.width1);
-    Z_DROP    = "C" + xyzFormat.format(cycle.depth);
+    WEB_WIDTH = "Y" + xyzFormat.format(cycle.width1);
+    Z_DROP    = "Z" + xyzFormat.format(cycle.depth);
 
-    writeBlock(macroCall, "\"PROBEYWEB\"", WCS_CODE[7], WCS_CODE[8], WEB_WIDTH, Z_DROP, WCS_CODE[10], WCS_CODE[2]);
+    macroAreWords ? writeBlock(macroCall, "\"PROBEYWEB\"", WCS_CODE[7], WCS_CODE[8], WEB_WIDTH, Z_DROP, WCS_CODE[10], WCS_CODE[2]):
+      writeBlock(mFormat.format(825), WCS_CODE[7], WCS_CODE[8], WEB_WIDTH, Z_DROP, WCS_CODE[10], WCS_CODE[2], "; PROBE Y WEB");
 
     if (WCS_CODE[7] === "I1.") {
       writeBlock(openString);
@@ -3942,9 +3954,10 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     protectedProbeMove(cycle, x, y, z - cycle.depth);
 
     WCS_CODE   = getProbingArguments(cycle, probeWorkOffsetCode);
-    SLOT_WIDTH = "B" + xyzFormat.format(cycle.width1);
+    SLOT_WIDTH = "X" + xyzFormat.format(cycle.width1);
 
-    writeBlock(macroCall, "\"PROBEXSLOT\"", WCS_CODE[7], WCS_CODE[8], SLOT_WIDTH, WCS_CODE[10], WCS_CODE[2]);
+    macroAreWords ? writeBlock(macroCall, "\"PROBEXSLOT\"", WCS_CODE[7], WCS_CODE[8], SLOT_WIDTH, WCS_CODE[10], WCS_CODE[2]):
+      writeBlock(mFormat.format(834), WCS_CODE[7], WCS_CODE[8], SLOT_WIDTH, WCS_CODE[10], WCS_CODE[2], "; PROBE X SLOT");
 
     if (WCS_CODE[7] === "I1.") {
       writeBlock(openString);
@@ -3969,9 +3982,10 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     protectedProbeMove(cycle, x, y, z - cycle.depth);
 
     WCS_CODE   = getProbingArguments(cycle, probeWorkOffsetCode);
-    SLOT_WIDTH = "B" + xyzFormat.format(cycle.width1);
+    SLOT_WIDTH = "Y" + xyzFormat.format(cycle.width1);
 
-    writeBlock(macroCall, "\"PROBEYSLOT\"", WCS_CODE[7], WCS_CODE[8], SLOT_WIDTH, WCS_CODE[10], WCS_CODE[2]);
+    macroAreWords ? writeBlock(macroCall, "\"PROBEYSLOT\"", WCS_CODE[7], WCS_CODE[8], SLOT_WIDTH, WCS_CODE[10], WCS_CODE[2]):
+      writeBlock(mFormat.format(835), WCS_CODE[7], WCS_CODE[8], SLOT_WIDTH, WCS_CODE[10], WCS_CODE[2], "; PROBE Y SLOT");
 
     if (WCS_CODE[7] === "I1.") {
       writeBlock(openString);
@@ -3996,16 +4010,20 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     protectedProbeMove(cycle, x, y, z);
 
     WCS_CODE      = getProbingArguments(cycle, probeWorkOffsetCode);
-    BOSS_DIAMETER = "B" + xyzFormat.format(cycle.width1);
-    Z_DROP        = "C" + xyzFormat.format(cycle.depth);
+    BOSS_DIAMETER = "D" + xyzFormat.format(cycle.width1);
+    Z_DROP        = "Z" + xyzFormat.format(cycle.depth);
     EXPECTED_X    = "X" + xyzFormat.format(x); //xOutput.format
     EXPECTED_Y    = "Y" + xyzFormat.format(y); //yOutput.format
     EXPECTED_Z    = "Z" + xyzFormat.format(cycle.stock - cycle.depth);
 
-    writeBlock(macroCall, "\"PROBECIRCULARBOSS\"", WCS_CODE[7], WCS_CODE[8], BOSS_DIAMETER, Z_DROP, WCS_CODE[10], WCS_CODE[2]);
-    writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+    macroAreWords ? writeBlock(macroCall, "\"PROBECIRCULARBOSS\"", WCS_CODE[7], WCS_CODE[8], BOSS_DIAMETER, Z_DROP, WCS_CODE[10], WCS_CODE[2]):
+      writeBlock(mFormat.format(831), WCS_CODE[7], WCS_CODE[8], BOSS_DIAMETER, Z_DROP, WCS_CODE[10], WCS_CODE[2], "; PROBE CIRCULAR BOSS");
+    macroAreWords ? writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z):
+      writeBlock(mFormat.format(811), WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z, "; CHECKPOSITIONAL TOLERANCE");
+   
     if (getProperty("EnableZeroPointCompensation") == true && WCS_CODE[7] === null) {
-      writeBlock(macroCall, "\"COMPZEROPOINT\"", WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      macroAreWords ? writeBlock(macroCall, "\"COMPZEROPOINT\"", WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z) :
+        writeBlock(mFormat.format(808), WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z, "; COMP ZERO POINT");
     }
 
     if (WCS_CODE[7] === "I1.") {
@@ -4036,15 +4054,19 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     protectedProbeMove(cycle, x, y, z - cycle.depth);
 
     WCS_CODE      = getProbingArguments(cycle, probeWorkOffsetCode);
-    BORE_DIAMETER = "B" + xyzFormat.format(cycle.width1);
+    BORE_DIAMETER = "D" + xyzFormat.format(cycle.width1);
     EXPECTED_X    = "X" + xyzFormat.format(x); //xOutput.format
     EXPECTED_Y    = "Y" + xyzFormat.format(y); //yOutput.format
     EXPECTED_Z    = "Z" + xyzFormat.format(cycle.stock - cycle.depth);
 
-    writeBlock(macroCall, "\"PROBEBORE\"", WCS_CODE[7], WCS_CODE[8], BORE_DIAMETER, WCS_CODE[10], WCS_CODE[2]);
-    writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+    macroAreWords ? writeBlock(macroCall, "\"PROBEBORE\"", WCS_CODE[7], WCS_CODE[8], BORE_DIAMETER, WCS_CODE[10], WCS_CODE[2]):
+      writeBlock(mFormat.format(830), WCS_CODE[7], WCS_CODE[8], BORE_DIAMETER, WCS_CODE[10], WCS_CODE[2], "; PROBE BORE");
+    macroAreWords ? writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z):
+      writeBlock(mFormat.format(811), WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z, "; CHECKPOSITIONAL TOLERANCE");
+    
     if (getProperty("EnableZeroPointCompensation") == true && WCS_CODE[7] === null) {
-      writeBlock(macroCall, "\"COMPZEROPOINT\"", WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      macroAreWords ? writeBlock(macroCall, "\"COMPZEROPOINT\"", WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z) :
+        writeBlock(mFormat.format(808), WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z, "; COMP ZERO POINT");
     }
 
     if (WCS_CODE[7] === "I1.") {
@@ -4100,16 +4122,20 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     protectedProbeMove(cycle, x, y, z - cycle.depth);
 
     WCS_CODE   = getProbingArguments(cycle, probeWorkOffsetCode);
-    XWEB_WIDTH = "B" + xyzFormat.format(cycle.width1);
-    YWEB_WIDTH = "C" + xyzFormat.format(cycle.width2);
+    XWEB_WIDTH = "X" + xyzFormat.format(cycle.width1);
+    YWEB_WIDTH = "Y" + xyzFormat.format(cycle.width2);
     EXPECTED_X = "X" + xyzFormat.format(x); //xOutput.format
     EXPECTED_Y = "Y" + xyzFormat.format(y); //yOutput.format
     EXPECTED_Z = "Z" + xyzFormat.format(cycle.stock - cycle.depth);
 
-    writeBlock(macroCall, "\"PROBEPOCKET\"", WCS_CODE[7], WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, WCS_CODE[10], WCS_CODE[2]);
-    writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+    macroAreWords ? writeBlock(macroCall, "\"PROBEPOCKET\"", WCS_CODE[7], WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, WCS_CODE[10], WCS_CODE[2]):
+      writeBlock(mFormat.format(820), WCS_CODE[7], WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, WCS_CODE[10], WCS_CODE[2], "; PROBE POCKET");
+    macroAreWords ? writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z, "; CHECKPOSITIONAL TOLERANCE"):
+      writeBlock(mFormat.format(811), WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z, "; CHECKPOSITIONAL TOLERANCE");
+
     if (getProperty("EnableZeroPointCompensation") == true && WCS_CODE[7] === null) {
-      writeBlock(macroCall, "\"COMPZEROPOINT\"", WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      macroAreWords ? writeBlock(macroCall, "\"COMPZEROPOINT\"", WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z) :
+        writeBlock(mFormat.format(808), WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z, "; COMP ZERO POINT");
     }
 
     if (WCS_CODE[7] === "I1.") {
@@ -4124,17 +4150,21 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     protectedProbeMove(cycle, x, y, z);
 
     WCS_CODE   = getProbingArguments(cycle, probeWorkOffsetCode);
-    XWEB_WIDTH = "B" + xyzFormat.format(cycle.width1);
-    YWEB_WIDTH = "C" + xyzFormat.format(cycle.width2);
+    XWEB_WIDTH = "X" + xyzFormat.format(cycle.width1);
+    YWEB_WIDTH = "Y" + xyzFormat.format(cycle.width2);
     EXPECTED_X = "X" + xyzFormat.format(x); //xOutput.format
     EXPECTED_Y = "Y" + xyzFormat.format(y); //yOutput.format
     EXPECTED_Z = "Z" + xyzFormat.format(cycle.stock - cycle.depth);
-    Z_DROP     = "D" + xyzFormat.format(cycle.depth);
+    Z_DROP     = "Z" + xyzFormat.format(cycle.depth);
 
-    writeBlock(macroCall, "\"PROBERECTANGULARBOSS\"", WCS_CODE[7], WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, Z_DROP,  WCS_CODE[10], WCS_CODE[2]);
-    writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+    macroAreWords ? writeBlock(macroCall, "\"PROBERECTANGULARBOSS\"", WCS_CODE[7], WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, Z_DROP,  WCS_CODE[10], WCS_CODE[2]):
+      writeBlock(mFormat.format(821), WCS_CODE[7], WCS_CODE[8], XWEB_WIDTH, YWEB_WIDTH, Z_DROP,  WCS_CODE[10], WCS_CODE[2], "; PROBERECT ANGULARBOSS");
+    macroAreWords ? writeBlock(macroCall, "\"CHECKPOSITIONALTOLERANCE\"", WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z):
+      writeBlock(mFormat.format(811), WCS_CODE[8], WCS_CODE[9], WCS_CODE[3], "V4", EXPECTED_X, EXPECTED_Y, EXPECTED_Z, "; CHECKPOSITIONAL TOLERANCE");
+
     if (getProperty("EnableZeroPointCompensation") == true && WCS_CODE[7] === null) {
-      writeBlock(macroCall, "\"COMPZEROPOINT\"", WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z);
+      macroAreWords ? writeBlock(macroCall, "\"COMPZEROPOINT\"", WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z) :
+        writeBlock(mFormat.format(808), WCS_CODE[8], WCS_CODE[9], EXPECTED_X, EXPECTED_Y, EXPECTED_Z, "; COMP ZERO POINT");
     }
 
     if (WCS_CODE[7] === "I1.") {
@@ -4189,10 +4219,11 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     if (xdir == 1 && ydir == 1) {CORNER_NUM = 2;} else if (xdir == 1 && ydir == -1) {CORNER_NUM = 4;} else if (xdir == -1 && ydir == 1) {CORNER_NUM = 1;} else if (xdir == -1 && ydir == -1) {CORNER_NUM = 3;}
 
     WCS_CODE         = getProbingArguments(cycle, probeWorkOffsetCode);
-    CORNER_POSITION  = "B" + CORNER_NUM;
-    PROBING_DISTANCE = "C" + xyzFormat.format(cycle.probeClearance + cycle.probeOvertravel);
+    CORNER_POSITION  = "C" + CORNER_NUM;
+    PROBING_DISTANCE = "E" + xyzFormat.format(cycle.probeClearance + cycle.probeOvertravel);
 
-    writeBlock(macroCall, "\"PROBEINSIDECORNER\"", WCS_CODE[8], CORNER_POSITION, PROBING_DISTANCE, WCS_CODE[10]);
+    macroAreWords ? writeBlock(macroCall, "\"PROBEINSIDECORNER\"", WCS_CODE[8], CORNER_POSITION, PROBING_DISTANCE, WCS_CODE[10]):
+      writeBlock(mFormat.format(837), WCS_CODE[8], CORNER_POSITION, PROBING_DISTANCE, WCS_CODE[10], "; PROBE INSIDE CORNER");
     break;
   case "probing-xy-outer-corner":
     //forceXYZ();
@@ -4203,15 +4234,12 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     if (xdir == 1 && ydir == 1) {CORNER_NUM = 3;} else if (xdir == 1 && ydir == -1) {CORNER_NUM = 1;} else if (xdir == -1 && ydir == 1) {CORNER_NUM = 4;} else if (xdir == -1 && ydir == -1) {CORNER_NUM = 2;}
 
     WCS_CODE         = getProbingArguments(cycle, probeWorkOffsetCode);
-    CORNER_POSITION  = "B" + CORNER_NUM;
-    TRAVEL_DISTANCE  = "C" + xyzFormat.format(2 * cycle.probeClearance + tool.diameter / 2);
-    PROBING_DISTANCE = "D" + xyzFormat.format(cycle.probeClearance + cycle.probeOvertravel);
+    CORNER_POSITION  = "C" + CORNER_NUM;
+    TRAVEL_DISTANCE  = "D" + xyzFormat.format(2 * cycle.probeClearance + tool.diameter / 2);
+    PROBING_DISTANCE = "E" + xyzFormat.format(cycle.probeClearance + cycle.probeOvertravel);
 
-    writeBlock(macroCall, "\"PROBEOUTSIDECORNER\"",
-      WCS_CODE[8],
-      CORNER_POSITION,
-      TRAVEL_DISTANCE,
-      PROBING_DISTANCE, "Q0");
+    macroAreWords ? writeBlock(macroCall, "\"PROBEOUTSIDECORNER\"", WCS_CODE[8], CORNER_POSITION, TRAVEL_DISTANCE, PROBING_DISTANCE, "Q0"):
+      writeBlock(mFormat.format(839), WCS_CODE[8], CORNER_POSITION, TRAVEL_DISTANCE, PROBING_DISTANCE, "Q0", "; PROBE OUTSIDE CORNER");
     break;
   case "probing-x-plane-angle":
     error(localize("probing-x-plane-angle - Unsupported Probing Cycle"));
@@ -4376,13 +4404,16 @@ function protectedProbeMove(_cycle, x, y, z) {
   var _z = zOutput.format(z);
   var macroCall = settings.probing.macroCall;
   if (_z && z >= getCurrentPosition().z) {
-    writeBlock(macroCall, "\"PROTECTEDMOVE\"", _z, getFeed(cycle.feedrate)); // protected positioning move
+    macroAreWords ? writeBlock(macroCall, "\"PROTECTEDMOVE\"", _z, getFeed(cycle.feedrate)):
+      writeBlock(mFormat.format(810), _z, getFeed(cycle.feedrate), "; PROTECTED MOVE"); // protected positioning move
   }
   if (_x || _y) {
-    writeBlock(macroCall, "\"PROTECTEDMOVE\"", _x, _y, getFeed(highFeedrate)); // protected positioning move
+    macroAreWords ? writeBlock(macroCall, "\"PROTECTEDMOVE\"", _x, _y, getFeed(highFeedrate)):
+      writeBlock(mFormat.format(810), _x, _y, getFeed(highFeedrate), "; PROTECTED MOVE"); // protected positioning move
   }
   if (_z && z < getCurrentPosition().z) {
-    writeBlock(macroCall, "\"PROTECTEDMOVE\"", _z, getFeed(cycle.feedrate)); // protected positioning move
+    macroAreWords ? writeBlock(macroCall, "\"PROTECTEDMOVE\"", _z, getFeed(cycle.feedrate)):
+      writeBlock(mFormat.format(810), _z, getFeed(cycle.feedrate), "; PROTECTED MOVE") ; // protected positioning move
   }
 }
 // <<<<< INCLUDED FROM include_files/protectedProbeMove_renishaw.cpi

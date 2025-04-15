@@ -1,0 +1,49 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+// PROBECIRCULARBOSS
+// Probe a circular boss in X and Y
+
+// Argument A -> #1 is the work coordinate system to store offsets in
+// Argument D -> #4 is the expected DIAMETER
+// Argument Z -> #26 is the Z drop height
+// Argument I -> #9 print results enabled by fusion360
+// Argument Q -> #17 turns on inspection report on/off: 0 leaves it off default; 1 turns it on 
+// Argument R -> #18 oversize tolorance
+// Argument S -> #19 enable oversize check
+
+// Initial Coding: Justin Gray
+// Modified 1/14/2024: Joshua Smith
+// Simplified WCS extended number math, added probe error checking, added probe inspection report
+// Modified 31/03/2025: Robot Oblivion
+
+//calling our web macros the first time centers us
+M824 A#1 X#4 Z#26 I#9 Q0 R#18 S#19
+M825 A#1 Y#4 Z#26 I#9 Q0 R#18 S#19
+
+//calling our web macros the second time gives an accurate center
+M824 A#1 X#4 Z#26 I#9 Q0 R#18 S#19
+M825 A#1 Y#4 Z#26 I#9 Q0 R#18 S#19
+
+//average Diameter calculation
+//@999 and @998 are set in the web macros
+@997 = [@998 + @999]/2
+
+//simple inspection reporting
+IF [#17 > 0]
+  #97 = ROUND[@997 * @91] / @91  // Round to 3/4 decimal places
+  #98 = ROUND[@998 * @91] / @91  // Round to 3/4 decimal places
+  #99 = ROUND[@999 * @91] / @91  // Round to 3/4 decimal places
+  IF[@10 == 21]
+    MENU_ADD["Part Diameter mm X: #98",""]; 
+    MENU_ADD["Part Diameter mm Y: #99",""];
+    MENU_ADD["AVG Diameter mm: #97",""];  //THE WORD AVERAGE IS TO LONG FOR THE MENU
+  ELSE
+    MENU_ADD["Part Diameter In X: #98",""]; 
+    MENU_ADD["Part Diameter In Y: #99",""];
+    MENU_ADD["AVG Diameter In: #97",""];  //THE WORD AVERAGE IS TO LONG FOR THE MENU
+  END_IF
+  MENU["INSPECTION REPORT","RESULTS","",1];
+END_IF
+
+G90
+M99

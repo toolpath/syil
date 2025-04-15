@@ -18,9 +18,9 @@
 // load probe config 
 G65 "PROBECONFIG" A#1 B#2
 
-#114 = @114         // processed extended WCS number provided by ProbeConfig macro
-#115 = @115         // processed extended WCS number provided by ProbeConfig macro
-#128 = @128         // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+#114 = @121         // processed extended WCS number provided by ProbeConfig macro
+#115 = @122         // processed extended WCS number provided by ProbeConfig macro
+#128 = @96         // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
 
 IF[#128 == 1]
     M19 // ORIENT SPINDLE
@@ -45,24 +45,24 @@ IF [#2 == #0]
 ELSEIF [#115 < 1]  
   #119 =  R_G53G59_COOR[0,#2,1] // x override zero 
   #120 =  R_G53G59_COOR[0,#2,2] // y override zero 
-  #121 =  R_G53G59_COOR[0,#2,3] // z override zero 
+  #101 =  R_G53G59_COOR[0,#2,3] // z override zero 
 ELSE
   #119 =  R_G54EXP_COOR[0,#115,1] // x work zero 
   #120 =  R_G54EXP_COOR[0,#115,2] // y work zero 
-  #121 =  R_G54EXP_COOR[0,#115,3] // z work zero 
+  #101 =  R_G54EXP_COOR[0,#115,3] // z work zero 
 END_IF
 
 // error = probed point - expected point 
-#122 = #116 - [#24 + #119] // x error calculation between selected wcs and expected probe point 
+#102 = #116 - [#24 + #119] // x error calculation between selected wcs and expected probe point 
 #123 = #117 - [#25 + #120] // y error calculation between selected wcs and expected probe point 
-#124 = #118 - [#26 + #121] // z error calculation between selected wcs and expected probe point 
+#124 = #118 - [#26 + #101] // z error calculation between selected wcs and expected probe point 
   
 // if the tolorance is null, default it to global variable from the probe config 
 IF[#20==#0]
- #20 = @110
+ #20 = @108
 END_IF
 
-#130 = ABS[#122] // absolute x error 
+#130 = ABS[#102] // absolute x error 
 #131 = ABS[#123] // absolute y error 
 #132 = ABS[#124] // absolute z error 
 
@@ -70,8 +70,8 @@ END_IF
 IF[#21!=#0 && #1==#2 ]
   ALARM["WCS override must be enabled in the Fusion probing routine and the override WCS must be different than the work WCS."]
 ELSEIF[#21!=#0 && #130 > #20 && [#22 == 1 || #22 == 4 || #22 == 5]]
-  #130 = ROUND[#130 * @11] / @11  // Round to 3/4 decimal places
-  #116 = ROUND[#116 * @11] / @11  // Round to 3/4 decimal places
+  #130 = ROUND[#130 * @91] / @91  // Round to 3/4 decimal places
+  #116 = ROUND[#116 * @91] / @91  // Round to 3/4 decimal places
   MENU_ADD["Override point: #119",""];
   MENU_ADD["Probed point:    #116",""];
   MENU_ADD["Limit / expected: #20 / #24",""];
@@ -79,8 +79,8 @@ ELSEIF[#21!=#0 && #130 > #20 && [#22 == 1 || #22 == 4 || #22 == 5]]
   MENU["Error","Stock out of position X","",4];
   ALARM["ERROR: Stock outside of positional tolerance in X"]
 ELSEIF [#21!=#0 && #131 > #20 && [#22 == 2 || #22 == 4 || #22 == 5]]
-  #131 = ROUND[#131 * @11] / @11  // Round to 3/4 decimal places
-  #117 = ROUND[#117 * @11] / @11  // Round to 3/4 decimal places
+  #131 = ROUND[#131 * @91] / @91  // Round to 3/4 decimal places
+  #117 = ROUND[#117 * @91] / @91  // Round to 3/4 decimal places
   MENU_ADD["Override point: #120",""];
   MENU_ADD["Probed point:    #117",""];
   MENU_ADD["Limit / expected: #20 / #25",""];
@@ -88,9 +88,9 @@ ELSEIF [#21!=#0 && #131 > #20 && [#22 == 2 || #22 == 4 || #22 == 5]]
   MENU["Error","Stock out of position Y","",1];
   ALARM["ERROR: Stock outside of positional tolerance in Y"]
 ELSEIF [#21!=#0 && #132 > #20 && [#22 == 3 || #22 == 5]]
-  #132 = ROUND[#132 * @11] / @11  // Round to 3/4 decimal places
-  #118 = ROUND[#118 * @11] / @11  // Round to 3/4 decimal places
-  MENU_ADD["Override point: #121",""];
+  #132 = ROUND[#132 * @91] / @91  // Round to 3/4 decimal places
+  #118 = ROUND[#118 * @91] / @91  // Round to 3/4 decimal places
+  MENU_ADD["Override point: #101",""];
   MENU_ADD["Probed point:    #118",""];  
   MENU_ADD["Limit / expected: #20 / #26",""]; 
   MENU_ADD["Out of position Z: #132",""]; 

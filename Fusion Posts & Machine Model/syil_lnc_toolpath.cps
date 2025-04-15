@@ -3489,7 +3489,7 @@ function getPointNumber() {
   if (typeof inspectionWriteVariables == "function") {
     return (inspectionVariables.pointNumber);
   } else {
-    return ("#122[60]");
+    return ("#102[60]");
   }
 }
 

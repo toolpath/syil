@@ -1,0 +1,55 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+//CALIBRATEPROBEBLOCK
+//CALIBRATE PROBE TIP DIAMETER using a rectanglar object 
+
+// Argument X -> #24* is optional and the expected X length of the artifact. Will over ride value in ProbeConfig if called
+// Argument Y -> #25* is optional and the expected Y length of the artifact. Will over ride value in ProbeConfig if called
+// Argument Z -> #26 is the Z drop height
+// **Gauge block size set in ProbeConfig file
+
+// Initial Coding: Justin Gray
+// Modified 08/04/2025: Robot Oblivion
+
+G90 G94 G17 G49 G40 G80
+
+// load probe config
+M800
+
+M19 // ORIENT SPINDLE
+
+// important local variables
+#100 = @100       // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
+#124 = @94       // Calibrated X size of gauge block
+#125 = @95       // Calibrated Y size of gauge block
+
+// Over ride probeConfig gauge X size if X argument used
+IF [#24 != #0]
+  #124 = #24
+END_IF
+// Over ride probeConfig gauge Y size if Y argument used
+IF [#25 != #0]
+  #125 = #25
+END_IF
+
+// Make sure diameter is zero when calibrating
+W_TOOL_DATA[0,#100,3,0]    // store tool diameter
+
+// calling web probe macros macros to measure the rectangle
+M824 A0 X#124 Z#26 Q0 
+M825 A0 Y#125 Z#26 Q0 
+
+#131 = @998 // stored value of the measured X distance
+#132 = @999 // stored valued of the measured Y distance
+
+#133 = #24-#131                // error in x
+#134 = #25-#132                // error in y
+#135 = ABS[#133 + #134]/2     // average error
+W_TOOL_DATA[0,#100,3,#135]    // store tool diameter
+
+MENU_ADD["Ruby Diameter Set To: #135",""];  
+MENU["Calibration report", "Results", "", 1];
+
+M20                       // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+G90
+M99

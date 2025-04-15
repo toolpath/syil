@@ -1,0 +1,191 @@
+// Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
+
+// PROBEXYANGLE
+// Probe and report an angle measured in the XY plane
+
+// Argument A -> #1 is the work coordinate system to store offsets in
+// Argument B -> #2 is the distance between probing points
+// Argument C -> #3 is the probing distance
+// Argument D -> #4 is the probing axis 1=X, 2=Y
+// Argument Q -> #17 turns on inspection report on/off: 0 leaves it off ; 1 turns it on ; it is off by default
+
+// Initial Coding: Joshua Smith
+// Modified 31/03/2025: Robot Oblivion
+
+// load probe config
+M800 A#1
+
+// important local variables
+#100 = @100             // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
+#110 = @103             // FEED SPEED PROVIDED BY PROBECONFIG MACRO
+#111 = @104             // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#112 = @105             // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#108 = @107             // PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO
+#109 = R_MACH_COOR[0,1] // GET MACHINE X COORDINATE
+#110 = R_MACH_COOR[0,2] // GET MACHINE y COORDINATE
+#111 = R_MACH_COOR[0,3] // GET MACHINE z COORDINATE
+#128 = @96             // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+#114 = @121             // processed extended WCS number provided by ProbeConfig macro
+
+IF[#128 == 1]
+    M19 // ORIENT SPINDLE
+END_IF
+
+
+IF[#4== 1]
+ // Probe X the desired distance and at fast feed
+ G31 G91 P2 X[#3] F#111    
+ 
+ // Error Checking
+ IF[R_SKIP[0,1] == 0]
+  ALARM["ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
+  GOTO1 // go to line with N1 and quit
+ END_IF
+ 
+ // Start probing in X
+ G91 G01 X-[#108]                     // back off 1/4 the probing distance
+ FIX_CUT_OR_ON
+ G31 G91 P2 X[#108] F#112               // Probe X the desired distance at slow feed
+ FIX_CUT_OR_OFF
+ #120 = R_SKIP[0,201]                   // GET MACHINE X COORDINATE
+ #101 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
+ #102 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
+ G91 G01 X-[#108]                     // back off 1/4 the probing distance
+ 
+ // move to original X position
+ G31 G91 P2 X[-#109+#120+#108] F#111    
+ 
+ // Error Checking
+ IF[R_SKIP[0,1] == 1]
+  ALARM["ERROR: PREMATURE PROBE COLLISION"]
+  GOTO1 // go to line with N1 and quit
+ END_IF
+ 
+ // Move disired probe distance
+ G31 G91 P2 Y[#2] F#111
+ 
+ // Error Checking
+ IF[R_SKIP[0,1] == 1]
+  ALARM["ERROR: PREMATURE PROBE COLLISION"]
+  GOTO1 // go to line with N1 and quit
+ END_IF
+ 
+ // Probe X the desired distance and at fast feed
+ G31 G91 P2 X[#3] F#111
+ 
+ // Error Checking
+ IF[R_SKIP[0,1] == 0]
+  ALARM["ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
+  GOTO1 // go to line with N1 and quit
+ END_IF
+ 
+ 
+ // Start probing in X
+ G91 G01 X-[#108]                     // back off 1/4 the probing distance
+ FIX_CUT_OR_ON
+ G31 G91 P2 X[#108] F#112               // Probe X the desired distance at slow feed
+ FIX_CUT_OR_OFF
+ #123 = R_SKIP[0,201]                   // GET MACHINE X COORDINATE
+ #124 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
+ #125 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
+ G91 G01 X-[#108]                     // back off 1/4 the probing distance
+ 
+ // move to original X position
+ G31 G91 P2 X[-#109+#123+#108] F#111    
+ 
+ // Error Checking
+ IF[R_SKIP[0,1] == 1]
+  ALARM["ERROR: PREMATURE PROBE COLLISION"]
+  GOTO1 // go to line with N1 and quit
+ END_IF
+
+ // angle claculation
+ #126 = ATAN[[#123-#120],[#124-#101]]
+
+ELSE
+ // Probe Y the desired distance and at fast feed
+ G31 G91 P2 Y[#3] F#111    
+ 
+ // Error Checking
+ IF[R_SKIP[0,1] == 0]
+  ALARM["ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
+  GOTO1 // go to line with N1 and quit
+ END_IF
+ 
+ // Start probing in Y
+ G91 G01 Y-[#108]                     // back off 1/4 the probing distance
+ FIX_CUT_OR_ON
+ G31 G91 P2 Y[#108] F#112               // Probe X the desired distance at slow feed
+ FIX_CUT_OR_OFF
+ #120 = R_SKIP[0,201]                   // GET MACHINE X COORDINATE
+ #101 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
+ #102 = R_SKIP[0,202]                   // GET MACHINE Z COORDINATE
+ G91 G01 Y-[#108]                     // back off 1/4 the probing distance
+ 
+ // move to original Y position
+ G31 G91 P2 Y[-#110+#101+#108] F#111    
+ 
+ // Error Checking
+ IF[R_SKIP[0,1] == 1]
+  ALARM["ERROR: PREMATURE PROBE COLLISION"]
+  GOTO1 // go to line with N1 and quit
+ END_IF
+ 
+ // Move disired probe distance
+ G31 G91 P2 X[#2] F#111
+ 
+ // Error Checking
+ IF[R_SKIP[0,1] == 1]
+  ALARM["ERROR: PREMATURE PROBE COLLISION"]
+  GOTO1 // go to line with N1 and quit
+ END_IF
+ 
+ // Probe Y the desired distance and at fast feed
+ G31 G91 P2 Y[#3] F#111
+ 
+ // Error Checking
+ IF[R_SKIP[0,1] == 0]
+  ALARM["ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
+  GOTO1 // go to line with N1 and quit
+ END_IF
+ 
+ 
+ // Start probing in Y
+ G91 G01 Y-[#108]                     // back off 1/4 the probing distance
+ FIX_CUT_OR_ON
+ G31 G91 P2 Y[#108] F#112               // Probe X the desired distance at slow feed
+ FIX_CUT_OR_OFF
+ #123 = R_SKIP[0,201]                   // GET MACHINE X COORDINATE
+ #124 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
+ #125 = R_SKIP[0,202]                   // GET MACHINE Z COORDINATE
+ G91 G01 Y-[#108]                     // back off 1/4 the probing distance
+ 
+ // move to original X position
+ G31 G91 P2 Y[-#110+#124+#108] F#111    
+ 
+ // Error Checking
+ IF[R_SKIP[0,1] == 1]
+  ALARM["ERROR: PREMATURE PROBE COLLISION"]
+  GOTO1 // go to line with N1 and quit
+ END_IF
+
+ // angle claculation
+ #126 = ATAN[[#124-#101],[#123-#120]]
+
+END_IF
+
+// simple inspection reporting
+IF [#17 > 0]
+  MENU_ADD["MEASURED ANGLE: #126",""]; 
+  MENU["INSPECTION REPORT","RESULTS","",1];
+END_IF
+
+
+N1
+
+IF[#128 == 1]
+    M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+END_IF
+
+G90
+M99

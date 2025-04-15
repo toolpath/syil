@@ -20,12 +20,12 @@ G65 "PROBECONFIG" A#1
 #110 = @103             // FEED SPEED PROVIDED BY PROBECONFIG MACRO
 #111 = @104             // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
 #112 = @105             // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
-#108 = @108             // PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO
+#108 = @107             // PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO
 #109 = R_MACH_COOR[0,1] // GET MACHINE X COORDINATE
 #110 = R_MACH_COOR[0,2] // GET MACHINE y COORDINATE
 #111 = R_MACH_COOR[0,3] // GET MACHINE z COORDINATE
-#128 = @128             // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
-#114 = @114             // processed extended WCS number provided by ProbeConfig macro
+#128 = @96             // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+#114 = @121             // processed extended WCS number provided by ProbeConfig macro
 
 IF[#128 == 1]
     M19 // ORIENT SPINDLE
@@ -48,8 +48,8 @@ IF[#4== 1]
  G31 G91 P2 X[#108] F#112               // Probe X the desired distance at slow feed
  FIX_CUT_OR_OFF
  #120 = R_SKIP[0,201]                   // GET MACHINE X COORDINATE
- #121 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
- #122 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
+ #101 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
+ #102 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
  G91 G01 X-[#108]                     // back off 1/4 the probing distance
  
  // move to original X position
@@ -100,7 +100,7 @@ IF[#4== 1]
  END_IF
 
  // angle claculation
- #126 = ATAN[[#123-#120],[#124-#121]]
+ #126 = ATAN[[#123-#120],[#124-#101]]
 
 ELSE
  // Probe Y the desired distance and at fast feed
@@ -118,12 +118,12 @@ ELSE
  G31 G91 P2 Y[#108] F#112               // Probe X the desired distance at slow feed
  FIX_CUT_OR_OFF
  #120 = R_SKIP[0,201]                   // GET MACHINE X COORDINATE
- #121 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
- #122 = R_SKIP[0,202]                   // GET MACHINE Z COORDINATE
+ #101 = R_SKIP[0,202]                   // GET MACHINE Y COORDINATE
+ #102 = R_SKIP[0,202]                   // GET MACHINE Z COORDINATE
  G91 G01 Y-[#108]                     // back off 1/4 the probing distance
  
  // move to original Y position
- G31 G91 P2 Y[-#110+#121+#108] F#111    
+ G31 G91 P2 Y[-#110+#101+#108] F#111    
  
  // Error Checking
  IF[R_SKIP[0,1] == 1]
@@ -170,7 +170,7 @@ ELSE
  END_IF
 
  // angle claculation
- #126 = ATAN[[#124-#121],[#123-#120]]
+ #126 = ATAN[[#124-#101],[#123-#120]]
 
 END_IF
 

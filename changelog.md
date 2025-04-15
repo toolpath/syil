@@ -1,3 +1,13 @@
+# V1.3.0
+- created Maker_macro pack and updated the post and macros to suit
+- Probe operations have a post tab to add a Q1 call to display probed results at the machine.
+- Milling operations have a post tab with a drop-down to select HSHP level.
+- Probing arguments reworked to use the axis being measured rather than ABC ie PROBEX A54 X10
+- Reworking of @ variables to avoid conflicts with stock Syil macros
+- Gauge block and manual tool change locations added to PROBECONFIG
+- ReadMe updated with all the above changes and additions
+- assorted bug fixes  
+
 # V1.2.3
 - Updated the macro set for compatibility with post-processor Revision 44168.
 - Added a wide range of user messages to provide extra control information during probing.
@@ -31,6 +41,5 @@
 - bug fix in docs and macro for the CALIBRATEPROBEZ macro 
 - bug fix in all macros for picking extended work offsets
 
-
 # v1.0.0
-Initial functional release!
+- Initial functional release!

@@ -4,11 +4,11 @@
 // Probe a bore in X and Y
 
 // Argument A -> #1 is the work coordinate system to store offsets in
-// Argument B -> #2 is the expected DIAMETER
+// Argument D -> #4 is the expected DIAMETER
 // Argument I -> #9 print results enabled by fusion360
 // Argument Q -> #17 turns on inspection report on/off: 0 leaves it off default; 1 turns it on 
-// Argument S -> #19 oversize tolorance
-// Argument T -> #20 enable oversize check
+// Argument R -> #18 oversize tolorance
+// Argument S -> #19 enable oversize check
 
 // Initial Coding: Justin Gray
 // Modified 1/14/2024: Joshua Smith
@@ -16,12 +16,12 @@
 // Modified 31/03/2025: Robot Oblivion
 
  //calling our slot macros the first time centers probe
- G65 "PROBEXSLOT" A#1 B#2 I#9 Q0 R#18 S#19
- G65 "PROBEYSLOT" A#1 B#2 I#9 Q0 R#18 S#19
+ G65 "PROBEXSLOT" A#1 X#4 I#9 Q0 R#18 S#19
+ G65 "PROBEYSLOT" A#1 Y#4 I#9 Q0 R#18 S#19
 
  //calling our slot macros a second time gives an accurate inspection
- G65 "PROBEXSLOT" A#1 B#2 I#9 Q0 R#18 S#19
- G65 "PROBEYSLOT" A#1 B#2 I#9 Q0 R#18 S#19
+ G65 "PROBEXSLOT" A#1 X#4 I#9 Q0 R#18 S#19
+ G65 "PROBEYSLOT" A#1 Y#4 I#9 Q0 R#18 S#19
 
 //average Diameter calculation
 //@999 and @998 are set in the web macros
@@ -29,9 +29,9 @@
 
 //simple inspection reporting
 IF [#17 > 0]
-  #97 = ROUND[@997 * @11] / @11  // Round to 3/4 decimal places
-  #98 = ROUND[@998 * @11] / @11  // Round to 3/4 decimal places
-  #99 = ROUND[@999 * @11] / @11  // Round to 3/4 decimal places
+  #97 = ROUND[@997 * @91] / @91  // Round to 3/4 decimal places
+  #98 = ROUND[@998 * @91] / @91  // Round to 3/4 decimal places
+  #99 = ROUND[@999 * @91] / @91  // Round to 3/4 decimal places
   IF[@10 == 21]
     MENU_ADD["Part Diameter mm X: #98",""]; 
     MENU_ADD["Part Diameter mm Y: #99",""];

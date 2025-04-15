@@ -3,8 +3,8 @@
 // TOOLSET
 // measure the tool length offset using the tool setter
 
-// Argument A -> #1 is the tool diameter
-// Argument B -> #2 is the tool angle
+// Argument A -> #1 is the tool angle
+// Argument D -> #4 is the tool diameter
 
 // Initial Coding: Justin Gray
 
@@ -15,8 +15,8 @@
 G65 "PROBECONFIG" T#100
 
 
-#104 = @117                     // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
-#105 = @116                     // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#104 = @109                     // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#105 = @110                     // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
 #110 = R_TOOL_DATA[0,199,203]   // TOOLSETTER - T199 - REFERENCE HEIGHT
 #112 = @112                     // TOOLSETTER EXTENDED WORKOFFSET NUMBER
 
@@ -24,10 +24,10 @@ G65 "PROBECONFIG" T#100
 G90 G94 G17 G49 G40 G80
 G53 G90 G00 Z0                  // Move the spindle all the way up before xy movement for safety
 G54 P#112                        // LOCATION OF TOOL SETTER IS X0 Y0 ON G54P100
-G90 G0 X[0+#1/2] Y0             // MOVE TO TOOLSETTER + TOOL RADIUS OFFSET
+G90 G0 X[0+#4/2] Y0             // MOVE TO TOOLSETTER + TOOL RADIUS OFFSET
 
 M20                             // UNLOCK SPINDLE ORIENT
-M19 P#2                         // ORIENT SPINDLE TO THE GIVEN ANGLE
+M19 P#1                         // ORIENT SPINDLE TO THE GIVEN ANGLE
 
 G91                             // RELATIVE MODE
 
@@ -50,9 +50,9 @@ FIX_CUT_OR_OFF
 
 // NOTE: LENGTH OF MASTER GAUGE TOOL IS ACOUNTED FOR IN CALIBRATION
 //       MAKE SURE THE CORRECT VALUE IS SET IN PROBECONFIG
-#121 = [#120 - #110]           // COMPUTE TOOL LENGTH
+#101 = [#120 - #110]           // COMPUTE TOOL LENGTH
 
-W_TOOL_DATA[0,#100,203,#121]    // WRITE TOOL Z LENGTH
+W_TOOL_DATA[0,#100,203,#101]    // WRITE TOOL Z LENGTH
 W_TOOL_DATA[0,#100,101,0]       // SET TOOL RADIUS AND ALL WEAR OFFSETS TO 0
 W_TOOL_DATA[0,#100,102,0]
 W_TOOL_DATA[0,#100,103,0]

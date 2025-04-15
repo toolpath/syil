@@ -1,0 +1,130 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+// PROBEYSLOT
+// Probe a web in X from left to right
+
+// Argument A -> #1 is the work coordinate system to store offsets in
+// Argument Y -> #25 is the expected length of the web in the Y direction
+// Argument I -> #9 print results enabled by fusion360
+// Argument Q -> #17 turns on inspection report on/off: 0 leaves it off default; 1 turns it on 
+// Argument R -> #18 oversize tolorance
+// Argument S -> #19 enable oversize check
+
+// Initial Coding: Justin Gray
+// Modified 1/14/2024: Joshua Smith
+// Simplified WCS extended number math, added probe error checking, added probe inspection report
+// Modified 31/03/2025: Robot Oblivion
+
+// load probe config
+M800 A#1
+
+M20                             // UNLOCK SPINDLE ORIENT
+M19 P270                         // ORIENT SPINDLE 270 DEGREES TO KEEP THE POBING POINT THE SAME
+
+// important local variables
+#100 = @100             //TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
+#110 = @103             //FEED SPEED PROVIDED BY PROBECONFIG MACRO
+#111 = @104             //FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#112 = @105             //SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#101 = @130             //TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO
+#102 = @106             //WEB PROBE DISTANCE PROVIDED BY PROBECONFIG MACRO
+#108 = @107             //PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO
+#25   = ABS[#25]
+#114 = @121         // processed extended WCS number provided by ProbeConfig macro
+
+//probe Y starting from a negative offset and probing in the positive direction
+//MOVE TO -Y SIDE OF THE PART, BEFORE STARTING TO PROBE
+G31 G91 P2 Y-[#25/2+#102] F#111
+
+//Error Checking
+IF[R_SKIP[0,1] == 0]
+ ALARM["ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
+ GOTO1 //go to line with N1 and quit
+END_IF
+
+G91 G01 Y[#108]                    //back off
+FIX_CUT_OR_ON
+G31 G91 P2 Y[-#108] F#112          //FEED UNTIL SKIP SLOW
+FIX_CUT_OR_OFF
+#104=R_SKIP[0,202]                 //GET FIRST MACHINE Y COORDINATE
+G91 G01 Y[#108]                    //back off
+
+M20                              // UNLOCK SPINDLE ORIENT
+M19 P90                          // ORIENT SPINDLE 90 DEGREES TO KEEP THE POBING POINT THE SAME
+
+//move to the opposite side of the part
+G31 G91 P2 Y[#25+#102-#108] F#111  //move to other side of the part,pobe distance  away
+
+//Error Checking
+IF[R_SKIP[0,1] == 0]
+ ALARM["ERROR:  FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
+ GOTO1 //go to line with N1 and quit
+END_IF
+
+G91 G01 Y[-#108]                      //back off
+FIX_CUT_OR_ON
+G31 G91 P2 Y[#108] F#112              //FEED UNTIL SKIP SLOW
+FIX_CUT_OR_OFF
+#105=R_SKIP[0,202]                    //GET SECOND MACHINE Y COORDINATE
+G91 G01 Y[-#108] F#110                //back off
+
+//COMPUTE RELATIVE DISTANCE TO CENTER OF THE PART
+#106 = [[#105-#104]/2]                //calculate center
+#107 = ABS[#105-#104]+#101            //calculate distance: distance - diameter
+@999 = #107                           //save distance to a global variable for use with other macros
+G91 G01 Y[-#106 + #108]               //MOVE TO CENTER OF THE PART
+#104=R_MACH_COOR[0,2]                 //GET MACHINE Y COORDINATE
+#126=ABS[#107-#25]                    //expected stock error
+
+//if the tolorance is null, default it to global variable from the probe config
+IF[#18==#0]
+ #18 = @108
+END_IF
+
+//oversized stock alarm if stock error is greater than tolorance
+IF[#19!=#0 && #126>#18 ]
+ #136 = ROUND[[#107-#25] * @91] / @91  // Round to 3/4 decimal places
+ #107 = ROUND[#107 * @91] / @91  // Round to 3/4 decimal places
+ MENU_ADD["Expected size: #25",""];
+ MENU_ADD["Probed size:   #107",""];
+ MENU_ADD["Tolerance: #18",""];
+ MENU_ADD["Off-target: #136",""];
+ MENU["Error","Stock outside of tolerance in Y","",1];
+ IF[@97 == 1]
+  ALARM["Error: Stock outside of tolerance in Y"]
+ END_IF
+END_IF
+
+//safety check for inspection variable
+IF[#9 == #0]
+ #9 = 0
+END_IF
+
+//STORE Y OFFSET
+IF [#1 == #0 || #9 > 0]
+ //DO NOT WRITE ANYTHING TO WCS
+ELSEIF [#114 < 1]  
+  W_G53G59_COOR[0,#1,2,#104]
+ELSE
+  W_G54EXP_COOR[0,#114,2,#104]
+END_IF
+
+//simple inspection reporting
+IF [#17 > 0]
+  #99 = ROUND[@999 * @91] / @91  // Round to 3/4 decimal places
+  IF[@10 == 21]
+    MENU_ADD["Part Length mm Y: #99",""]; 
+  ELSE
+    MENU_ADD["Part Length In Y: #99",""];
+  END_IF 
+ MENU["INSPECTION REPORT","RESULTS","",1];
+END_IF
+
+N1
+
+IF[#128 == 1]
+    M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+END_IF
+
+G90
+M99

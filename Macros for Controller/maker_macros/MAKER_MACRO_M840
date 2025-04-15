@@ -1,0 +1,160 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+//FINDCOR
+// Process is based on a rectangular artifact 
+// mounted to the 4th axis 
+// STEPS
+// 1) Position gauge surface of the artifact aligned vertically
+// 2) Probe -Y at a given (X,Z) near the top of the artifact
+// 3) Rotate the artifact 180 degrees
+// 4) Reposition and probe at + Y at the same Z height as (2)
+// 5) Y-COR is computed as the avg. of two positions. Diameter is also computed as the delta
+// 6) Rotate the artifact -90 degrees (gauging surface is now level with table)
+// 7) Reposition to Y=COR, then probe Z. 
+// 8) With diameter + Z probe point compute the Z-COR
+
+// Argument A -> #1 is the WCS to store the COR into
+// Argument S -> #19 tuns on saving of the starting probe location
+// Argument W -> #23 is the approximate width of the reference artifact 
+
+// Initial Coding: Justin Gray, Josh Smith
+
+IF[#23==#0] // null check 
+    #23 = 1.0 // assume the narrow side of a 123 block
+END_IF
+
+// load probe config
+M800 A#1
+#114 = @121         // processed extended WCS number provided by ProbeConfig macro
+
+M19 // ORIENT SPINDLE
+
+#105 = @133             //TOOL LENGTH PROVIDED BY PROBECONFIG MACRO
+#108 = @107             //PROBE BACK OFF DISTANCE
+#109 = @114             //WCS TO STORE THE INITIAL PROBING LOCATION INTO
+#110 = @103             //FEED SPEED PROVIDED BY PROBECONFIG MACRO
+#111 = @104             //FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#112 = @105             //SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#101 = @130             //TOOL DIAMETER PROVIDED BY PROBECONFIG MACRO
+
+// CONVINIENT TO WORK IN PROBE 0 WCS
+
+G54 P#109 
+
+// store current X,Y,Z
+// ASSUME THE PROBE IS AT -Y
+// AT THE Z HEIGHT YOU WANT TO PROBE AT 
+#117 = R_MACH_COOR[0,1]    // MACHINE X COORDINATE
+#118 = R_MACH_COOR[0,2]    // MACHINE Y COORDINATE
+#119 = R_MACH_COOR[0,3]    // MACHINE Z COORDINATE
+
+//PULL A0 FROM G59
+#120 = R_G53G59_COOR[0,59,4]
+W_G54EXP_COOR[0,#109,4,#120]
+
+IF[#19 != #0] // null check
+  // SAVE THE INITIAL POSITION OF THE PROBE AS THE WCS 0
+  
+  W_G54EXP_COOR[0,#109,1,#117]
+  W_G54EXP_COOR[0,#109,2,#118]
+  W_G54EXP_COOR[0,#109,3,#119]
+
+
+  // XYZ ABS IS NOW 0
+
+  // GET THE PROBE CLEAR
+  M810 Z2.0
+
+  // ROTATE THE ARTIFACT
+  // THIS ASSUMES YOUR CURRENT WCS HAS A0 SET
+  M10 
+  G0 A0.
+  M11 
+
+  // PUT THE PROBE BACK IN PLACE
+  M810 Z0
+
+ELSE
+  // RETRACT TO SAFE Z 
+G53 G90 G00 Z0  
+  // POSITION THE ROTATRY AXIS AT A0
+  M10 
+  G0 A0.
+  M11 
+
+  // MOVE PROBE TO 0
+  M810 X0 Y0
+  M810 Z0  
+END_IF
+
+
+// PROBE PART IN +Y DIRECTION
+M815 B0.5 
+// probe value stored in @996, so we make a copy
+#120 = @996 
+
+// GET THE PROBE CLEAR
+M810 Y-0.25
+M810 Z2.0
+
+// ROTATE THE ARTIFACT
+M10 
+G0 A180.
+M11
+
+// REPOSITION THE PROBE
+M810 Y[#23+0.5+#108] 
+M810 Z0
+
+// PROBE PART IN -Y DIRECTION
+M815 B-0.5
+#101 = @996 
+
+// GET THE PROBE CLEAR
+M810 Z[2+4*#131]
+
+// COMPUTE THE DIAMETER 
+#130 = [#101 - #120]
+// COMPUTE THE RADIUS 
+#131 = [#130 / 2.]
+// Compute THE Y-COR IN MACHINE COORDS
+#132 = [#120 + #131] 
+
+// NEED TO CONVERT MACHINE COORDINATES TO ABS 
+#133 = R_G54EXP_COOR[0,#109,2] // Y WCS OFFSET
+// REPOSITION THE PROBE OVER THE Y-COR
+M810 Y[#132-#133] 
+
+// ROTATE THE ARTIFACT
+M10 
+G0 A90.
+M11
+
+// PROBE IN Z
+M816 B-[10*#131]
+#102 = @996 
+
+// COMPUTE THE Z-COR
+#133 = [#102 - #131]
+
+
+// WRITE IT TO GLOBAL VARIABLES JUST IN CASE
+@901 = #132 // Y
+@902 = #133 // Z
+
+
+//STORE COR OFFSET FOR WCS ZERO
+IF [#1 == #0]
+  //DO NOT SET ANYTHING INTO WCS
+ELSEIF [#114 < 1]  
+  W_G53G59_COOR[0,#1,2,#132]
+  W_G53G59_COOR[0,#1,3,#133]
+ELSE
+  W_G54EXP_COOR[0,#114,2,#132]
+  W_G54EXP_COOR[0,#114,3,#133]
+END_IF
+
+M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+
+G53 G90 G00 Z0  
+M99

@@ -1,0 +1,50 @@
+// Copyright 2024 Toolpath Labs Inc., Justin Gray, and Josh Smith
+
+// CALIBRATETOOLSET
+// use a master gauge tool to find the trigger height of a tool setter. 
+
+// Initial Coding: Justin Gray
+// Modified 31/03/2025: Robot Oblivion
+
+#100=R_SYS_INFO[0,2]      // SAVE CURRENT TOOL NUMBER TO #100
+@10 = R_G_GROUP[0,6]      // pull in metric or freedom units 
+
+// load probe config
+M800 T#100
+
+#115 = @109             // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#116 = @110             // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#109 = @92             // MASTER GAUGE LENGTH PROVIDED BY PROBECONFIG MACRO
+#112 = @112             // EXTENDED WCS TO STORE TOOLSETTER LOCATION PROVIDED BY PROBECONFIG MACRO
+
+G94 G17 G49 G40 G80
+G53 G90 G00 Z0          // Move the spindle all the way up before xy movement for safety
+G54 P#112               // Extended LOCATION OF TOOL SETTER
+G90 X0 Y0               // MOVE TO TOOLSETTER
+
+M19 // ORIENT SPINDLE
+
+G91                     // RELATIVE MODE
+
+IF[@10 == 21]
+  G21                     // Metric
+  G31 Z-400.0 F#115       // FEED UNTIL INPUT SIGNAL AKA SKIP
+  G91 G0 Z5.0             // MOVE UP
+  FIX_CUT_OR_ON
+  G31 Z-5.5 F#116         // FEED UNTIL SKIP SLOWER
+ELSEIF[@10 == 20]
+  G20                     // fREEDOM UNITS (INCH)
+  G31 Z-20 F#115          // FEED UNTIL INPUT SIGNAL AKA SKIP
+  G91 G0 Z0.2             // MOVE UP
+  FIX_CUT_OR_ON
+  G31 Z-.21 F#116         // FEED UNTIL SKIP SLOWER
+END_IF
+FIX_CUT_OR_OFF
+
+#141=[R_SKIP[0,103]-#109]    // MACHINE Z COORDINATE WITH - MASTER TOOL LENGTH
+
+W_TOOL_DATA[0,199,203,#141]  // STORE THE TOOL LENGTH OFFSET
+
+G53 G90 G00 Z0               // Move the spindle all the way up before xy movement for safety
+M20                          // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+M99
