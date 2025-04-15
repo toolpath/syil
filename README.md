@@ -15,8 +15,6 @@ The tormach wired probe works, with and without the xoomspeed wireless kit.
 All the macros need to be stored in the same file as your posted gcode programs. Always test the macros with MPG DRN the first time. SYIL configurations may change and we're not responsible for broken tips or machine crashes.  
 This macro set will work for both wired and (some wireless probes) and now supports probes that require special macros to turn on and off. 
 
-## Probe Configuration Macro
-
 ### Imperial vs Metric units
 The various probing parameters must be set in your desired units sections in the configuration file. 
 No other changes are needed to configure the units. 
@@ -27,6 +25,7 @@ Start with the recommended settings and fine tune from there.
 Please set your fusion 360 probing feed rate to the same value that you use in the config macro. 
 If you decide to change feed rates, you should always run calibration again.
 
+<<<<<<< HEAD
 ### Configuration setup
 Every probing routine calls the configuration macro to initialize global variables to allow all probing parameters to be specified in one place.
 
@@ -51,35 +50,93 @@ Using the editor of your choice, open `PROBECONFIG` or `M800` and update the fol
   > **Note:** Any WCS number from 01-09 should be entered with a leading zero.  
 
 - **`@103`, `@104`, `@105`, `@109`, `@110`** – Probing and tool-setting speeds are separated into metric and imperial sections, with safe default values that can be adjusted if needed.  
+=======
+## Probe Configuration 
 
-- **`@106`** – Probe clearance distance. This is the extra distance the probe moves beyond what the macro expects as the edge of the surface.  
+### Configuration Macro setup
+Every probing routine calls the configuration macro to initialize global variables. 
+This is contained in `PROBECONFIG`
+It allows all probing parameters to be specified in one place.
+
+Using the editor of your choice, in the **`Macros for controller`** folder open `PROBECONFIG` and update the following parameters:  
+
+**`@100`** – Set this to the tool number you want to use for your probe. Common choices include Tool 12 or Tool 99.  
+**`@111`** – Extended work offset number used to store the Z calibration artifact WCS, aiding in faster recalibration.  
+**`@112`** – Extended work offset number used to store the tool setter's XY center location.  
+**`@113`** – Extended work offset number used to store the 4th-axis corner probing start point.  
+**`@137`** – Highest offset that can be updated, defining a protected WCS range.  
+> [!NOTE]
+> Extended WCS numbers G54 P01-09 require a leading zero
+
+**`@128`** – Disables extra spindle orientation calls for probes that spin on/off.  
+**`@109`** – Calibrated length of your master gauge tool.  
+**`@129`** – Calibrated diameter of your ring gauge.  
+> [!IMPORTANT]
+> These dimensions are critical for calibrating your tool setter and ensuring accurate tool length measurements.
+> Default values are provided, but you should input the exact values from your gauge tool's certificate.  
+
+**`@103`, `@104`, `@105`, `@116`, `@117`** – Probing and tool-setting speeds are separated into metric and imperial sections, with safe default values that can be adjusted if needed.  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
+
+**`@106`** – Probe clearance distance. This is the extra distance the probe moves beyond what the macro expects as the edge of the surface.  
   > *Example:* If probing a circular boss with a specified diameter of 1", the probe will move `[0.5" + @106]` away from the initial point.  
 
+<<<<<<< HEAD
 - **`@107`** – Probe backoff distance. Probing routines use a double-touch method:  
+=======
+**`@108`** – Probe backoff distance. Probing routines use a double-touch method:  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
   1. The first touch is fast.  
   2. The second touch is slow (for higher accuracy).  
   After the first touch, the probe will back off by `@107` (in inches or mm, depending on your control setup).  
   > This value must be large enough to allow the probe to fully disengage from the surface, plus some clearance, but no larger than necessary.  
 
+<<<<<<< HEAD
 - **`@108`** – Default value used when a tolerance argument is required but not provided.  
 - **`@91`** – Rounding multiplier for many probing messages. Adjust as needed to control the precision of user messages.
 
 Once you have saved your changes to `PROBECONFIG` or `M800` copy all files within the **`Macros for controller`** folder to the LNC main NC files directory or copy all files within the **`maker_macros`** folder to the LNC Maker_Macro folder if you would prefer to run Mcode based macros
+=======
+**`@110`** – Default value used when a tolerance argument is required but not provided.  
+**`@11`** – Rounding multiplier for many probing messages. Adjust as needed to control the precision of user messages.
 
-## Pre-calibration tasks
+> [!TIP]
+> Once you have saved your changes to `PROBECONFIG` copy all files within the **`Macros for controller`** folder to the LNC main NC files directory.
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
-### Backup your controller and prep for running the calibration
 
+## **Backup and Preparation for Calibration**  
+
+<<<<<<< HEAD
 1. Backup your tool table, offset table and `@10`, `@91-@98`, `@100-@110`, `@112-@115`,`@130-@134`, `@980-@987` and `@5109` variables in case of wanting to revert  
 2. Clear as many items as possible from the table to prevent collisions with stock, jigs, fixtures, or vices.  
 3. Ensure the table zero point or area to place your calibration object is empty, lightly stoned, and free of coolant.  
 4. Have your master tool, probe, and ring gauge/gauge block ready.  
-	
-### Basic Probe Setup
+=======
+Before running the calibration process, follow these steps to ensure a smooth setup:  
 
-Before performing any calibration routines your probe must be concentric. 
-To make your probe concentric you must place a dial indicator on the ruby tip and rotate the probe in the spindle by hand. 
-Adjust your probe until the dial indicator doesn't move or is within a few tenths. 
+1. **Backup Your Controller Data:**  
+   - Save a copy of your tool table, offset table, and the following variables in case you need to revert:  
+     `@10`, `@11`, `@100-@117`, `@127-@133`, `@980-@987`, `@1508` 
+2. **Prepare the Work Area:**  
+   - Clear as many items as possible from the table to avoid collisions with stock, jigs, fixtures, or vices.  
+   - Ensure the table zero point or the area where you will place the calibration object is **empty, lightly stoned, and free of coolant**.  
+
+3. **Gather Required Tools:**  
+   - Have your **master tool, probe, and ring gauge/gauge block** ready.  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
+	
+### **Basic Probe Setup**  
+
+Before running any calibration routines, you must ensure that your probe is concentric.  
+
+. **Check Concentricity:**  
+   - Place a **dial indicator** on the ruby tip of the probe.  
+   - Rotate the probe in the spindle **by hand** while observing the dial indicator.  
+
+. **Adjust the Probe:**  
+   - Adjust the probe until the dial indicator **does not move** or shows deviation within a few tenths.  
+   - This step is crucial for accurate probing results. 
 
 ![probeIndicate](images/probeIndicate.jpg)
 _Figure 2. Indicating Probe_
@@ -88,6 +145,7 @@ _Figure 2. Indicating Probe_
 
 ### Basic toolsetter setup 
 
+<<<<<<< HEAD
 Before you do any toolsetting, you need to tell the control where the toolsetter is.  
 
 You should manually move your spindle to be located over the center of your toolsetter. 
@@ -101,6 +159,30 @@ The toolsetting location will be X0 Y0 in G54 P`@113`.
 ## Macro Syntax
 
 Depending on which file pack is installed, macros are called using either `G65 "FILENAME"` or M-code numbers (if you've installed the Maker_macro version).  
+=======
+Before performing any tool setting, you must define the tool setter's location in the control system.  
+
+ A. **If the tool setter's location is known**, copy its XY offset to the extended work offset specified in `PROBECONFIG @112`.  
+
+ B. **If the tool setter's location is unknown, manually position the spindle over its center:**  
+   - Use the MPG to move the gauge tool until it appears centered by eye.  
+   - For higher precision, use a dial indicator or coaxial indicator to sweep around until perfectly centered.  
+
+ B. **Once the correct location is found, save it using the `TEACH IN` function** in the offsets page.  
+   - Store this location as the XY origin of the extended work offset specified in `PROBECONFIG @112`.  
+
+> [!TIP]
+>The toolsetting location will be X0 Y0 in G54 P`@112`.
+
+---
+## **Macro Syntax**
+
+Macros are called with G65 as opposed to M codes to speed up execution. G65 is followed by the macro name and whatever arguments need passed into the macro. The example below shows how to probe the side of a part along the X axis. The A argument is the work offset and the B argument is the probing distance. Each argument starts with a letter followed by a value. For example, a macro requiring three arguments will have A#, B# and C# after the macro name. Simply copy the macro examples into your MDI and adjust the arguments according to your needs. A table mapping the macro arguments to local variables is also provided below. 
+
+> [!IMPORTANT]
+> Extended G54 work offsets are supported with the use of a decimal point.  
+> For example, G54 P5 can be entered into the A argument as **A54.05** (_G54 P01-09 require a leading zero_).
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 To pass data into a macro arguments are used and starts with a letter followed by a value. For example, a macro requiring three arguments will have `A#`, `B#` and `C#` after the macro name. Simply copy the macro examples into your MDI and adjust the arguments according to your needs.
 > **Note:** Both G65 and M-code macros accept the same arguments  
@@ -159,8 +241,13 @@ The first time you use this macro, you will start by setting the calibration hei
 *This macro has an optional argument `A`. 
 By default you can call the macro without any arguments, which does a quick calibration using an stored location/height for the artifact. 
 
+<<<<<<< HEAD
 Example MDI Command: G65 "CALIBRATEPROBEZ" A1  
 Example MDI Command: M803 A1
+=======
+> [!IMPORTANT]
+> The first time you call it make sure to include the `A` argument and run the full calibration procedure. 
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 > [!WARNING]
 >The first time you call it make sure to include the `A` argument and run the full calibration procedure. 
@@ -189,11 +276,15 @@ Once you have done the full calibration one time,
 you can use a quick version of the macro to recalibrate the probe offset without the need to use the master tool. 
 But you must re-install your calibration artifact onto your table before calling this macro. 
 
+<<<<<<< HEAD
 This will move the table to the origin configured in the `PROBECONFIG` or `M800` macro and then do a protected move to calibrate the probe offset. 
 
 
 Example MDI Command: G65 "CALIBRATEPROBEZ"  
 Example MDI Command: M803
+=======
+This will move the table to the origin of the saved WCS specified in (`PROBECONFIG @111`) and then do a protected move to calibrate the probe offset. 
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 ## Probe Tip Diameter Calibration 
 
@@ -204,11 +295,44 @@ You can use one of the two provided calibration methods:
 
 ### CALIBRATEPROBERING ( M803 )
 
+<<<<<<< HEAD
 This macro uses a ring gauge to calibrate the diameter of the probe's ruby tip. The routine will determine the diameter of the probe tip, and the calculated radius will be visible in the tool table.  
 * Before starting, ensure that the probe is concentric and positioned inside the ring gauge, roughly centered.  
 
 ![CALIBRATEPROBERING](images/probeRingGuage.PNG)  
 _Figure 3a. Probe Diameter Calibration (ring gauge)_
+=======
+This macro uses a gauge block to calibrate the diameter of a probes ruby tip. 
+It's important that the probe is concentric before beginning. 
+Any good quality reference block artifact would be used, such as an actual gauge block or a high quality 123 block. 
+If you are not using a calibrated reference artifact, you should use a well calibrated micrometer to measure your 123 block to get its true dimensions. 
+123 blocks, even high quality ones, are commonly sold a few ten thousandths of an inch oversized to allow for lapping
+and you want to put the true dimension into the macro arguments.  
+`A` is the gauge block's true X dimension  
+`B` is the gauge block's true Y dimension  
+`C` is the amount of Z drop you want between your initial position and the measurement height. It needs to be a negative value.  
+
+![CALIBRATEPROBEBLOCK](images/calibrateprobeblock.png)
+
+| GCode | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
+| --- | --- | --- | --- | --- |
+| G65 | "CALIBRATEPROBEBLOCK" | A | B | C |
+
+_Table 2. Calibrate Probe X Syntax_
+
+Example MDI Command: G65 "CALIBRATEPROBEBLOCK" A1.0002 B2.0001 C-0.5
+
+
+#### CALIBRATEPROBERING
+
+This macro uses a ring gauge to calibrate the diameter of a probes ruby tip. It's important that the probe is concentric before beginning. The probe must be inside of the gauge and roughly centered. The routine will set the diameter of your probe tip and the radius can been seen in the tool table.  
+
+`A`is the inside diameter of the ring gauge.  
+
+![CALIBRATEPROBERING](images/probeRingGuage.PNG)
+
+_Figure 3. Probe Diameter Calibration_
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 
 | G Code | "Macro Name" | Macro Argument |
@@ -217,8 +341,12 @@ _Figure 3a. Probe Diameter Calibration (ring gauge)_
 
 _Table 4. Calibrate Probe Radius Syntax_
 
+<<<<<<< HEAD
 *This macro has an optional argument `A`. 
 By default you can call the macro without any arguments, which pulls the diameter stored in `PROBECONFIG/M800 @93` or have the option to temporarily override this using the optional D argument.
+=======
+*This macro has an optional argument `A`. By default, you can call the macro without any arguments, which pulls the diameter stored in `PROBECONFIG @129` or have the option to override
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 Example MDI Command: G65 "CALIBRATEPROBERING"  
 Example MDI Command: M803 D19.998  
@@ -257,12 +385,18 @@ It has two run modes: one where you set the probing location, and once where the
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
-| G65 | "FINDCOR" | A | W | S |
+| G65 | "FINDCOR" | A | W | S* |
 
 The `A` argument lists the WCS to save the COR into.  
 The `W` argument is optional, but sets the width of the reference artifact. The default value is 1.0.  
+<<<<<<< HEAD
 The `S` argument is optional, and determines which mode the macro runs in. If not provided, then the macro uses the saved probing location to re-find the COR regardless of where the A axis or probe is located when starting the macro. 
 If provided, then the probe's initial location is saved before running the macro. 
+=======
+*The `S` argument is optional, and determines which mode the macro runs in.  
+ - If not provided, then the macro uses the saved probing location to re-find the COR regardless of where the A axis or probe is located when starting the macro.  
+ - If provided, then the probe's initial location is saved before running the macro.  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 Example MDI Command to run in saving mode: G65 "FINDCOR" A58. S1.0  
 Example MDI Command to run in re-find mode with a larger artifact: G65 "FINDCOR" A58. W2.0  
@@ -272,45 +406,78 @@ Example MDI Command to run in re-find mode with a larger artifact: G65 "FINDCOR"
 
 ### PROBEX ( M814 )
 
+<<<<<<< HEAD
 The Probe X macro probes the side of a part in the X direction.   
+=======
+The Probe X macro probes the side of a part in the X direction.  
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` is the distance to probe in X.  
+`B` can be a positive or negative value depending on which side of the stock you would like to probe.  
+ - If `B` is too small, the macro will report an error at the end of the routine. 
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 `A` is the selected work coordinate ( 54-59 or 54.01-54.99 ).  
 `X` is the distance to probe :
 * `X` Can be a positive or negative value depending on which side of the stock you would like to probe.
 * If `X` is too small, the macro will report an error at the end of the routine.
 
+<<<<<<< HEAD
 ![probeX](images/probeX.png)  
 _Figure 4. Probe X Routine_
+=======
+_Figure 4. Probe X Routine_  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument |
 | --- | --- | --- | --- |
 | G65 | "PROBEX" | A | X |
 
-_Table 5. Probe X Syntax_
+_Table 5. Probe X Syntax_  
 
+<<<<<<< HEAD
 Example MDI Command To Probe Right Side: G65 "PROBEX" A54.0 X-1  
 Example MDI Command To Probe Left Side: M814 A54.0 X1  
 
 ---
+=======
+Example MDI Command To Probe Right Side: G65 "PROBEX" A54.0 B-1  
+
+Example MDI Command To Probe Left Side: G65 "PROBEX" A54.0 B1  
+***
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 ### PROBEY ( M815 )
 
 The Probe Y macro probes the side of a part in the Y direction.  
+<<<<<<< HEAD
+=======
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` is the distance to probe in Y.  
+`B` can be a positive or negative value depending on which side of the stock you would like to probe.  
+ - If `B` is too small, the macro will report an error at the end of the routine.  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 `A` is the selected work coordinate ( 54-59 or 54.01-54.99 ).  
 `Y` is the distance to probe:  
 * `Y` Can be a positive or negative value depending on which side of the stock you would like to probe.
 * If `Y` is too small, the macro will report an error at the end of the routine.
 
+<<<<<<< HEAD
 ![probeY](images/probeY.png)  
 _Figure 5. Probe Y Routine_
+=======
+_Figure 5. Probe Y Routine_  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument |
 | --- | --- | --- | --- |
 | G65 | "PROBEY" | A | Y |
 
-_Table 6. Probe Y Syntax_
+_Table 6. Probe Y Syntax_  
 
+<<<<<<< HEAD
 Example MDI Command To Probe the Front : G65 "PROBEY" A54.02 Y1.  
 Example MDI Command To Probe the Back  : M815 A54.02 Y-1.
 
@@ -326,11 +493,30 @@ The Probe Z macro probes the top surface of a part in the negative Z direction.
 
 ![probeZ](images/probeZ.png)  
 _Figure 6. Probe Z Routine_
+=======
+Example MDI Command To Probe the Front: G65 "PROBEY" A54.02 B1.  
+
+Example MDI Command To Probe the Back : G65 "PROBEY" A54.02 B-1.  
+***
+
+### PROBEZ
+
+The Probe Z macro probes the top surface of a part in the negative Z direction.  
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` is the distance to probe in Z and should be a negative value.  
+ - `B` is too small or a positive value, the macro will report an error at the end of the routine.  
+
+![probeZ](images/probeZ.png)
+
+_Figure 6. Probe Z Routine_  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument |
 | --- | --- | --- | --- |
 | G65 | "PROBEZ" | A | Z |
 
+<<<<<<< HEAD
 _Table 7. Probe Z Syntax_
 
 Example MDI Command: G65 "PROBEZ" A54. Z-0.5  
@@ -338,14 +524,32 @@ Example MDI Command: M816 A54. Z-0.5
 
 ---
 ### PROBEXWEB ( M824 )
+=======
+_Table 7. Probe Z Syntax_  
+
+Example MDI Command: G65 "PROBEZ" A54. B-0.5  
+***
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 The Probe X Web macro probes two sides of the stock in the X direction and calculates the center.   
 
+<<<<<<< HEAD
 `A` is the selected work coordinate ( 54-59 or 54.01-54.99 ).  
 `X` is the length of the stock.  
 `Z` is the distance the probe should move in Z below the edges of the stock.  
 `Q` enables inspection reporting which pops up a calculated length after the routine  finishes. 
 * The Probe should be roughly centered and above the stock before beginning.
+=======
+The Probe X Web macro probes two sides of the stock in the X direction and calculates the center.  
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` is the length of the stock.  
+`C` is the distance the probe should move in Z below the edges of the stock.  
+`Q` enables inspection reporting, which pops up a calculated length after the routine finishes.  
+ - The Probe should be roughly centered and above the stock before beginning. 
+
+![probeXweb](images/probeXweb.png)
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 ![probeXweb](images/probeXweb.png)  
 _Figure 7. Probe X Web Routine_
@@ -359,10 +563,25 @@ _Table 8. Probe X Web Syntax_
 Example MDI Command With Inspection Report: M824 A54.12 X3. Z-.5 Q1.  
 Example MDI Command : G65 "PROBEXWEB" A54.12 X3. Z-.5 Q0.  
 
+<<<<<<< HEAD
 ---  
 ### PROBEYWEB ( M825 )
 
 The Probe Y Web macro probes two sides of the stock in the Y direction and calculates the center.  
+=======
+Example MDI Command With Inspection Report: G65 "PROBEXWEB" A54.12 B3. C-.5 Q1.
+***
+
+### PROBEYWEB
+
+The Probe Y Web macro probes two sides of the stock in the Y direction and calculates the center.  
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` is the width of the stock.  
+`C` is the distance the probe should move in Z below the edges of the stock.   
+`Q` enables inspection reporting which pops up a calculated width after the routine finishes.  
+ - The Probe should be roughly centered and above the stock before beginning.
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 `A` is the selected work coordinate ( 54-59 or 54.01-54.99 ).  
 `Y` is the width of the stock.  
@@ -370,15 +589,20 @@ The Probe Y Web macro probes two sides of the stock in the Y direction and calcu
 `Q` enables inspection reporting which pops up a calculated width after the routine finishes.  
 * The Probe should be roughly centered and above the stock before beginning.
 
+<<<<<<< HEAD
 ![probeYweb](images/probeYweb.png)  
 _Figure 8. Probe Y Web Routine_
+=======
+_Figure 8. Probe Y Web Routine_  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- |
 | G65 | "PROBEYWEB" | A | Y | Z | Q |
 
-_Table 9. Probe Y Web Syntax_
+_Table 9. Probe Y Web Syntax_  
 
+<<<<<<< HEAD
 Example MDI Command: G65 "PROBEYWEB" A58. Y2. Z-.5 Q0.  
 Example MDI Command With Inspection Report: M825 A58. Y2. Z-.5 Q1.  
 
@@ -394,13 +618,59 @@ The Probe Bore macro probes 4 points inside of a bore and calculates the center.
 
 ![probeBore](images/probeBore.png)  
 _Figure 10. Probe Bore Routine_
+=======
+Example MDI Command Without Inspection Report: G65 "PROBEYWEB" A58. B2. C-.5 Q0.  
+
+Example MDI Command With Inspection Report: G65 "PROBEYWEB" A58. B2. C-.5 Q1.  
+***
+
+### PROBECIRCULARBOSS
+
+The Probe Circular Boss macro probes 4 points of a circular boss and calculates the center.  
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` is the diameter of the stock.  
+`C` is the distance the probe should move in Z below the edges of the stock.   
+`D` turns on a second  
+`Q` enables inspection reporting, which pops up a calculated diameter after the routine finishes. 
+ - The Probe should be roughly centered and above the stock before beginning. 
+
+![probeCircularBoss](images/probeCircularBoss.png)
+
+_Figure 9. Probe Circular Boss Routine_  
+
+| G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
+| --- | --- | --- | --- | --- | --- |
+| G65 | "PROBECIRCULARBOSS" | A | B | C | Q |
+
+_Table 10. Probe Circular Boss Syntax_  
+
+Example MDI Command Without Inspection Report: G65 "PROBECIRCULARBOSS" A54.01 B2. C-.5 Q0.  
+
+Example MDI Command With Inspection Report: G65 "PROBECIRCULARBOSS" A54.01 B2. C-.5 Q1.  
+***
+
+### PROBEBORE
+
+The Probe Bore macro probes 4 points inside a bore and calculates the center.  
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` is the diameter of the bore.  
+`Q` enables inspection reporting, which pops up a calculated diameter after the routine finishes.  
+ - The Probe should be roughly centered and inside the bore before beginning.  
+
+![probeBore](images/probeBore.png)
+
+_Figure 10. Probe Bore Routine_  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
 | G65 | "PROBEBORE" | A | D | Q |
 
-_Table 11. Probe Bore Syntax_
+_Table 11. Probe Bore Syntax_  
 
+<<<<<<< HEAD
 Example MDI Command : G65 "PROBEBORE" A54.02 D1. Q0.  
 Example MDI Command With Inspection Reporting: M830 A54.02 D1. Q1.  
 
@@ -417,6 +687,23 @@ The Probe Circular Boss macro probes 4 points of a circular boss and calculates 
 
 ![probeCircularBoss](images/probeCircularBoss.png)  
 _Figure 9. Probe Circular Boss Routine_
+=======
+Example MDI Command Without Inspection Reporting: G65 "PROBEBORE" A54.02 B1. Q0.  
+
+Example MDI Command With Inspection Reporting: G65 "PROBEBORE" A54.02 B1. Q1.  
+***
+  
+### PROBERECTANGULARBOSS
+
+The Probe Rectangular Boss macro probes all sides of the stock and calculates the center. 
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` is the length of the boss in X  
+`C` is the width of the boss in Y.  
+`D` is the distance the probe should move in Z below the edges of the body and should be a negative value.  
+`Q` enables inspection reporting, which pops up a calculated length and width after the routine finishes.  
+ - The Probe should be roughly centered and above the stock before beginning.  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- |
@@ -427,6 +714,7 @@ _Table 10. Probe Circular Boss Syntax_
 Example MDI Command: G65 "PROBECIRCULARBOSS" A54.01 D2. Z-.5 Q0.  
 Example MDI Command With Inspection Report: M831 A54.01 D2. Z-.5 Q1.  
 
+<<<<<<< HEAD
 ---
 ### PROBEPOCKET ( M820 )
 
@@ -440,13 +728,36 @@ The Probe Pocket macro probes all internal sides of a pocket and calculates the 
 
 ![probeRectangularPocket](images/probeRectangularPocket.png)  
 _Figure 12. Probe Pocket Routine_
+=======
+_Table 12. Probe Rectangular Boss Syntax_
+
+Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54. B3. C2. D-.5 Q0.  
+
+Example MDI Command Without Inspect Reporting: G65 "PROBERECTANGULARBOSS" A54. B3. C2. D-.5 Q1.  
+***
+
+### PROBEPOCKET
+
+The Probe Pocket macro probes all internal sides of a pocket and calculates the center.  
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` is the length of the pocket in X  
+`C` is the width of the pocket in Y.  
+`Q` enables inspection reporting, which pops up a calculated length and width after the routine finishes.  
+ - The Probe should be roughly centered and inside the pocket before beginning.  
+
+![probeRectangularPocket](images/probeRectangularPocket.png)
+
+_Figure 12. Probe Pocket Routine_  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- |
 | G65 | "PROBEPOCKET" | A | X | Y | Q |
 
-_Table 13. Probe Rectangular Pocket Syntax_
+_Table 13. Probe Rectangular Pocket Syntax_  
 
+<<<<<<< HEAD
 Example MDI Command: G65 "PROBERECTANGULARPOCKET" A54.05 X2. Y3. Q0.  
 Example MDI Command Without Inspection Reporting: M820 A54.05 X2. Y3. Q1.  
 
@@ -461,10 +772,26 @@ The Probe Rectangular Boss macro probes all sides of the stock and calculates th
 `Z` is the distance the probe should move in Z below the edges of the body and should be a negative value.  
 `Q` enables inspection reporting which pops up a calculated length and width after the routine finishes.  
 * The Probe should be roughly centered and above the stock before beginning.
+=======
+Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54.05 B2. C3. Q0.  
+
+Example MDI Command Without Inspection Reporting: G65 "PROBERECTANGULARPOCKET" A54.05 B2. C3. Q1.  
+***
+  
+### PROBEXSLOT
+
+The Probe Slot X macro probes the internal sides of a pocket in the X direction and calculates the center.  
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` is the length of the pocket in X.  
+`Q` enables inspection reporting, which pops up a calculated length after the routine finishes.  
+ - The Probe should be roughly centered and inside the slot before beginning. 
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 ![probeRectangularBoss](images/probeRectangularBoss.png)  
 _Figure 11. Probe Rectangular Boss Routine_
 
+<<<<<<< HEAD
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- | --- | --- |
 | G65 | "PROBERECTANGULARBOSS" | A | X | Y | Z | Q |
@@ -486,13 +813,17 @@ The Probe Slot X macro probes the internal sides of a pocket in the X direction 
 
 ![probeSlot](images/probeSlot.png)  
 _Figure 13. Probe Slot Routine_
+=======
+_Figure 13. Probe Slot Routine_  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
 | G65 | "PROBESLOTX" | A | X | Q |
 
-_Table 14. Probe Slot Syntax_
+_Table 14. Probe Slot Syntax_  
 
+<<<<<<< HEAD
 Example MDI Command With Inspectioning: G65 "PROBESLOTX" A54. X3. Q1.  
 Example MDI Command Without Inspectioning: M834 A54. X3. Q0.  
 
@@ -500,21 +831,41 @@ Example MDI Command Without Inspectioning: M834 A54. X3. Q0.
 ### PROBEYSLOT ( M835 )
 
 The Probe Slot Y macro probes the internal sides of a pocket in the Y direction and calculates the center.  
+=======
+Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54. B3. Q0.  
+
+Example MDI Command Without Inspectioning: G65 "PROBESLOTX" A54. B3. Q1.  
+***
+
+### PROBEYSLOT
+
+The Probe Slot Y macro probes the internal sides of a pocket in the Y direction and calculates the center.  
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` is the width of the pocket in Y.  
+`Q` enables inspection reporting, which pops up a calculated width after the routine finishes.  
+ - The Probe should be roughly centered and inside the slot before beginning.  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 `A` is the selected work coordinate ( 54-59 or 54.01-54.99 ).  
 `Y` is the width of the pocket in Y.  
 `Q` enables inspection reporting which pops up a calculated width after the routine finishes.  
 * The Probe should be roughly centered and inside of the slot before beginning.
 
+<<<<<<< HEAD
 ![probeSlotY](images/probeSlotY.PNG)  
 _Figure 14. Probe Slot Routine_
+=======
+_Figure 14. Probe Slot Routine_  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
 | G65 | "PROBESLOTY" | A | Y | Q |
 
-_Table 15. Probe Slot Syntax_
+_Table 15. Probe Slot Syntax_  
 
+<<<<<<< HEAD
 Example MDI Command: G65 "PROBESLOTY" A54. YB3. Q0.  
 Example MDI Command With Inspection Reporting: M835 A54. Y3. Q1.  
 
@@ -522,26 +873,75 @@ Example MDI Command With Inspection Reporting: M835 A54. Y3. Q1.
 ### PROBEINSIDECORNER ( M837 )
 
 The Probe inside Corner macro probes the inside edges of a pocket and calculates the center. 
+=======
+Example MDI Command Without Inspection Reporting: G65 "PROBESLOTY" A54. B3. Q0.  
+
+Example MDI Command With Inspection Reporting: G65 "PROBESLOTY" A54. B3. Q1.  
+***
+  
+### PROBEOUTSIDECORNER
+
+The Probe Outside Corner macro probes the outside edges of the stock and calculates the center.  
+
+`A`is the selected work coordinate (54-59 or 54.01-54.99).  
+`B` Selects the desired corner to probe.  
+`C` is the distance to travel away from the initial location before probing begins.  
+`D` is the probing distance for both X and Y.  
+ - The Probe should be roughly centered, diagonally from the corner before beginning. 
+
+![probeExternalCorner](images/probeExternalCorner.png)
+
+_Figure 15. Probe Outside Corner Routine_
+
+| G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument | Macro Argument |
+| --- | --- | --- | --- | --- | --- |
+| G65 | "PROBEOUTSIDECORNER" | A | B | C | D |
+
+_Table 16. Probe Outer Corner Syntax_
+
+Example MDI Command: G65 "PROBEOUTSIDECORNER" A54. B1. C1 D.5
+***
+  
+### PROBEINSIDECORNER
+
+The Probe inside Corner macro probes the inside edges of a pocket and calculates the center.   
+
+`A` is the selected work coordinate (54-59 or 54.01-54.99).   
+`B` is the desired corner to probe.   
+`C` is the probing distance.   
+ - The Probe should be roughly centered, diagonally from the corner before beginning.  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 `A` is the selected work coordinate ( 54-59 or 54.01-54.99 ).  
 `C` the desired corner to probe.  
 `E` is the engage distance to probe part.  
 * The Probe should be roughly centered, diagonaly from the corner before beginning.
 
+<<<<<<< HEAD
 ![probeInternalCorner](images/probeInternalCorner.png)  
 _Figure 16. Probe Inside Corner Routine_
+=======
+_Figure 16. Probe Inside Corner Routine_  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
 | G65 | "PROBEINSIDECORNER" | A | C | E |
 
-_Table 17. Probe Inner Corner Syntax_
+_Table 17. Probe Inner Corner Syntax_  
 
+<<<<<<< HEAD
 Example MDI Command: G65 "PROBEINSIDECORNER" A54. C1. E.5  
 Example MDI Command: M837 A54. C1. E.5  
 
 ---
 ### PROBEOUTSIDECORNER ( M838 )
+=======
+Example MDI Command: G65 "PROBEINSIDECORNER" A54. B1. C.5  
+
+
+## SUPPORTED FUSION 360 PROBING FEATURES  
+>>>>>>> 906c17ff5ec1ff1c43d489d23a23cae2fa3f5522
 
 The Probe Outside Corner macro probes the outside edges of the stock and calculates the center. 
 
