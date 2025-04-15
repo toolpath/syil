@@ -15,8 +15,6 @@ The tormach wired probe works, with and without the xoomspeed wireless kit.
 All the macros need to be stored in the same file as your posted gcode programs. Always test the macros with MPG DRN the first time. SYIL configurations may change and we're not responsible for broken tips or machine crashes.  
 This macro set will work for both wired and (some wireless probes) and now supports probes that require special macros to turn on and off. 
 
-## Probe Configuration Macro
-
 ### Imperial vs Metric units
 The various probing parameters must be set in your desired units sections in the configuration file. 
 No other changes are needed to configure the units. 
@@ -52,7 +50,7 @@ Using the editor of your choice, open `PROBECONFIG` or `M800` and update the fol
 
 - **`@103`, `@104`, `@105`, `@109`, `@110`** – Probing and tool-setting speeds are separated into metric and imperial sections, with safe default values that can be adjusted if needed.  
 
-- **`@106`** – Probe clearance distance. This is the extra distance the probe moves beyond what the macro expects as the edge of the surface.  
+**`@106`** – Probe clearance distance. This is the extra distance the probe moves beyond what the macro expects as the edge of the surface.  
   > *Example:* If probing a circular boss with a specified diameter of 1", the probe will move `[0.5" + @106]` away from the initial point.  
 
 - **`@107`** – Probe backoff distance. Probing routines use a double-touch method:  
@@ -66,20 +64,25 @@ Using the editor of your choice, open `PROBECONFIG` or `M800` and update the fol
 
 Once you have saved your changes to `PROBECONFIG` or `M800` copy all files within the **`Macros for controller`** folder to the LNC main NC files directory or copy all files within the **`maker_macros`** folder to the LNC Maker_Macro folder if you would prefer to run Mcode based macros
 
-## Pre-calibration tasks
 
-### Backup your controller and prep for running the calibration
+## **Backup and Preparation for Calibration**  
 
 1. Backup your tool table, offset table and `@10`, `@91-@98`, `@100-@110`, `@112-@115`,`@130-@134`, `@980-@987` and `@5109` variables in case of wanting to revert  
 2. Clear as many items as possible from the table to prevent collisions with stock, jigs, fixtures, or vices.  
 3. Ensure the table zero point or area to place your calibration object is empty, lightly stoned, and free of coolant.  
 4. Have your master tool, probe, and ring gauge/gauge block ready.  
 	
-### Basic Probe Setup
+### **Basic Probe Setup**  
 
-Before performing any calibration routines your probe must be concentric. 
-To make your probe concentric you must place a dial indicator on the ruby tip and rotate the probe in the spindle by hand. 
-Adjust your probe until the dial indicator doesn't move or is within a few tenths. 
+Before running any calibration routines, you must ensure that your probe is concentric.  
+
+. **Check Concentricity:**  
+   - Place a **dial indicator** on the ruby tip of the probe.  
+   - Rotate the probe in the spindle **by hand** while observing the dial indicator.  
+
+. **Adjust the Probe:**  
+   - Adjust the probe until the dial indicator **does not move** or shows deviation within a few tenths.  
+   - This step is crucial for accurate probing results. 
 
 ![probeIndicate](images/probeIndicate.jpg)
 _Figure 2. Indicating Probe_
@@ -88,19 +91,28 @@ _Figure 2. Indicating Probe_
 
 ### Basic toolsetter setup 
 
-Before you do any toolsetting, you need to tell the control where the toolsetter is.  
+Before performing any tool setting, you must define the tool setter's location in the control system.  
 
-You should manually move your spindle to be located over the center of your toolsetter. 
-You can do this by eye, using the MPG to drive the gauge tool till it looks centered. 
-If you want a more precise location, you can use a dial indicator or coaxial indicator and sweep it around until you are prefectly centered.  
+ A. **If the tool setter's location is known**, copy its XY offset to the extended work offset specified in `PROBECONFIG @112`.  
 
-Once you find your location, you will use the `TEACH IN` function in the offsets page to save that location as the XY origin of extended work offset set in `@113 PROBECONFIG/M800`.  
+ B. **If the tool setter's location is unknown, manually position the spindle over its center:**  
+   - Use the MPG to move the gauge tool until it appears centered by eye.  
+   - For higher precision, use a dial indicator or coaxial indicator to sweep around until perfectly centered.  
 
-The toolsetting location will be X0 Y0 in G54 P`@113`. 
+ B. **Once the correct location is found, save it using the `TEACH IN` function** in the offsets page.  
+   - Store this location as the XY origin of the extended work offset specified in `PROBECONFIG @112`.  
 
-## Macro Syntax
+> [!TIP]
+>The toolsetting location will be X0 Y0 in G54 P`@112`.
 
-Depending on which file pack is installed, macros are called using either `G65 "FILENAME"` or M-code numbers (if you've installed the Maker_macro version).  
+---
+## **Macro Syntax**
+
+Macros are called with G65 as opposed to M codes to speed up execution. G65 is followed by the macro name and whatever arguments need passed into the macro. The example below shows how to probe the side of a part along the X axis. The A argument is the work offset and the B argument is the probing distance. Each argument starts with a letter followed by a value. For example, a macro requiring three arguments will have A#, B# and C# after the macro name. Simply copy the macro examples into your MDI and adjust the arguments according to your needs. A table mapping the macro arguments to local variables is also provided below. 
+
+> [!IMPORTANT]
+> Extended G54 work offsets are supported with the use of a decimal point.  
+> For example, G54 P5 can be entered into the A argument as **A54.05** (_G54 P01-09 require a leading zero_).
 
 To pass data into a macro arguments are used and starts with a letter followed by a value. For example, a macro requiring three arguments will have `A#`, `B#` and `C#` after the macro name. Simply copy the macro examples into your MDI and adjust the arguments according to your needs.
 > **Note:** Both G65 and M-code macros accept the same arguments  
@@ -257,7 +269,7 @@ It has two run modes: one where you set the probing location, and once where the
 
 | G Code | "Macro Name" | Macro Argument | Macro Argument | Macro Argument |
 | --- | --- | --- | --- | --- |
-| G65 | "FINDCOR" | A | W | S |
+| G65 | "FINDCOR" | A | W | S* |
 
 The `A` argument lists the WCS to save the COR into.  
 The `W` argument is optional, but sets the width of the reference artifact. The default value is 1.0.  
@@ -286,7 +298,7 @@ _Figure 4. Probe X Routine_
 | --- | --- | --- | --- |
 | G65 | "PROBEX" | A | X |
 
-_Table 5. Probe X Syntax_
+_Table 5. Probe X Syntax_  
 
 Example MDI Command To Probe Right Side: G65 "PROBEX" A54.0 X-1  
 Example MDI Command To Probe Left Side: M814 A54.0 X1  
@@ -309,7 +321,7 @@ _Figure 5. Probe Y Routine_
 | --- | --- | --- | --- |
 | G65 | "PROBEY" | A | Y |
 
-_Table 6. Probe Y Syntax_
+_Table 6. Probe Y Syntax_  
 
 Example MDI Command To Probe the Front : G65 "PROBEY" A54.02 Y1.  
 Example MDI Command To Probe the Back  : M815 A54.02 Y-1.
@@ -377,7 +389,7 @@ _Figure 8. Probe Y Web Routine_
 | --- | --- | --- | --- | --- | --- |
 | G65 | "PROBEYWEB" | A | Y | Z | Q |
 
-_Table 9. Probe Y Web Syntax_
+_Table 9. Probe Y Web Syntax_  
 
 Example MDI Command: G65 "PROBEYWEB" A58. Y2. Z-.5 Q0.  
 Example MDI Command With Inspection Report: M825 A58. Y2. Z-.5 Q1.  
@@ -399,7 +411,7 @@ _Figure 10. Probe Bore Routine_
 | --- | --- | --- | --- | --- |
 | G65 | "PROBEBORE" | A | D | Q |
 
-_Table 11. Probe Bore Syntax_
+_Table 11. Probe Bore Syntax_  
 
 Example MDI Command : G65 "PROBEBORE" A54.02 D1. Q0.  
 Example MDI Command With Inspection Reporting: M830 A54.02 D1. Q1.  
@@ -445,7 +457,7 @@ _Figure 12. Probe Pocket Routine_
 | --- | --- | --- | --- | --- | --- |
 | G65 | "PROBEPOCKET" | A | X | Y | Q |
 
-_Table 13. Probe Rectangular Pocket Syntax_
+_Table 13. Probe Rectangular Pocket Syntax_  
 
 Example MDI Command: G65 "PROBERECTANGULARPOCKET" A54.05 X2. Y3. Q0.  
 Example MDI Command Without Inspection Reporting: M820 A54.05 X2. Y3. Q1.  
@@ -491,7 +503,7 @@ _Figure 13. Probe Slot Routine_
 | --- | --- | --- | --- | --- |
 | G65 | "PROBESLOTX" | A | X | Q |
 
-_Table 14. Probe Slot Syntax_
+_Table 14. Probe Slot Syntax_  
 
 Example MDI Command With Inspectioning: G65 "PROBESLOTX" A54. X3. Q1.  
 Example MDI Command Without Inspectioning: M834 A54. X3. Q0.  
@@ -513,7 +525,7 @@ _Figure 14. Probe Slot Routine_
 | --- | --- | --- | --- | --- |
 | G65 | "PROBESLOTY" | A | Y | Q |
 
-_Table 15. Probe Slot Syntax_
+_Table 15. Probe Slot Syntax_  
 
 Example MDI Command: G65 "PROBESLOTY" A54. YB3. Q0.  
 Example MDI Command With Inspection Reporting: M835 A54. Y3. Q1.  
@@ -535,7 +547,7 @@ _Figure 16. Probe Inside Corner Routine_
 | --- | --- | --- | --- | --- |
 | G65 | "PROBEINSIDECORNER" | A | C | E |
 
-_Table 17. Probe Inner Corner Syntax_
+_Table 17. Probe Inner Corner Syntax_  
 
 Example MDI Command: G65 "PROBEINSIDECORNER" A54. C1. E.5  
 Example MDI Command: M837 A54. C1. E.5  
