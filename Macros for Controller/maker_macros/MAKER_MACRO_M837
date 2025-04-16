@@ -1,0 +1,76 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+// PROBEINSIDECORNER
+// Probe ONE OF 4 INSIDE CORNERS
+
+//  Probe ONE OF 4 INSIDE CORNERS
+// Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset// G54.5
+// Argument C -> #3 defines which corner
+// 1 2
+// 3 4
+// Argument E -> #5 engage distance to probe part
+
+// Simplified WCS extended number math, added probe error checking, added probe distance argument
+// Modified 31/03/2025: Robot Oblivion
+
+// load probe config
+M800
+
+#128 = @96             // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+IF[#128 == 1]
+    M19 // ORIENT SPINDLE
+END_IF
+
+// important local variables
+#100 = @100               // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
+#110 = @103               // FEED SPEED PROVIDED BY PROBECONFIG MACRO
+#111 = @104               // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#112 = @105               // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#105 = @131               // TOOL RADIUS PROVIDED BY PROBECONFIG MACRO
+#108 = @107*[#3/ABS[#3]]  // PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO * the sign// +1 or -1 of probe distance
+
+
+// #120 is X APPROACH DIRECTION
+// #101 is Y APPROACH DIRECTION
+IF[#3==1]
+  #120 = -1
+  #101 = 1
+ELSEIF[#3==2]
+  #120 = 1
+  #101 = 1
+ELSEIF[#3==3]
+  #120 = -1
+  #101 = -1
+ELSEIF[#3==4]
+  #120 = 1
+  #101 = -1
+END_IF
+
+// RECORD INITIAL POSITION SO WE CAN TOGGLE BACK TO IT
+#102 = R_MACH_COOR[0,1]    // MACHINE X COORDINATE
+#123 = R_MACH_COOR[0,2]    // MACHINE Y COORDINATE
+
+// PROBE PART IN X
+M814 A#1 X[#120*#5]
+
+// MOVE BACK TO ORIGINAL XY LOCATION
+#126 = [#102-R_MACH_COOR[0,1]]
+#127 = [#123-R_MACH_COOR[0,2]]
+G31 G91 P2 X#126 F#111 // PROTECTED MOVE
+G31 G91 P2 Y#127 F#111 // PROTECTED MOVE
+
+// PROBE PART IN Y
+M815 A#1 Y[#101*#5]
+
+// MOVE BACK TO ORIGINAL XY LOCATION
+#126 = [#102-R_MACH_COOR[0,1]]
+#127 = [#123-R_MACH_COOR[0,2]]
+G31 G91 P2 Y#127 F#111 // PROTECTED MOVE
+G31 G91 P2 X#126 F#111 // PROTECTED MOVE
+
+IF[#128 == 1]
+    M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+END_IF
+
+G90
+M99

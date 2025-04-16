@@ -1,0 +1,54 @@
+// Copyright 2024 Toolpath Labs Inc., Justin Gray
+
+// PROTECTEDMOVE
+// Move to target position using G31 to stop should an unexpected collision occurs 
+
+// Argument X -> #24 ABSOLUTE X POSITION TO MOVE TO
+// Argument Y -> #25 ABSOLUTE X POSITION TO MOVE TO
+// Argument Z -> #26 ABSOLUTE X POSITION TO MOVE TO
+
+// Initial Coding: Justin Gray
+// Modified 31/03/2025: Robot Oblivion
+
+// load probe config
+G65 "PROBECONFIG"
+
+#100 = @100               // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
+#103 = @103               // FEED SPEED PROVIDED BY PROBECONFIG MACRO
+
+#128 = @96             // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+IF[#128 == 1]
+    M19 // ORIENT SPINDLE
+END_IF
+
+#120=R_SYS_INFO[0,2] // CURRENT TOOL NUMBER
+
+// NOTE: #0 IS ALWAYS VACANT, SO YOU CAN CHECK AGAINST IT TO SEE IF AN ARGUMENT WAS PASSED
+
+G90
+IF[#24==#0 && #25==#0 && #26!=#0] // Z ONLY
+    G31 P2 Z[#26] F#103  
+ELSEIF[#24!=#0 && #25==#0 && #26==#0] // X ONLY
+    G31 P2 X[#24] F#103  
+ELSEIF[#24==#0 && #25!=#0 && #26==#0] // Y ONLY
+    G31 P2 Y[#25] F#103  
+ELSEIF[#24!=#0 && #25==#0 && #26!=#0] // X + Z
+    G31 P2 X[#24] Z[#26] F#103  
+ELSEIF[#24==#0 && #25!=#0 && #26!=#0] // Y + Z
+    G31 P2 Y[#25] Z[#26] F#103  
+ELSEIF[#24!=#0 && #25!=#0 && #26==#0] // X + Y
+    G31 P2 X[#24] Y[#25] F#103  
+ELSEIF[#24!=#0 && #25!=#0 && #26!=#0] // X+ Y + Z
+    G31 P2 X[#24] Y[#25] Z[#26] F#103  
+END_IF
+
+// Error Checking
+IF[R_SKIP[0,1] == 1]
+    ALARM["ERROR: Protected move triggered probe - unexpected obstacle"]
+END_IF
+
+IF[#128 == 1]
+    M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+END_IF
+
+M99

@@ -1,0 +1,71 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+// PROBEY
+// Probe in Y from the front or back
+
+// Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset G54.5
+// Argument Y -> #25 is the desired probing distance. Enter a positive value to probe the front and a negative value to probe the back
+// Argument I -> #9 print results enabled by fusion360
+
+// Initial Coding: Justin Gray
+// Modified 1/14/2024: Joshua Smith
+// Simplified WCS extended number math, added probe error checking, added probe distance argument
+// Modified 31/03/2025: Robot Oblivion
+
+// load probe config
+M800 A#1
+
+// important local variables
+#111 = @104               // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#112 = @105               // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#105 = @131               // TOOL RADIUS PROVIDED BY PROBECONFIG MACRO
+#108 = @107*[#25/ABS[#25]]  // PROBE BACKOFF DISTANCE PROVIDED BY PROBECONFIG MACRO * the sign +1 or -1 of probe distance
+#114 = @121               // processed extended WCS number provided by ProbeConfig macro
+#128 = @96               // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+
+M20                   // UNLOCK SPINDLE ORIENT
+IF[#25 < 0]
+  M19 P270            // ORIENT SPINDLE 270 DEGREES
+ELSE
+  M19 P90             // ORIENT SPINDLE 0 DEGREES
+END_IF
+
+//Probe X the desired distance and at fast feed
+G31 G91 P2 Y[#25] F#111                //FEED UNTIL SKIP FAST
+
+//Check that the probe has triggered
+IF[R_SKIP[0,1] == 1]
+ G91 G01 Y-[#108]                     //back off distance provided by ProbeConfig macro
+ FIX_CUT_OR_ON
+ G31 G91 P2 Y[#25] F#112               //Probe Y the desired distance at slow feed
+ FIX_CUT_OR_OFF
+ #104=R_SKIP[0,202]                   //GET MACHINE Y COORDINATE
+ G91 G01 Y-[#108]                     //back off distance provided by ProbeConfig macro
+ #106 = [#104+[[#25/abs[#25]]*#105]]    //current position +/- probe radius
+ @996 = #106
+
+ //safety check for inspection variable
+ IF[#9 == #0]
+  #9 = 0
+ END_IF
+
+ //STORE Y OFFSET For WCS Zero
+ IF [#1 == #0 || #9 > 0]
+  //DO NOT WRITE ANYTHING TO WCS
+ ELSEIF [#114 < 1]  
+   W_G53G59_COOR[0,#1,2,#106]
+ ELSE
+   W_G54EXP_COOR[0,#114,2,#106]
+ END_IF
+
+ELSE
+  ALARM["ERROR: FAILED TO PROBE PART WITHIN SPECIFIED DISTANCE"]
+END_IF
+
+IF[#128 == 1]
+    M20                 // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+END_IF
+
+G90
+G00                    // return to rapid speed
+M99

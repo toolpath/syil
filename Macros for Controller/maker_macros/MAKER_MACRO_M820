@@ -1,0 +1,39 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+// PROBEPOCKET
+// Probe a bore in X and Y
+
+// Argument A -> #1 is the work coordinate system to store offsets in
+// Argument X -> #24 is the expected width
+// Argument Y -> #25 is the expected length
+// Argument I -> #9 print results enabled by fusion360
+// Argument Q -> #17 turns on inspection report on/off: 0 leaves it off default; 1 turns it on 
+// Argument R -> #18 oversize tolorance
+// Argument S -> #19 enable oversize check
+
+// Initial Coding: Justin Gray
+// Modified 1/14/2024: Joshua Smith
+// Simplified WCS extended number math, added probe error checking, added probe inspection report
+// Modified 31/03/2025: Robot Oblivion
+
+@10 = R_G_GROUP[0,6]      // pull in metric or freedom units 
+
+ M834 A#1 X#24 Q0 I#9 R#18 S#19 
+ M835 A#1 Y#25 Q0 I#9 R#18 S#19 
+
+//simple inspection reporting
+IF [#17 > 0]
+  #98 = ROUND[@998 * @91] / @91  // Round to 3/4 decimal places
+  #99 = ROUND[@999 * @91] / @91  // Round to 3/4 decimal places
+  IF[@10 == 21]
+    MENU_ADD["Part Width mm X: #98",""]; 
+    MENU_ADD["Part Length mm Y: #99",""]; 
+  ELSE
+    MENU_ADD["Part Width In X: #98",""];
+    MENU_ADD["Part Length In Y: #99",""];
+  END_IF 
+ MENU["INSPECTION REPORT","RESULTS","",1];
+END_IF
+
+G90
+M99

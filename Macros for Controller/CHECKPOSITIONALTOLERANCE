@@ -1,0 +1,106 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+// CHECKPOSITIONALTOLERANCE 
+// Check the XYZ positional tolerance based on the probed points and expected points 
+
+// Argument A -> #1 is the work coordinate system to store offsets in. The format for extended G54 offsets would be a period followed by the offset// G54.5 
+// Argument B -> #2 is the override coordinate system. The format for extended G54 offsets would be a period followed by the offset// G54.5 
+// Argument T -> #20 positional tolerance 
+// Argument U -> #21 positional tolerance enable 
+// Argument V -> #22 Axis to check 1 =X, 2 = Y, 3 = Z, 4 = XY, 5 = XYZ  
+// Argument X -> #24 expected X 
+// Argument Y -> #25 expected Y 
+// Argument Z -> #26 expected Z 
+
+// Modified 02/10/2024: Joshua Smith
+// Modified 31/03/2025: Robot Oblivion 
+
+// load probe config 
+G65 "PROBECONFIG" A#1 B#2
+
+#114 = @121         // processed extended WCS number provided by ProbeConfig macro
+#115 = @122         // processed extended WCS number provided by ProbeConfig macro
+#128 = @96         // ORIENT SPINDLE ON PROVIDED BY PROBECONFIG MACRO
+
+IF[#128 == 1]
+    M19 // ORIENT SPINDLE
+END_IF
+
+// get WCS ZERO 
+IF [#1 == #0]
+  ALARM["ERROR: Probe WCS not provided"]
+ELSEIF [#114 < 1]  
+  #116 =  R_G53G59_COOR[0,#1,1] // x work zero 
+  #117 =  R_G53G59_COOR[0,#1,2] // y work zero 
+  #118 =  R_G53G59_COOR[0,#1,3] // z work zero 
+ELSE
+  #116 =  R_G54EXP_COOR[0,#114,1] // x work zero 
+  #117 =  R_G54EXP_COOR[0,#114,2] // y work zero 
+  #118 =  R_G54EXP_COOR[0,#114,3] // z work zero 
+END_IF
+
+// Get override ZERO 
+IF [#2 == #0]
+  ALARM["ERROR: Override WCS not provided"] 
+ELSEIF [#115 < 1]  
+  #119 =  R_G53G59_COOR[0,#2,1] // x override zero 
+  #120 =  R_G53G59_COOR[0,#2,2] // y override zero 
+  #101 =  R_G53G59_COOR[0,#2,3] // z override zero 
+ELSE
+  #119 =  R_G54EXP_COOR[0,#115,1] // x work zero 
+  #120 =  R_G54EXP_COOR[0,#115,2] // y work zero 
+  #101 =  R_G54EXP_COOR[0,#115,3] // z work zero 
+END_IF
+
+// error = probed point - expected point 
+#102 = #116 - [#24 + #119] // x error calculation between selected wcs and expected probe point 
+#123 = #117 - [#25 + #120] // y error calculation between selected wcs and expected probe point 
+#124 = #118 - [#26 + #101] // z error calculation between selected wcs and expected probe point 
+  
+// if the tolorance is null, default it to global variable from the probe config 
+IF[#20==#0]
+ #20 = @108
+END_IF
+
+#130 = ABS[#102] // absolute x error 
+#131 = ABS[#123] // absolute y error 
+#132 = ABS[#124] // absolute z error 
+
+// out of postion alarm if error is greater than tolorance 
+IF[#21!=#0 && #1==#2 ]
+  ALARM["WCS override must be enabled in the Fusion probing routine and the override WCS must be different than the work WCS."]
+ELSEIF[#21!=#0 && #130 > #20 && [#22 == 1 || #22 == 4 || #22 == 5]]
+  #130 = ROUND[#130 * @91] / @91  // Round to 3/4 decimal places
+  #116 = ROUND[#116 * @91] / @91  // Round to 3/4 decimal places
+  MENU_ADD["Override point: #119",""];
+  MENU_ADD["Probed point:    #116",""];
+  MENU_ADD["Limit / expected: #20 / #24",""];
+  MENU_ADD["Out of position X: #130",""];
+  MENU["Error","Stock out of position X","",4];
+  ALARM["ERROR: Stock outside of positional tolerance in X"]
+ELSEIF [#21!=#0 && #131 > #20 && [#22 == 2 || #22 == 4 || #22 == 5]]
+  #131 = ROUND[#131 * @91] / @91  // Round to 3/4 decimal places
+  #117 = ROUND[#117 * @91] / @91  // Round to 3/4 decimal places
+  MENU_ADD["Override point: #120",""];
+  MENU_ADD["Probed point:    #117",""];
+  MENU_ADD["Limit / expected: #20 / #25",""];
+  MENU_ADD["Out of position Y: #131",""]; 
+  MENU["Error","Stock out of position Y","",1];
+  ALARM["ERROR: Stock outside of positional tolerance in Y"]
+ELSEIF [#21!=#0 && #132 > #20 && [#22 == 3 || #22 == 5]]
+  #132 = ROUND[#132 * @91] / @91  // Round to 3/4 decimal places
+  #118 = ROUND[#118 * @91] / @91  // Round to 3/4 decimal places
+  MENU_ADD["Override point: #101",""];
+  MENU_ADD["Probed point:    #118",""];  
+  MENU_ADD["Limit / expected: #20 / #26",""]; 
+  MENU_ADD["Out of position Z: #132",""]; 
+  MENU["Error","Stock out of position Z","",1];
+  ALARM["ERROR: Stock outside of positional tolerance in Z"]
+END_IF
+
+IF[#128 == 1]
+    M20                             // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+END_IF
+
+G90
+M99

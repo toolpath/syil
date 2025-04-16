@@ -1,0 +1,54 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+// CALIBRATEPROBERING
+// Calibrate the Diameter of the probe using a ring guage
+// Your probe must be concentric and you must use a ring guage!!!!!!!!!!
+// **Ring gauge ID set in ProbeConfig file
+
+// Argument D -> #4 is optional and the expected inside diameter of the ring guage. Will over ride value in ProbeConfig if called
+
+// Initial coding 1/14/2024: Joshua Smith
+// Modified 31/03/2025: Robot Oblivion
+
+// load probe config
+M800
+
+M19 // ORIENT SPINDLE
+
+// important local variables
+#100 = @100             // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
+#129 = @93             // Calibrated ring gauge diameter provided by PROBECONFIG MACRO
+
+// Over ride probeConfig gauge ID A argument used
+IF [#4 != #0]
+  #129 = #4
+END_IF
+  
+// Make sure diameter is zero when calibrating
+W_TOOL_DATA[0,#100,3,0]    // store tool diameter
+
+// G54 is used below to pass ProbeConfig WCS checks, but I1 calls ensure that G54 remains unchanged.
+// calling our slot macros the first time centers probe
+M834 A54 X#129 Q0 I1
+M835 A54 Y#129 Q0 I1
+
+// calling our slot macros a second time gives an accurate inspection
+M834 A#111 X#129 Q0 I1
+M835 A#111 Y#129 Q0 I1
+
+// average Diameter calculation
+// @999 and @998 are set in the slot macros
+// this could be improved by keeping track of both X and Y diameters and controling probe orientation
+#131 = @998                   // measured ring guage diameter x
+#132 = @999                   // measured ring guage diameter y
+#133 = #129 - #131            // error in x
+#134 = #129 - #132            // error in y
+#135 = ABS[#133 + #134]/2     // average error
+W_TOOL_DATA[0,#100,3,#135]    // store tool diameter
+
+MENU_ADD["Ruby Diameter Set To: #135",""];  
+MENU["Calibration report","Results","",1];  
+
+M20                           // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+G90                           // return to absolute mode
+M99

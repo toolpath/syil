@@ -1,0 +1,88 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+// CALIBRATEZ
+// THIS MACRO ASSUMES THAT YOU HAVE PUT YOUR GAUGE TOOL IN THE SPINDLE
+// AND positioned slightly above your REFERENCE ARTIFACT.
+// THE MACRO WILL SAVE THE XY LOCATION FOR FUTURE USE AND STORE THE REFERENCE HEIGHT OFFSET
+
+// Argument A -> #1 turns on/off full calibration: default is quick calibration
+
+// Initial Coding: Justin Gray
+// Modified 31/03/2025: Robot Oblivion
+
+// load probe config
+G65 "PROBECONFIG"
+
+// important local variables
+#100 = @100             // TOOL NUMBER PROVIDED BY PROBECONFIG MACRO
+#104 = @104             // FAST PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#105 = @105             // SLOW PROBE SPEED PROVIDED BY PROBECONFIG MACRO
+#106 = @106             // PROBE CLEARANCE DISTANCE
+#108 = @107             // PROBE BACKOFF DISTANCE
+#109 = @92             // MASTER TOOL GAUGE LENGTH
+#111 = @113             // PROBE CALIBRATION EXTENDED WORKOFFSET NUMBER
+                        // NOTE: @5109 will be used to save reference block height
+
+M19 // ORIENT SPINDLE
+
+IF [#1!=#0]
+  MSG_OK["Calibrate probe", "Switch to MPG mode and carefully zero the master tool on the calibration artifact. Only press Cycle Start when you're ready to proceed.", ""]
+  M00
+  WAIT[0,0]
+  MSG_OK["Update @5109", "Once accurately gauged in, press OK to store the current machine position in G@113. Only press OK when the tool is correctly positioned as the Z axis will retract immediately after.", ""]
+  WAIT[0,0]
+  
+  @5109 = R_MACH_COOR[0,3]  // GET MACHINE Z COORDINATE WHICH SHOULD BE THE TOP OF A 123 BLOCK
+  #140 = @5109
+
+  // STORE THE CURRENT POSITION TO PROBE CALIBRATION EXTENDED WORKOFFSET NUMBER FOR FUTURE FAST CALIBRATION
+  W_G54EXP_COOR[0,#111,1,R_MACH_COOR[0,1]]
+  W_G54EXP_COOR[0,#111,2,R_MACH_COOR[0,2]]
+ELSE                     // FAST CALIBRATION
+  MSG_OK["Calibrate probe", "Install calibration artifact in reference location", ""]
+END_IF
+
+#140 = @5109            // PREVIOUSLY STORED REFERENCE HEIGHT
+
+T#100 M6                // COMMAND A TOOL CHANGE
+
+G53 G90 G00 Z0          // BRING THE MACHINE UP TO TOOL CHANGE HEIGHT
+
+#101 = R_MACH_COOR[0,3] // GET MACHINE Z COORDINATE AFTER TOOL CHANGE
+
+IF [#1!=#0]
+  // TELL THE PERSON TO PUT THE PROBE INTO THE SPINDLE
+  MSG_OK["Install probe", "Switch to MPG mode and install the probe (T@100). Then, switch back before pressing Cycle Start.", ""]
+END_IF
+
+G54 P#111                              // LOCATION OF PROBE CALIBARTION IS X0 Y0 ON G54 P#111
+
+G90 G0 X0. Y0.                         // MOVE TO TOOLSETTER
+
+#123 = #140 - #109                     // DELTA DISTANCE WE HAVE MOVED PLUS SOME INCASE PROBE IS SHORTER THAN GAUGE TOOL
+// Probe Z ALL THE WAY BACK TO 123 BLOCK
+G31 G91 P2 Z#123 F#104
+
+// Check that the probe has triggered
+IF[R_SKIP[0,1] == 1]
+  G91 G01 Z#108                        // PROBE BACKOFF DISTANCE
+  FIX_CUT_OR_ON
+  G31 G91 P2 Z-[1.5*#108] F#105        // PROBE Z AT SLOW SPEED
+  FIX_CUT_OR_OFF
+  #125 = R_SKIP[0,203]                 // GET MACHINE Z COORDINATE
+  @996 = #125                          // Store for Setup Helper 
+  G91 G01 Z#108                        // BACK OFF
+  #126 = [#125-#140+#109]              // PROBE LENGTH CALCULATION, ACCOUNTING FOR GAUGE TOOL LENGTH
+  W_TOOL_DATA[0,#100,203,#126]         // STORE PROBE LENGTH
+ELSE
+  ALARM["Failed to probe part within specified distance"]
+END_IF
+
+G53 G90 G00 Z0          // retract to top of Z
+
+M20                     // UNLOCK SPINDLE ORIENTATION FOR SAFETY
+M99
+
+ G91 G01 Z+[#108]                     //back off distance provided by ProbeConfig macro
+ #143 = [#142-#107]                   //current position - probe length
+ @996 = #143

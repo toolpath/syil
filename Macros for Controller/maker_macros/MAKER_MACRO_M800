@@ -1,0 +1,109 @@
+// Copyright 2025 Toolpath Labs Inc., Justin Gray, Josh Smith, and Robot Oblivion
+
+// PROBECONFIG
+// Probe Configuration file to setup probe specs and units, called by every macro
+
+// Argument T -> #20 turns off probe tool number checking : VACANT leaves it on ; non VACANT turns it off 
+// NOTE: @5109 STORES THE REFERENCE HEIGHT FOR FAST PROBE Z CALIBRATION
+
+// Initial Coding 1/25/2024: Joshua Smith
+// Modified 31/03/2025: Robot Oblivion
+
+// DO NOT TOUCH!!! Metric or freedom units check 
+@10 = R_G_GROUP[0,6] 
+
+// important global variables to update below:
+@100 = -1       // PROBE TOOL NUMBER, EX: 99
+@92 = 93.896    // CALIBRATED LENGTH OF YOUR MASTER GAUGE TOOL
+@93 = 24.998    // Calibrated diameter of the master ring gauge tool
+@94 = 50.000    // Calibrated X size of gauge block 
+@95 = 25.000    // Calibrated Y size of gauge block
+@96 = 0         // ORIENT SPINDLE SWITCH 1=ON 0=OFF (probes that spin on/off)
+@97 = 0         // turn on alarms for out of tolerance or off to display user message only
+#111 = 95       // The highest WCS that can be used. Any above are protected from changes via these macros
+@112 = 97       // EXTENDED WORKOFFSET TO STORE TOOLSETTER LOCATION
+@113  = 96      // EXTENDED WORKOFFSET TO STORE PROBE Z CALIBRATION LOCATION 
+@114 = 98       // EXTENDED WORKOFFSET TO STORE THE 4TH COR PROBING START POINT
+@115 = 99       // extended workoffset to store the manual tool change location
+
+// metric settings
+IF[@10 == 21]
+    @103 = 2500         // FEED SPEED mm/m,
+    @104 = 1250         // FAST PROBE SPEED mm/m,
+    @105 = 60           // SLOW PROBE SPEED mm/m,
+    @106 = 10           // PROBE CLEARANCE DISTANCE mm,
+    @107 = 2            // PROBE BACKOFF DISTANCE mm,
+    @108 = 1.0          // DEFAULT PART TOLERANCE
+
+    @109 = 750          // FAST Tool Probe SPEED mm/m,
+    @110 = 40           // SLOW Tool Probe SPEED mm/m,
+
+    @91  = 1000         // rounding multiplier for 3 decimal places
+END_IF;
+
+// Freedom unit settings
+IF[@10 == 20]
+    @103 = 50         // FEED SPEED in/m,
+    @104 = 50         // FAST PROBE SPEED in/m,
+    @105 = 2.5        // SLOW PROBE SPEED in/m,
+    @106 = 0.5        // PROBE CLEARANCE DISTANCE in,
+    @107 = 0.125      // PROBE BACKOFF DISTANCE,
+
+    @108 = 0.05       // DEFAULT PART TOLERANCE
+
+    @109 = 30         // FAST Tool Probe SPEED in/m,
+    @110 = 1.5        // SLOW Tool Probe SPEED in/m,
+
+    @91  = 10000      // rounding multiplier for 4 decimal places
+END_IF;
+
+IF [@100==-1]
+	ALARM["Hard code probe number in PROBECONFIG macro"]
+END_IF
+
+@130 = R_TOOL_DATA[0,@100,3]     // TOOL DIAMETER, DO NOT TOUCH!!!
+@131 = @130/2                    // TOOL RADIUS, DO NOT TOUCH!!!
+@133 = [R_TOOL_DATA[0,@100,203]] // TOOL LENGHT OFFSET, DO NOT TOUCH!!!
+
+#120=R_SYS_INFO[0,2] // CURRENT TOOL NUMBER
+IF [@100 != #120 && #20==#0] // THE PROBE IS NOT LOADED
+    ALARM["Error: Protected move without probe - change to T#100 "]  
+END_IF
+
+G90
+
+IF [#1 != #0]
+    IF [ROUND[MOD[#1,1] * 100] > 0]  
+        @121 = ROUND[MOD[#1,1] * 100]  // Extract the decimal part and multiply by 100
+        IF [@121 < 1 || @121 >= #111]
+            ALARM["ERROR: Probe WCS G54 P@121 protected via ProbeConfig Macro"]
+        END_IF
+        IF [FIX[#1] != 54]
+            ALARM["ERROR: G54 must be used when calling extended work offsets"]
+        END_IF
+    ELSE
+        @121 = 0
+        IF [#1 < 54 || #1 > 59]
+            ALARM["ERROR: Probe WCS G@121 out of range"]
+        END_IF
+    END_IF
+END_IF
+
+IF [#2 != #0]
+    IF [ROUND[MOD[#2,1] * 100] > 0]
+        @122 = ROUND[MOD[#2,1] * 100]  // Extract the decimal part and multiply by 100
+        IF [@122 < 1 || @122 >= #111]
+            ALARM["ERROR: Override WCS G54 P@122 protected via ProbeConfig Macro"]
+        END_IF
+        IF [FIX[#2] != 54]
+            ALARM["ERROR: G54 must be used when calling extended work offsets"]
+        END_IF
+    ELSE
+        @122 = 0
+        IF [#2 < 54 || #2 > 59]
+            ALARM["ERROR: Override WCS G@122 out of range"]
+        END_IF
+    END_IF
+END_IF
+
+M99
