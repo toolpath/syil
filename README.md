@@ -67,7 +67,7 @@ Once you have saved your changes to `PROBECONFIG` or `M800` copy all files withi
 
 ## **Backup and Preparation for Calibration**  
 
-1. Backup your tool table, offset table and `@10`, `@91-@98`, `@100-@110`, `@112-@115`,`@130-@134`, `@980-@987` and `@5109` variables in case of wanting to revert  
+1. Backup your tool table, offset table and `@10`, `@91-@98`, `@100-@110`, `@112-@115`,`@130-@134`, `@980-@985`, `@996-@999` and `@5109` variables in case of wanting to revert  
 2. Clear as many items as possible from the table to prevent collisions with stock, jigs, fixtures, or vices.  
 3. Ensure the table zero point or area to place your calibration object is empty, lightly stoned, and free of coolant.  
 4. Have your master tool, probe, and ring gauge/gauge block ready.  
