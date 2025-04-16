@@ -82,8 +82,8 @@ IF [#1 != #0]
             ALARM["ERROR: G54 must be used when calling extended work offsets"]
         END_IF
     ELSE
-        @121 = #1
-        IF [@121 < 54 || @121 > 59]
+        @121 = 0
+        IF [#1 < 54 || #1 > 59]
             ALARM["ERROR: Probe WCS G@121 out of range"]
         END_IF
     END_IF
@@ -99,8 +99,8 @@ IF [#2 != #0]
             ALARM["ERROR: G54 must be used when calling extended work offsets"]
         END_IF
     ELSE
-        @122 = #2
-        IF [@122 < 54 || @122 > 59]
+        @122 = 0
+        IF [#2 < 54 || #2 > 59]
             ALARM["ERROR: Override WCS G@122 out of range"]
         END_IF
     END_IF
