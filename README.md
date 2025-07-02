@@ -591,16 +591,16 @@ These macros allow you to add and remove tools without having to manually modify
 Use any tool number you want, up to 198.  
 Tool number 199 is used to signify an empty pocket in the tool table. 
 
-Both the load and unload macros set the tool gauge length to 999 and clear any tool wear compensation values. 
-999 was chosen because its safe. If you don't toolset the tool before use, then you'll get a z-height error when you try to run. 
+Both the load and unload macros have the option to set the tool gauge length to 999 and clear any tool wear compensation values. 
+999 was chosen because it's safe. If you don't toolset the tool before use, then you'll get a z-height error when you try to run. 
 
 ### LOADTOOL
 
-| G Code | "Macro Name" | Macro Argument  |
-| --- | --- | --- |
-| G65 | "LOADTOOL" | T |
+| G Code | "Macro Name" | Macro Argument  | Macro Argument  | Macro Argument  |
+| --- | --- | --- | --- | --- |
+| G65 | "LOADTOOL" | T | O | M |
 
-Example MDI Command: G65 "LOADTOOL" T10
+Example MDI Command: G65 "LOADTOOL" T10 O12
 
 There are three conditions considered: 
 
@@ -608,13 +608,12 @@ There are three conditions considered:
 In this case, call up that tool number and swap in the new tool. 
 
 2) The tool number does not exist in the tool table, and there is an open tool pocket. 
-In this case, assign the new tool to an empty pocket
+In this case, assign the new tool to an empty pocket.
 
 3) The tool number does not exist in the tool table, but there is no empty tool pocket. 
-In this case, prompt the user for which number tool they want to remove. 
-Then re-assign that tool pocket to the new tool number.  
+In this case, prompt the user for which number tool they want to remove if an optional O argument was not sent. Then re-assign that tool pocket to the new tool number. 
 
-After you have loaded the tool, the macro will automatically run the `TOOLSET` macro to set the gauge length. 
+After you have loaded the tool, if no M argument (default) or an M1 argument is used the macro will run the TOOLSET macro to measure the installed tools' gauge length. An M0 argument will cancel the calling of TOOLSET, and skip the measuring of the installed tool allowing the use of the previously measured offsets stored in the tool table.
 
 ### UNLOADTOOL
 
