@@ -1,0 +1,98 @@
+// Copyright 2024 Toolpath Labs Inc., Justin Gray
+
+// LOAD A NEW TOOL INTO THE CAROUSEL
+
+// #20 IS THE TOOL NUMBER TO LOAD
+
+// #13 Flag to reset tool offsets then call TOOLSET (not required and defaults on)
+
+// #15 tool number in carousel to swap out (not required) 
+
+// THE TOOL TABLE IS VARIABLES 7000-7011
+
+#120 = 0 // STORES THE OLD TOOL NUMBER
+
+IF[#20 == R_REG[7813]]
+	MSG_OK["Tool In spindle", "T#20 already loaded in the spindle",""]
+	M99
+END_IF
+
+// IF THE TOOL NUMBER IS ALREADY IN THE CAROUSEL WE SWAP THEM
+FOR #100=7000 TO 7011
+	IF[R_REG[#100]==#20]
+		#120 = #20
+		#119 = 0 // Swap tool message flag
+		EXIT_FOR
+	END_IF
+END_FOR
+
+// IF NOT ALREADY THERE, THEN FIND AN OPEN POCKET
+IF[#120 == 0 && #15 == #0]
+	// FIND THE FIRST EMPTY POCKET
+	FOR #100=7000 TO 7011
+		IF[R_REG[#100]==199]
+			#120 = #100
+			// WRITE THE NEW TOOL NUMBER INTO THE TOOL TABLE
+			W_REG[#100, #20]
+			#101 = #100-6999 // store empty tool pocket number
+			#119 = 1 // Swap tool message flag
+			EXIT_FOR
+		END_IF
+	END_FOR
+END_IF
+
+// IF #120 IS STILL 0 THEN THERE WAS NO EMPTY POCKET
+// AND WE WILL SWAP WITH A DIFFERENT TOOL NUMBER
+IF[#120 == 0]
+	#121 = #15 // pull in O argument
+	IF[#121 == #0]
+		#121 = INPUT["Choose a tool to swap","Choose a tool in the carousel to swap out?","",1,196,13];
+	END_IF
+
+	// CHECK THAT THE TOOL THE USER PICKED IS ACTUALLY IN THE CAROUSEL
+	FOR #100=7000 TO 7011
+		IF[R_REG[#100]==#121]
+			IF[#121 == R_REG[7813]] // check if tool to swap is tool in spindle	
+				W_REG[7813, #20] // push new tool to tool in spindle to skip tool drop in below M6
+			END_IF
+			// PUSH THE NEW TOOL NUMBER INTO THE TOOL TABLE
+			#120 = #121
+			W_REG[#100, #20]
+			#119 = 2 // Swap tool message flag
+			EXIT_FOR
+		END_IF
+	END_FOR
+	
+	IF[#120 == 0]
+		ALARM["T#121 NOT IN CAROUSEL. CANT SWAP FOR T#20"]
+	END_IF
+END_IF
+
+
+// NOW WE ARE SURE THAT THE NEW TOOL HAS BEEN PUSHED INTO THE TOOL TABLE
+
+// COMMAND A TOOL CHANGE
+T#20 M6
+
+// TELL THE PERSON TO PUT THE TOOL INTO THE SPINDLE	
+SELECT[#119]
+	CASE 0:
+		; no message is required
+	CASE 1:
+		MSG_OK["Install Tool", "Switch to MPG mode and install T#20 in pocket #101",""]
+	CASE 2 :
+		MSG_OK["Swap Tools", "Switch to MPG mode, remove T#121 and swap with T#20",""]
+END_SELECT
+
+IF[#13 == 1]
+	// SET THE LENGTH OFFSET TO 999 SO WE CAN'T USE IT WITHOUT TOOLSETTING
+	W_TOOL_DATA[0, #20, 203, 999]
+	// CLEAR ANY WEAR OFFSETS FOR RADIUS OR LENGTH
+	W_TOOL_DATA[0, #20, 2, 0] // RADIAL WEAR
+	W_TOOL_DATA[0, #20, 103, 0] // LENGTH WEAR
+
+	// TOOLSET THE TOOL
+	M825 A0.0
+END_IF
+
+M99
