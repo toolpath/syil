@@ -2832,7 +2832,11 @@ function writeRetract() {
       switch (retract.method) {
       case "G28":
         forceModals(gMotionModal, gAbsIncModal);
-        writeBlock(gFormat.format(28), gAbsIncModal.format(91), words);
+        if (words == "X0.,Y0.") {// Filthy hack from JSG to modify home position independent of machine config
+          writeBlock(gFormat.format(53), gMotionModal.format(0), "X-8.0 Y0.0");
+        } else { 
+          writeBlock(gFormat.format(28), gAbsIncModal.format(91), words);
+        }
         writeBlock(gAbsIncModal.format(90));
         break;
       case "G30":
