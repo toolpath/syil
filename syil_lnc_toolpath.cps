@@ -3534,12 +3534,13 @@ function writeProbeCycle(cycle, x, y, z, P, F) {
     protectedProbeMove(cycle, x, y, z);
   }
 
+  var probeWorkOffsetCode = currentSection.probeWorkOffset;
+
   var macroCall = settings.probing.macroCall;
   switch (cycleType) {
   case "probing-x":
     forceXYZ();
     protectedProbeMove(cycle, x, y, z - cycle.depth);
-
     WCS_CODE   = getProbingArguments(cycle, probeWorkOffsetCode);
     EXPECTED_Y = yOutput.format(y + approach(cycle.approach1) * (cycle.probeClearance + tool.diameter / 2));
     EXPECTED_X = xOutput.format(x + approach(cycle.approach1) * (cycle.probeClearance + tool.diameter / 2));
@@ -3998,7 +3999,7 @@ function approach(value) {
     conditional(outputWCSCode, probeOutputWorkOffset)
   ];
 } */
-function getProbingArguments(cycle, probeWorkOffsetCode) { // Old Toolpath Syil function
+function getProbingArguments(cycle, probeOutputWorkOffset) { // Old Toolpath Syil function
   var probeWCS = hasParameter("operation-strategy") && (getParameter("operation-strategy") == "probe");
 
   var PROBE_ARGS = "";
@@ -4028,8 +4029,8 @@ function getProbingArguments(cycle, probeWorkOffsetCode) { // Old Toolpath Syil 
     ((cycle.updateToolWear && cycleType !== "probing-z") ? "T" + xyzFormat.format(cycle.toolDiameterOffset) : undefined),
     (cycle.updateToolWear ? "V" + xyzFormat.format(cycle.toolWearUpdateThreshold ? cycle.toolWearUpdateThreshold : 0) : undefined),
     (cycle.printResults ? "I" + xyzFormat.format(1 + cycle.incrementComponent) : undefined), // 1 for advance feature, 2 for reset feature count and advance component number. first reported result in a program should use W2.
-    conditional(probeWorkOffsetCode && probeWCS, PROBE_ARGS),
-    conditional(probeWorkOffsetCode && probeWCS, PROBE_OVERRIDE_ARGS)
+    conditional(probeOutputWorkOffset && probeWCS, PROBE_ARGS),
+    conditional(probeOutputWorkOffset && probeWCS, PROBE_OVERRIDE_ARGS)
   ];
 }
 // <<<<< INCLUDED FROM include_files/getProbingArguments_renishaw.cpi
@@ -4037,7 +4038,7 @@ function getProbingArguments(cycle, probeWorkOffsetCode) { // Old Toolpath Syil 
 function protectedProbeMove(_cycle, x, y, z) {
   var _x = xOutput.format(x);
   var _y = yOutput.format(y);
-  var _z = zOutput.format(z - cycle.depth);
+  var _z = zOutput.format(z);
   var macroCall = settings.probing.macroCall;
   if (_z && z >= getCurrentPosition().z) {
     writeBlock(macroCall, "\"PROTECTEDMOVE\"", _z, getFeed(cycle.feedrate)); // protected positioning move
